@@ -1,0 +1,177 @@
+/* ===========================
+   WORLD SECTION
+=========================== */
+
+#world {
+  height: 100%;
+  overflow: hidden; /* blocca scroll esterno */
+}
+
+#world .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 84%;
+  overflow: hidden; /* blocca scroll */
+}
+
+/*==============================================*/
+
+.content .visual-map-content {
+  width: 100%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.content .visual-map-content span {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+}
+
+.content .visual-map-content span svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/*==============================================*/
+
+.rank-section-wrap {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0; /* importante */
+
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border);
+  overflow: hidden;
+}
+
+.rank-section-wrap .rank-content {
+  flex: 1 1 auto;
+  min-height: 0;       /* fondamentale per scroll */
+  width: calc(100% - 48px);
+  padding: var(--padding);
+  padding-bottom: 64px; /* evita taglio ultimo elemento */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.7rem;
+  letter-spacing: -3%;
+  line-height: 1;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.rank-content::-webkit-scrollbar {
+  display: none;
+}
+
+.rank-content {
+  -webkit-overflow-scrolling: touch;
+}
+
+/*==============================================*/
+
+.rank-content .line-ranking {
+  width: 100%;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.line-ranking .name-position {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 12px;
+  width: 74%;
+}
+
+.name-position .rank-position {
+  font-size: 0.8rem;
+  letter-spacing: -3%;
+  font-weight: 500;
+}
+
+.name-position .country-name {
+  font-size: 1.8rem;
+  letter-spacing: -3%;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.country-rank-score {
+  font-size: 1.8rem;
+  letter-spacing: -3%;
+  font-weight: 500;
+}
+
+.rank-section-wrap .button-container {
+  width: var(--width);
+  height: 44px;
+  margin-top: 4px;
+  padding: var(--padding);
+  flex-shrink: 0; /* evita che il pulsante venga compresso */
+}
+
+.rank-section-wrap button {
+  height: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+
+#world footer {
+  overflow: hidden; /* impedisce scroll footer */
+  flex-shrink: 0;   /* evita che venga compresso */
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+
+
+footer {
+  width: 100%;
+  height: 8%;
+  border-top: var(--border);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+footer button {
+  background: none;
+  border: none;
+  text-decoration: none;
+  padding: var(--padding-vertical);
+  color: var(--secondary-color);
+  -webkit-tap-highlight-color: transparent; /* iOS / Safari */
+  -webkit-touch-callout: none; /* menu copia/incolla */
+  user-select: none; /* niente selezione testo */
+  touch-action: manipulation;
+}

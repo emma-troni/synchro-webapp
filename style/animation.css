@@ -1,0 +1,61 @@
+/* ================================
+   VIEW TRANSITIONS (move-in only)
+================================ */
+
+:root {
+  --view-in-duration: 520ms;
+  --view-in-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --view-in-distance: 36px;
+}
+
+/* Override del display:none: serve per poter animare */
+main .view {
+  display: flex;
+
+  flex-direction: column;
+  justify-content: space-between;
+
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    transform var(--view-in-duration) var(--view-in-ease),
+    visibility 0s linear var(--view-in-duration);
+
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+/* Entrata dal basso: more-about */
+main .view.more-about {
+  transform: translate3d(0, var(--view-in-distance), 0);
+}
+
+/* Entrata da destra: move-in-side */
+main .view.move-in-side {
+  transform: translate3d(var(--view-in-distance), 0, 0);
+}
+
+/* Stato visibile */
+main .view.active {
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0);
+
+  transition:
+    transform var(--view-in-duration) var(--view-in-ease),
+    visibility 0s linear 0s;
+}
+
+/* Switch istantaneo (usato quando clicchi nel nav) */
+body.instant-switch main .view {
+  transition: none !important;
+}
+
+/* Riduci animazioni se richiesto dal sistema */
+@media (prefers-reduced-motion: reduce) {
+  main .view {
+    transition: none !important;
+    transform: none !important;
+  }
+}

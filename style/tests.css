@@ -1,0 +1,18 @@
+#feedback {
+    position: fixed;
+    bottom: 16px;
+    width: fit-content;
+    padding: var(--padding);
+    height: 2rem;
+    background: orange;
+    left: 50%;
+    transform: translate(-50%);
+    text-align: center;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/*=============================================== */

@@ -1,0 +1,42 @@
+button,
+input,
+select,
+textarea {
+  font-size: 16px; /* almeno */
+  touch-action: manipulation; /* migliora il comportamento touch */
+}
+
+* {
+  font-family: "helvetica-neue-lt-pro", sans-serif;
+  color: var(--secondary-color);
+}
+
+:root {
+  --vh: 100vh;
+  --primary-color: #f0f0f0;
+  --secondary-color: #1a1a1a;
+  --secondary-color-opacity:rgba(26, 26, 26, 0.3);
+  --border: 1.5px solid var(--secondary-color);
+  --width: calc(100% - 40px);
+  --padding: 0px 20px;
+  --padding-vertical: 20px 20px;
+}
+
+/*rimozione effetti visivi al click dei bottoni*/
+button {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+section {
+  background: var(--primary-color);
+}
+
+button:focus {
+  outline: none;
+}
+button:active {
+  background: none;
+}

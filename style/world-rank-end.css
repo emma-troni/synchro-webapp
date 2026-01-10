@@ -1,0 +1,215 @@
+/* ===========================
+   WORLD SECTION
+=========================== */
+
+#world {
+  height: 100%;
+  overflow: hidden; /* blocca scroll esterno */
+}
+
+#world .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 84%;
+  overflow: hidden; /* blocca scroll */
+  
+}
+
+/*==============================================*/
+
+.content .visual-map-content {
+  width: 100%;
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.content .visual-map-content span {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+}
+
+.content .visual-map-content span svg {
+  height: 100%;
+  width: 100%;
+}
+
+
+/*=============== RANK CONTENT ===============*/
+
+.content .rank-section-wrap {
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0; /* importante */
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border);
+  overflow: hidden;
+}
+
+/*=============== RANK CONTENT ===============*/
+
+.rank-section-wrap .rank-content {
+  flex: 1 1 auto;
+  min-height: 0; /* fondamentale per scroll */
+  height: 40%;
+  width: var(--width);
+  padding: var(--padding);
+  padding-bottom: 64px; /* evita taglio ultimo elemento */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.7rem;
+  letter-spacing: -3%;
+  line-height: 1;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.rank-content::-webkit-scrollbar {
+  display: none; /* Chrome / Safari */
+}
+
+.rank-content {
+  -webkit-overflow-scrolling: touch;
+}
+
+.rank-content .line-ranking {
+  width: 100%;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.line-ranking .name-position {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 12px;
+  width: 74%;
+}
+
+.name-position .rank-position {
+  font-size: 0.8rem;
+  letter-spacing: -3%;
+  font-weight: 500;
+}
+
+.name-position .country-name {
+  font-size: 1.8rem;
+  letter-spacing: -3%;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.country-rank-score {
+  font-size: 1.8rem;
+  letter-spacing: -3%;
+  font-weight: 500;
+}
+
+.rank-section-wrap .button-container {
+  width: var(--width);
+  height: 44px;
+  padding: var(--padding);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  border-top: var(--border);
+  border-bottom: var(--border);
+
+}
+
+.rank-section-wrap button {
+  height: 100%;
+  background: none;
+  border: none;
+}
+
+.rank-section-wrap .winner-wrap {
+  width: var(--width);
+  height: 20%;
+  padding: var(--padding);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rank-section-wrap .winner-wrap .winner-tag {
+  text-transform: uppercase;
+  font-family: "helvetica-neue-lt-pro-cond", sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -2%;
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+
+
+footer {
+  width: 100%;
+  height: 8%;
+  border-top: var(--border);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+footer button {
+  background: none;
+  border: none;
+  text-decoration: none;
+  padding: var(--padding-vertical);
+  color: var(--secondary-color);
+  -webkit-tap-highlight-color: transparent; /* iOS / Safari */
+  -webkit-touch-callout: none; /* menu copia/incolla */
+  user-select: none; /* niente selezione testo */
+  touch-action: manipulation;
+}
+
+/*=============== MARQUEE ===============*/
+
+.marquee {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 40px; /* altezza del contenitore */
+  display: flex;
+  align-items: center;
+}
+
+.track {
+  display: flex;
+  white-space: nowrap;
+  position: absolute;
+  will-change: transform;
+}
+
+.track span {
+  padding-right: 3rem; /* distanza tra i testi duplicati */
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: -3%;
+  font-weight: 300;
+}

@@ -1,0 +1,130 @@
+/*==============================================*/
+/*===============ALIGNMENT PAGE=================*/
+/*==============================================*/
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/*==============================================*/
+
+.content .alignment-content {
+  width: 100%;
+  height: 80%;
+}
+
+.content .alignment-content .align-graphic {
+  width: var(--width);
+  padding: var(--padding);
+  height: calc(100% - 24%);
+  position: relative;
+}
+.external-graphic,
+.internal-graphic {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content .alignment-content .align-graphic span {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.external-graphic svg {
+  width: 80%;
+  height: 80%;
+}
+.internal-graphic svg {
+  width: 54%;
+  height: 54%;
+}
+/*==============================================*/
+.content .alignment-content .align-values {
+  width: var(--width);
+  padding: var(--padding);
+  height: 24%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.align-values .value {
+  width: 40%;
+  height: 100%;
+  background: none;
+  border: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.align-values .value:first-of-type {
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+}
+.align-values .value:last-of-type {
+  align-items: flex-end;
+  justify-content: center;
+  text-align: right;
+}
+.value-name {
+  text-transform: uppercase;
+  font-family: "helvetica-neue-lt-pro-cond", sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -2%;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.value-percentage {
+  text-transform: uppercase;
+  font-family: "helvetica-neue-lt-pro", sans-serif;
+  font-size: 2.4rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -2%;
+  line-height: 0.84;
+}
+
+.align-values .line-vertical {
+  width: 1.5px;
+  height: 44%;
+  background: var(--secondary-color);
+}
+
+/*==============================================*/
+.content .comment-section-wrap {
+  width: 100%;
+  height: 20%;
+  border-top: var(--border);
+}
+.comment-section-wrap .comment-content {
+  width: calc(100% - 40px);
+  height: calc(100%);
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: center;
+  padding: var(--padding);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 140%;
+  letter-spacing: -3%;
+  line-height: 1;
+}
