@@ -1,3 +1,8 @@
+/***********************
+ * SEARCH-COUNTRY.JS
+ * Search functionality for country ranking
+ ***********************/
+
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.querySelector(
     '#world-rank-overlay input[type="search"]'
@@ -9,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function clearPreviousFlash() {
     completeList.querySelectorAll(".name-position.flash").forEach((el) => {
-      // Rimuove la classe per poter riapplicare l'animazione
       el.classList.remove("flash");
     });
   }
@@ -22,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const items = completeList.querySelectorAll(".line-ranking");
     if (!items.length) {
-      console.warn("Nessun elemento .line-ranking presente in #complete-list");
+      console.warn("No .line-ranking elements in #complete-list");
       return;
     }
 
@@ -37,29 +41,20 @@ document.addEventListener("DOMContentLoaded", () => {
         namePositionEl &&
         countryNameEl.textContent.toLowerCase().includes(query)
       ) {
-        // Applica l'animazione flash
         namePositionEl.classList.add("flash");
-
-        // Scrolla fino all'elemento trovato
         item.scrollIntoView({ behavior: "smooth", block: "center" });
-
         found = true;
-        break; // evidenzia e scrolla solo il primo match
+        break;
       }
     }
 
     if (!found) {
-      alert("Nessun risultato trovato");
+      alert("No results found");
     }
   }
 
-  // Rimuove l'animazione se l'utente digita un nuovo testo
   searchInput.addEventListener("input", clearPreviousFlash);
-
-  // Ricerca al click sul bottone
   searchBtn.addEventListener("click", performSearch);
-
-  // Ricerca al tasto Invio
   searchInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       performSearch();
