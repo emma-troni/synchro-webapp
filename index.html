@@ -138,14 +138,13 @@
               <button data-view="world-rank-overlay">expand full list ❯</button>
             </div>
             <div class="rank-content" id="rank-preview"></div>
-          </div><footer>
-          <button class="overlay-open-btn" data-view="more-about-world">
-            more about ▴
-          </button>
-        </footer>
+          </div>
+          <footer>
+            <button class="overlay-open-btn" data-view="more-about-world">
+              more about ▴
+            </button>
+          </footer>
         </div>
-
-        
       </section>
       <!--
       =======================
@@ -299,7 +298,10 @@
       </section>
 
       <!-- overlay pagina wolrd : ranking complete-->
-      <section id="world-rank-overlay" class="subsection view world-subsection move-in-side">
+      <section
+        id="world-rank-overlay"
+        class="subsection view world-subsection move-in-side"
+      >
         <div class="upper-content-wrap">
           <div class="rank-header-content">
             <button id="close-align-recap-btn" data-view="world">❮</button>
@@ -386,10 +388,7 @@
       </section>
 
       <!--more about / align page -->
-      <section
-        id="more-about-world"
-        class="more-about view align-subsection"
-      >
+      <section id="more-about-world" class="more-about view align-subsection">
         <div class="upper-content-wrap">
           <div class="comment-overlay-section-wrap">
             <div class="comment-content">
@@ -432,7 +431,6 @@
     =============== SCRIPTS ===============
     -->
 
-
     <!--script timer-->
     <script src="./scripts/timer.js" type="module"></script>
 
@@ -453,11 +451,9 @@
 
     <!--script gestione spa-->
     <script src="./scripts/spa.js" type="module"></script>
-    <script>
-      input.addEventListener("blur", () => {
-        window.scrollTo(0, 0);
-      });
-    </script>
+
+    <!--ZHD Data Integration (score.js + app.js logic)-->
+    <script src="./scripts/zhd-data.js"></script>
 
     <!--script che genera l'elenco completo dei paesi-->
     <script src="./scripts/complete-list-generator.js"></script>
