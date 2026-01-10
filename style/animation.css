@@ -14,8 +14,6 @@
 
 /* ================================
    BASE (chiuso)
-   - non visibile all'avvio
-   - non cliccabile
 ================================ */
 
 main .view {
@@ -36,19 +34,28 @@ main .view {
    POSIZIONI DI PARTENZA (chiuso)
 ================================ */
 
-/* slide dal basso */
+/* dal basso */
 main .view.more-about {
   transform: translate3d(0, var(--slide-offset), 0);
 }
 
-/* slide da destra */
+/* da destra */
 main .view.move-in-side {
   transform: translate3d(var(--slide-offset), 0, 0);
 }
 
+/* dall’alto verso il basso (NON-nav) */
+main .view.move-out-down {
+  transform: translate3d(0, calc(var(--slide-offset) * -1), 0);
+}
+
+/* da sinistra verso destra (solo more-about-out-side) */
+main .view.more-about-out-side {
+  transform: translate3d(calc(var(--slide-offset) * -1), 0, 0);
+}
+
 /* ================================
    STATO ATTIVO (aperto)
-   - visibility diventa subito visibile (senza animazione)
 ================================ */
 
 main .view.active {
@@ -58,8 +65,7 @@ main .view.active {
 }
 
 /* ================================
-   USCITA (slide out puro)
-   - resta visibile mentre esce
+   USCITA (slide out)
 ================================ */
 
 main .view.closing {
@@ -67,13 +73,26 @@ main .view.closing {
   pointer-events: none;
 }
 
-/* slide out coerente con la direzione */
+/* uscita coerente con la direzione */
+
+/* verso il basso */
 main .view.more-about.closing {
   transform: translate3d(0, var(--slide-offset), 0);
 }
 
+/* verso destra */
 main .view.move-in-side.closing {
   transform: translate3d(var(--slide-offset), 0, 0);
+}
+
+/* verso il basso */
+main .view.move-out-down.closing {
+  transform: translate3d(0, var(--slide-offset), 0);
+}
+
+/* verso sinistra (more-about-out-side) */
+main .view.more-about-out-side.closing {
+  transform: translate3d(calc(var(--slide-offset) * -1), 0, 0);
 }
 
 /* ================================
