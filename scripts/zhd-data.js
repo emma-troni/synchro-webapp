@@ -10,9 +10,8 @@
 
 const ZHD_CONFIG = {
   SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
-  APP_SCRIPT_ID:
-    "AKfycbxkQxhJd9DH9nqs9C-lFIMB-OMRrWA3Fuo1VxgAadTbAJEtjmHS1f_LTfSqPmmLzYTu",
-  RANKING_REFRESH_INTERVAL: 600000,
+  APP_SCRIPT_ID: "AKfycbxA3Pcrdu8E8Hg66VjdiIFWjx8ujo0Z9ibDlsmbSMZVdJzsDmmJfnke2JN9hiftFflQ",
+  RANKING_REFRESH_INTERVAL: 180000,
   INITIAL_DELAY: 1000,
 };
 
@@ -33,30 +32,10 @@ const ACTIVITY_MAP = {
 };
 
 const T_0_MODEL = {
-  0: "Sleep",
-  1: "Sleep",
-  2: "Sleep",
-  3: "Sleep",
-  4: "Sleep",
-  5: "Sleep",
-  6: "Sleep",
-  7: "Eat",
-  8: "Other",
-  9: "Work",
-  10: "Work",
-  11: "Work",
-  12: "Work",
-  13: "Eat",
-  14: "Work",
-  15: "Work",
-  16: "Work",
-  17: "Work",
-  18: "Other",
-  19: "Eat",
-  20: "Other",
-  21: "Other",
-  22: "Other",
-  23: "Sleep",
+  0: "Sleep", 1: "Sleep", 2: "Sleep", 3: "Sleep", 4: "Sleep", 5: "Sleep", 6: "Sleep",
+  7: "Eat", 8: "Other", 9: "Work", 10: "Work", 11: "Work", 12: "Work",
+  13: "Eat", 14: "Work", 15: "Work", 16: "Work", 17: "Work",
+  18: "Other", 19: "Eat", 20: "Other", 21: "Other", 22: "Other", 23: "Sleep",
 };
 
 const D_MAX = Math.sqrt(96);
@@ -195,7 +174,6 @@ const BASE_RANKING = [
 
 window.ZHD = {
   currentRanking: [],
-  fullRanking: [], // NEW: Full ranking with all countries from sheet
   italyData: { rank: 0, score: 0, citizens: 0 },
   personalScore: 0,
   userTimeline: null,
@@ -311,55 +289,6 @@ function zhdCalcolaScorePaese(rowsDati) {
 }
 
 /***********************
- * NEW: CALCULATE ALL COUNTRIES FROM SHEET
- ***********************/
-
-function zhdCalculateAllCountries(rows) {
-  // Group data by country
-  const countriesData = {};
-  
-  rows.forEach((row) => {
-    if (!row.Country || !row.Dati) return;
-    
-    if (!countriesData[row.Country]) {
-      countriesData[row.Country] = [];
-    }
-    countriesData[row.Country].push(row.Dati);
-  });
-
-  // Calculate score for each country
-  const fullRanking = [];
-  
-  for (const [country, datiArray] of Object.entries(countriesData)) {
-    const risultato = zhdCalcolaScorePaese(datiArray);
-    fullRanking.push({
-      country: country,
-      score: risultato.score,
-      citizens: risultato.numCittadini,
-    });
-  }
-
-  // Add countries from BASE_RANKING that are not in the sheet
-  const sheetCountries = new Set(fullRanking.map(c => c.country));
-  BASE_RANKING.forEach((baseCountry) => {
-    if (!sheetCountries.has(baseCountry.country)) {
-      fullRanking.push({
-        country: baseCountry.country,
-        score: baseCountry.baseScore,
-        citizens: 0,
-        baseScore: baseCountry.baseScore,
-      });
-    }
-  });
-
-  // Sort and assign ranks
-  fullRanking.sort((a, b) => b.score - a.score);
-  fullRanking.forEach((r, i) => (r.rank = i + 1));
-
-  return fullRanking;
-}
-
-/***********************
  * API FUNCTIONS
  ***********************/
 
@@ -412,13 +341,9 @@ function zhdUpdatePersonalScore() {
     }
   }
 
-  const personalOverlay = document.querySelector(
-    "#align-personal-overlay .view-score"
-  );
+  const personalOverlay = document.querySelector("#align-personal-overlay .view-score");
   if (personalOverlay) {
-    personalOverlay.textContent = zhdFormatScoreItalian(
-      window.ZHD.personalScore
-    );
+    personalOverlay.textContent = zhdFormatScoreItalian(window.ZHD.personalScore);
   }
 }
 
@@ -431,22 +356,16 @@ function zhdUpdateCountryScore() {
     }
   }
 
-  const countryOverlay = document.querySelector(
-    "#align-country-overlay .view-score"
-  );
+  const countryOverlay = document.querySelector("#align-country-overlay .view-score");
   if (countryOverlay) {
-    countryOverlay.textContent = zhdFormatScoreItalian(
-      window.ZHD.italyData.score
-    );
+    countryOverlay.textContent = zhdFormatScoreItalian(window.ZHD.italyData.score);
   }
 
   zhdUpdateCommentSection();
 }
 
 function zhdUpdateCommentSection() {
-  const commentEl = document.querySelector(
-    ".comment-section-wrap .comment-content"
-  );
+  const commentEl = document.querySelector(".comment-section-wrap .comment-content");
   if (!commentEl) return;
 
   const personal = window.ZHD.personalScore;
@@ -455,13 +374,9 @@ function zhdUpdateCommentSection() {
 
   let message;
   if (diff >= 0) {
-    message = `You are currently overperforming. You're ${Math.abs(
-      diff
-    ).toFixed(0)}% above your country's average.`;
+    message = `You are currently overperforming. You're ${Math.abs(diff).toFixed(0)}% above your country's average.`;
   } else {
-    message = `You are currently underperforming. You're ${Math.abs(
-      diff
-    ).toFixed(0)}% below your country's average.`;
+    message = `You are currently underperforming. You're ${Math.abs(diff).toFixed(0)}% below your country's average.`;
   }
 
   commentEl.textContent = message;
@@ -478,7 +393,6 @@ function zhdTriggerRankingUpdate() {
   const event = new CustomEvent("zhd-ranking-updated", {
     detail: {
       ranking: window.ZHD.currentRanking,
-      fullRanking: window.ZHD.fullRanking, // NEW: Include full ranking
       italy: window.ZHD.italyData,
     },
   });
@@ -507,7 +421,6 @@ async function zhdInit() {
 
     const rows = data.table.rows.map((row) => ({
       ID: row.c[1]?.v,
-      Country: row.c[0]?.v, // NEW: Extract country column
       Dati: row.c[2]?.v,
     }));
 
@@ -520,7 +433,6 @@ async function zhdInit() {
     const blocks = JSON.parse(userRow.Dati);
     window.ZHD.userTimeline = zhdExpandTo24Hours(blocks);
 
-    // Calculate user's country data
     const tuttiDati = rows.map((r) => r.Dati).filter(Boolean);
     const risultato = zhdCalcolaScorePaese(tuttiDati);
 
@@ -539,15 +451,9 @@ async function zhdInit() {
       risultatoAltri.T_model
     );
 
-    // Generate local ranking (top countries for preview)
     window.ZHD.currentRanking = zhdGenerateLocalRanking(risultato.score);
 
-    // NEW: Calculate full ranking with all countries from sheet
-    window.ZHD.fullRanking = zhdCalculateAllCountries(rows);
-
-    const italyInRanking = window.ZHD.currentRanking.find(
-      (r) => r.country === "Italy"
-    );
+    const italyInRanking = window.ZHD.currentRanking.find((r) => r.country === "Italy");
     window.ZHD.italyData = {
       rank: italyInRanking ? italyInRanking.rank : 0,
       score: risultato.score,
@@ -570,7 +476,7 @@ async function zhdInit() {
     console.log("   User ID:", userId);
     console.log("   Personal:", window.ZHD.personalScore.toFixed(1));
     console.log("   Italy:", risultato.score.toFixed(1));
-    console.log("   Total countries in sheet:", window.ZHD.fullRanking.length);
+
   } catch (error) {
     console.error("❌ ZHD init error:", error);
   }
