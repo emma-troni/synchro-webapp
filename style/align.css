@@ -61,7 +61,7 @@
 }
 
 .align-values .value {
-  width: 40%;
+  width: 44%;
   height: 100%;
   background: none;
   border: none;
@@ -69,6 +69,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+
 }
 .align-values .value:first-of-type {
   align-items: flex-start;
@@ -78,7 +79,7 @@
 .align-values .value:last-of-type {
   align-items: flex-end;
   justify-content: center;
-  text-align: right;
+  text-align: left;
 }
 .value-name {
   text-transform: uppercase;
@@ -90,6 +91,7 @@
   display: flex;
   flex-direction: row;
   gap: 8px;
+  width: 100%;
 }
 
 .value-percentage {
@@ -100,6 +102,7 @@
   font-weight: 700;
   letter-spacing: -2%;
   line-height: 0.84;
+  width: 100%;
 }
 
 .align-values .line-vertical {
@@ -124,7 +127,9 @@
   padding: var(--padding);
   font-style: normal;
   font-weight: 500;
-  font-size: 140%;
+   font-size: clamp(1.4rem, 4cqi, 1.8rem);
   letter-spacing: -3%;
   line-height: 1;
+  overflow: hidden;
 }
+
