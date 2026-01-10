@@ -1,61 +1,97 @@
 /* ================================
-   VIEW TRANSITIONS (move-in only)
+   FLUID SLIDE TRANSITIONS
+   durata: 800ms
+   curve: smooth ease-out
+   NO OPACITY (solo transform)
+   NO GLITCH iniziale (visibility hidden)
 ================================ */
 
 :root {
-  --view-in-duration: 520ms;
-  --view-in-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --view-in-distance: 36px;
+  --slide-duration: 800ms;
+  --slide-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --slide-offset: 64px;
 }
 
-/* Override del display:none: serve per poter animare */
+/* ================================
+   BASE (chiuso)
+   - non visibile all'avvio
+   - non cliccabile
+================================ */
+
 main .view {
   display: flex;
-
   flex-direction: column;
   justify-content: space-between;
 
-  visibility: hidden;
   pointer-events: none;
-
-  transition:
-    transform var(--view-in-duration) var(--view-in-ease),
-    visibility 0s linear var(--view-in-duration);
+  visibility: hidden;
 
   transform: translate3d(0, 0, 0);
   will-change: transform;
+
+  transition: transform var(--slide-duration) var(--slide-ease);
 }
 
-/* Entrata dal basso: more-about */
+/* ================================
+   POSIZIONI DI PARTENZA (chiuso)
+================================ */
+
+/* slide dal basso */
 main .view.more-about {
-  transform: translate3d(0, var(--view-in-distance), 0);
+  transform: translate3d(0, var(--slide-offset), 0);
 }
 
-/* Entrata da destra: move-in-side */
+/* slide da destra */
 main .view.move-in-side {
-  transform: translate3d(var(--view-in-distance), 0, 0);
+  transform: translate3d(var(--slide-offset), 0, 0);
 }
 
-/* Stato visibile */
+/* ================================
+   STATO ATTIVO (aperto)
+   - visibility diventa subito visibile (senza animazione)
+================================ */
+
 main .view.active {
   visibility: visible;
   pointer-events: auto;
   transform: translate3d(0, 0, 0);
-
-  transition:
-    transform var(--view-in-duration) var(--view-in-ease),
-    visibility 0s linear 0s;
 }
 
-/* Switch istantaneo (usato quando clicchi nel nav) */
+/* ================================
+   USCITA (slide out puro)
+   - resta visibile mentre esce
+================================ */
+
+main .view.closing {
+  visibility: visible;
+  pointer-events: none;
+}
+
+/* slide out coerente con la direzione */
+main .view.more-about.closing {
+  transform: translate3d(0, var(--slide-offset), 0);
+}
+
+main .view.move-in-side.closing {
+  transform: translate3d(var(--slide-offset), 0, 0);
+}
+
+/* ================================
+   SWITCH ISTANTANEO (NAV)
+================================ */
+
 body.instant-switch main .view {
   transition: none !important;
 }
 
-/* Riduci animazioni se richiesto dal sistema */
+/* ================================
+   ACCESSIBILITY
+================================ */
+
 @media (prefers-reduced-motion: reduce) {
   main .view {
     transition: none !important;
     transform: none !important;
+    visibility: visible !important;
   }
 }
