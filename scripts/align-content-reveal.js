@@ -4,6 +4,7 @@
 (function () {
   const INTERNAL_DELAY = 400; // delay before internal-graphic appears (ms)
   const EXTERNAL_DELAY = 1500; // delay after internal starts before external appears (ms)
+  const COMMENT_DELAY = 400; // delay after external starts before comment appears (ms)
   const REVEAL_DURATION = 600; // duration of reveal animation (ms)
   const SEGMENT_TRANSITION_DURATION = 800; // duration for fill-opacity changes (ms)
 
@@ -11,6 +12,11 @@
 
   const internalGraphic = document.querySelector(".internal-graphic");
   const externalGraphic = document.querySelector(".external-graphic");
+  const personalValueBtn = document.getElementById("personal-value-btn");
+  const countryValueBtn = document.getElementById("country-value-btn");
+  const commentContent = document.querySelector(
+    ".comment-section-wrap .comment-content"
+  );
 
   // Hide graphics initially
   if (internalGraphic) {
@@ -21,6 +27,23 @@
   if (externalGraphic) {
     externalGraphic.style.opacity = "0";
     externalGraphic.style.transition = `opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+  }
+
+  // Hide value buttons initially
+  if (personalValueBtn) {
+    personalValueBtn.style.opacity = "0";
+    personalValueBtn.style.transition = `opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+  }
+
+  if (countryValueBtn) {
+    countryValueBtn.style.opacity = "0";
+    countryValueBtn.style.transition = `opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+  }
+
+  // Hide comment content initially
+  if (commentContent) {
+    commentContent.style.opacity = "0";
+    commentContent.style.transition = `opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
   }
 
   // Setup SVG segment transitions
@@ -42,14 +65,29 @@
     hasRevealed = true;
 
     setTimeout(() => {
+      // Reveal internal graphic + personal button together
       if (internalGraphic) {
         internalGraphic.style.opacity = "1";
       }
+      if (personalValueBtn) {
+        personalValueBtn.style.opacity = "1";
+      }
 
       setTimeout(() => {
+        // Reveal external graphic + country button together
         if (externalGraphic) {
           externalGraphic.style.opacity = "1";
         }
+        if (countryValueBtn) {
+          countryValueBtn.style.opacity = "1";
+        }
+
+        // Reveal comment content after external graphic
+        setTimeout(() => {
+          if (commentContent) {
+            commentContent.style.opacity = "1";
+          }
+        }, COMMENT_DELAY);
       }, EXTERNAL_DELAY);
     }, INTERNAL_DELAY);
   }
