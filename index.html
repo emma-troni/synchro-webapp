@@ -383,11 +383,11 @@
             <div class="comment-content">
               <i>What is the alignment?</i>
               <p style="font-weight: 100;  text-align: justify;">
-                The <span style="font-weight: 800; background: rgba(0, 0, 0, 0.3);">external circle</span> shows the average of alignment of your
+                The <span style="font-weight: 800;">external circle</span> shows the average of alignment of your
                 country, based on all the current votes. This gives an idea of percentage of citizen who have already registered their measure 
                 is aligned with everyone else's.
                 <br />
-                <br />The <span style="font-weight: 800; background: rgba(0, 0, 0, 0.3);">internal circle</span> shows your percentage of alignment at
+                <br />The <span style="font-weight: 800;">internal circle</span> shows your percentage of alignment at
                 this moment, based on all the current votes of your country.
                 <br />
                 <br />Your personal score will keep on updating based on
@@ -491,5 +491,63 @@
 
     <!--loader - slide animation-->
     <script src="./scripts/load-page-fadeout-dissolve.js"></script>
+
+
+    <script>
+/* ================================
+   HIGHLIGHT – 1x per apertura
+   #more-about-personal
+   (NO MutationObserver loop)
+================================ */
+
+(function () {
+  const section = document.querySelector("#more-about-personal");
+  if (!section) return;
+
+  let wasActive = section.classList.contains("active");
+
+  function resetHighlight() {
+    section.classList.remove("highlight-animating");
+  }
+
+  function playHighlightOnceForThisOpen() {
+    // reset completo
+    resetHighlight();
+
+    // reflow per ri-trigger affidabile
+    void section.offsetHeight;
+
+    // avvia animazione (rimane evidenziato finché la section resta aperta)
+    section.classList.add("highlight-animating");
+  }
+
+  const observer = new MutationObserver(() => {
+    const isActive = section.classList.contains("active");
+
+    // reagisci SOLO al cambio di stato active (evita loop)
+    if (isActive !== wasActive) {
+      wasActive = isActive;
+
+      if (isActive) {
+        playHighlightOnceForThisOpen();
+      } else {
+        resetHighlight();
+      }
+    }
+  });
+
+  observer.observe(section, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+
+  // se parte già attiva
+  if (wasActive) {
+    playHighlightOnceForThisOpen();
+  }
+})();
+</script>
+
+
   </body>
 </html>
