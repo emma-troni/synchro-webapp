@@ -396,6 +396,11 @@ function zhdUpdateCountryScore() {
   }
 
   zhdUpdateCommentSection();
+
+  // Trigger visual update if score-svg-display.js is loaded
+  if (typeof updateCountryVisual === "function") {
+    updateCountryVisual();
+  }
 }
 
 function zhdUpdateCommentSection() {
