@@ -1,0 +1,108 @@
+#load-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  min-height: 15vh;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: var(--primary-color);
+  z-index: 600;
+}
+
+#load-page .load-wrap {
+  height: calc(100% - 40px);
+  width: calc(100%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  justify-content: space-between;
+
+  position: relative;
+  padding: 20px 0;
+}
+
+#load-page .load-wrap .logo-wrap {
+  width: 100%;
+  height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#load-page .load-wrap .logo-wrap .central-block {
+  width: 90%;
+  height: 40%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+}
+
+#load-page .load-wrap .logo-wrap .central-block .logo {
+  width: 44%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+#load-page .svg-holder svg {
+  width: 30vh;
+}
+
+#load-page .svg-holder.left {
+  display: flex;
+  position: absolute;
+  right: 0;
+  width: 96%;
+  height: 70%;
+  padding: 0;
+  margin: 0;
+}
+#load-page .svg-holder .left svg {
+  display: block;
+  background: orange;
+}
+
+#load-page .right {
+  width: 100%;
+  height: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  border-left: var(--border);
+}
+
+#load-page .right svg {
+    height: 90%;
+}
+
+#load-page .divider {
+  width: 1.5px;
+  height: 70%;
+  background: var(--secondary-color);
+  display: none;
+}
+
+#load-page .powered-by {
+  height: 8%;
+  width: 100%;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  letter-spacing: -2%;
+}
