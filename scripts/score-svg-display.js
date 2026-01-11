@@ -9,22 +9,7 @@ const SVG_CONFIG = {
   ID_SUFFIX: "_x3E_",
   ACTIVE_OPACITY: 1,
   INACTIVE_OPACITY: 0.2,
-  ANIMATION_DURATION: "0.6s",
-  ANIMATION_TIMING: "ease-in",
 };
-
-function initSVGElements() {
-  for (let i = 0; i < SVG_CONFIG.NUM_SEGMENTS; i++) {
-    const elementId = `${SVG_CONFIG.ID_PREFIX}${String(i).padStart(2, "0")}${
-      SVG_CONFIG.ID_SUFFIX
-    }`;
-    const polygon = document.getElementById(elementId);
-
-    if (polygon) {
-      polygon.style.transition = `fill-opacity ${SVG_CONFIG.ANIMATION_DURATION} ${SVG_CONFIG.ANIMATION_TIMING}`;
-    }
-  }
-}
 
 function updatePersonalVisual() {
   if (!window.ZHD || !window.ZHD.isLoaded) return;
@@ -55,7 +40,6 @@ document.addEventListener("zhd-ranking-updated", updatePersonalVisual);
 // Initial update when page loads
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
-    initSVGElements();
     if (window.ZHD && window.ZHD.isLoaded) {
       updatePersonalVisual();
     } else {
@@ -63,7 +47,6 @@ if (document.readyState === "loading") {
     }
   });
 } else {
-  initSVGElements();
   if (window.ZHD && window.ZHD.isLoaded) {
     updatePersonalVisual();
   } else {
