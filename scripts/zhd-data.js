@@ -196,10 +196,11 @@ const BASE_RANKING = [
 window.ZHD = {
   currentRanking: [],
   italyData: { rank: 0, score: 0, citizens: 0 },
-  personalScore: 0,
+  personalScore: null, // null = no user data
   userTimeline: null,
   userId: null,
   isLoaded: false,
+  hasUserData: false, // flag to indicate if user was found
   onDataReady: [],
 };
 
@@ -213,6 +214,7 @@ function zhdGetUserIdFromUrl() {
 }
 
 function zhdFormatScoreItalian(score) {
+  if (score === null || score === undefined) return "—";
   return score.toFixed(1).replace(".", ",") + "%";
 }
 
@@ -371,7 +373,7 @@ function zhdUpdatePersonalScore() {
     );
   }
 
-  // trigger (visual update if score-svg-display.js is loaded)
+  // trigger visual update if score-svg-display.js is loaded
   if (typeof updatePersonalVisual === "function") {
     updatePersonalVisual();
   }
@@ -409,6 +411,12 @@ function zhdUpdateCommentSection() {
   );
   if (!commentEl) return;
 
+  // If no user data, show a different message
+  if (!window.ZHD.hasUserData || window.ZHD.personalScore === null) {
+    commentEl.textContent = "No personal data available. Visit the installation to record your daily routine.";
+    return;
+  }
+
   const personal = window.ZHD.personalScore;
   const country = window.ZHD.italyData.score;
   const diff = personal - country;
@@ -429,8 +437,12 @@ function zhdUpdateCommentSection() {
 
 function zhdUpdateUserId() {
   const userIdEl = document.getElementById("user-id");
-  if (userIdEl && window.ZHD.userId) {
-    userIdEl.textContent = window.ZHD.userId;
+  if (userIdEl) {
+    if (window.ZHD.userId) {
+      userIdEl.textContent = window.ZHD.userId;
+    } else {
+      userIdEl.textContent = "—";
+    }
   }
 }
 
@@ -450,11 +462,6 @@ function zhdTriggerRankingUpdate() {
 
 async function zhdInit() {
   const userId = zhdGetUserIdFromUrl();
-  if (!userId) {
-    console.warn("⚠️ No user ID in URL");
-    return;
-  }
-
   window.ZHD.userId = userId;
   zhdUpdateUserId();
 
@@ -469,33 +476,11 @@ async function zhdInit() {
       Dati: row.c[2]?.v,
     }));
 
-    const userRow = rows.find((r) => String(r.ID) === String(userId));
-    if (!userRow || !userRow.Dati) {
-      console.error("❌ User ID/Data not found");
-      return;
-    }
-
-    const blocks = JSON.parse(userRow.Dati);
-    window.ZHD.userTimeline = zhdExpandTo24Hours(blocks);
-
+    // Get all data for Italy score calculation
     const tuttiDati = rows.map((r) => r.Dati).filter(Boolean);
     const risultato = zhdCalcolaScorePaese(tuttiDati);
 
-    const altriDati = rows
-      .filter((r) => String(r.ID) !== String(userId))
-      .map((r) => r.Dati)
-      .filter(Boolean);
-
-    const risultatoAltri =
-      altriDati.length > 0
-        ? zhdCalcolaScorePaese(altriDati)
-        : { T_model: buildT0Vectors() };
-
-    window.ZHD.personalScore = calculateScoreVsTn(
-      window.ZHD.userTimeline,
-      risultatoAltri.T_model
-    );
-
+    // Generate ranking with calculated Italy score
     window.ZHD.currentRanking = zhdGenerateLocalRanking(risultato.score);
 
     const italyInRanking = window.ZHD.currentRanking.find(
@@ -507,6 +492,56 @@ async function zhdInit() {
       citizens: risultato.numCittadini,
     };
 
+    // Try to find user data (only if userId is provided)
+    let userRow = null;
+    if (userId) {
+      userRow = rows.find((r) => String(r.ID) === String(userId));
+    }
+
+    if (userRow && userRow.Dati) {
+      // User found - calculate personal score
+      window.ZHD.hasUserData = true;
+
+      const blocks = JSON.parse(userRow.Dati);
+      window.ZHD.userTimeline = zhdExpandTo24Hours(blocks);
+
+      // Calculate T_model excluding current user for fair comparison
+      const altriDati = rows
+        .filter((r) => String(r.ID) !== String(userId))
+        .map((r) => r.Dati)
+        .filter(Boolean);
+
+      const risultatoAltri =
+        altriDati.length > 0
+          ? zhdCalcolaScorePaese(altriDati)
+          : { T_model: buildT0Vectors() };
+
+      window.ZHD.personalScore = calculateScoreVsTn(
+        window.ZHD.userTimeline,
+        risultatoAltri.T_model
+      );
+
+      console.log("✅ ZHD initialized with user data");
+      console.log("   User ID:", userId);
+      console.log("   Personal:", window.ZHD.personalScore.toFixed(1));
+    } else {
+      // User not found or no ID - still show Italy data
+      window.ZHD.hasUserData = false;
+      window.ZHD.personalScore = null;
+      window.ZHD.userTimeline = null;
+
+      if (userId) {
+        console.warn("⚠️ User ID not found in sheet:", userId);
+      } else {
+        console.warn("⚠️ No user ID in URL");
+      }
+      console.log("✅ ZHD initialized (country data only)");
+    }
+
+    console.log("   Italy:", risultato.score.toFixed(1));
+    console.log("   Italy Rank:", window.ZHD.italyData.rank);
+
+    // Update UI
     zhdUpdatePersonalScore();
     zhdUpdateCountryScore();
     zhdTriggerRankingUpdate();
@@ -514,17 +549,19 @@ async function zhdInit() {
     window.ZHD.isLoaded = true;
     window.ZHD.onDataReady.forEach((cb) => cb());
 
+    // Update Italy score on sheet
     zhdUpdateItalyOnSheet(risultato.score);
 
+    // Start server ranking refresh
     setTimeout(zhdFetchServerRanking, ZHD_CONFIG.INITIAL_DELAY);
     setInterval(zhdFetchServerRanking, ZHD_CONFIG.RANKING_REFRESH_INTERVAL);
 
-    console.log("✅ ZHD initialized");
-    console.log("   User ID:", userId);
-    console.log("   Personal:", window.ZHD.personalScore.toFixed(1));
-    console.log("   Italy:", risultato.score.toFixed(1));
   } catch (error) {
     console.error("❌ ZHD init error:", error);
+    
+    // Even on error, mark as loaded so UI doesn't hang
+    window.ZHD.isLoaded = true;
+    window.ZHD.onDataReady.forEach((cb) => cb());
   }
 }
 
