@@ -2,11 +2,11 @@
 // Triggers when #more-about-personal loses "active" class for the first time
 
 (function () {
-  const INTERNAL_DELAY = 400; // delay before internal-graphic appears (ms)
-  const EXTERNAL_DELAY = 1500; // delay after internal starts before external appears (ms)
-  const COMMENT_DELAY = 400; // delay after external starts before comment appears (ms)
-  const REVEAL_DURATION = 600; // duration of reveal animation (ms)
-  const SEGMENT_TRANSITION_DURATION = 800; // duration for fill-opacity changes (ms)
+  const INTERNAL_DELAY = 400; // delay prima che la internal-graphic appaia (ms)
+  const EXTERNAL_DELAY = 1400; // dopo internal appaia che external appaia (ms)
+  const COMMENT_DELAY = 1000; // dopo raggiera esterna prima di comment (ms)
+  const REVEAL_DURATION = 600; // durata delle animazioni (ms)
+  const SEGMENT_TRANSITION_DURATION = 800; // DURATA ill-opacity svgs (ms)
 
   let hasRevealed = false; // ensures animation only runs once
 
