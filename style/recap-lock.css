@@ -10,7 +10,7 @@
 
 .content .recap-lock-content {
   width: 100%;
-  height: 80%;
+  height: calc(100% - 20vh);
 }
 
 .content .recap-lock-content .recap-graphic {
@@ -52,16 +52,16 @@
 /*==============================================*/
 .content .timer-section-wrap {
   width: 100%;
-  height: 40%;
+  height: 20vh;
   border-top: var(--border);
 }
 .timer-section-wrap .timer-content {
   width: calc(100% - 40px);
-  height: calc(100%);
+  height: calc(100% - 20px);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: left;
+  justify-content: end;
   gap: 8px;
   padding: var(--padding);
   font-style: normal;
@@ -72,7 +72,7 @@
 }
 
 .timer-section-wrap #timer {
-  font-size: 2.4rem;
+  font-size: 2.8rem;
   font-weight: bold;
 }
 
