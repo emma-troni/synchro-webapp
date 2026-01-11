@@ -383,11 +383,11 @@
             <div class="comment-content">
               <i>What is the alignment?</i>
               <p style="font-weight: 100;  text-align: justify;">
-                The <span style="font-weight: 800;">external circle</span> shows the average of alignment of your
+                The <span style="font-weight: 800;" class="hl-sweep">external circle</span> shows the average of alignment of your
                 country, based on all the current votes. This gives an idea of percentage of citizen who have already registered their measure 
                 is aligned with everyone else's.
                 <br />
-                <br />The <span style="font-weight: 800;">internal circle</span> shows your percentage of alignment at
+                <br />The <span style="font-weight: 800;" class="hl-sweep">internal circle</span> shows your percentage of alignment at
                 this moment, based on all the current votes of your country.
                 <br />
                 <br />Your personal score will keep on updating based on
@@ -493,60 +493,68 @@
     <script src="./scripts/load-page-fadeout-dissolve.js"></script>
 
 
-    <script>
+<script>
 /* ================================
-   HIGHLIGHT – 1x per apertura
-   #more-about-personal
-   (NO MutationObserver loop)
+   UNIVERSAL HIGHLIGHT SWEEP
+   - Metti .hl-sweep sugli span
+   - Il contenitore diventa "open" quando ha .active (default)
 ================================ */
 
 (function () {
-  const section = document.querySelector("#more-about-personal");
-  if (!section) return;
+  // 1) Contenitori che, quando diventano "attivi", devono triggerare l'animazione
+  //    Nel tuo progetto: .view è perfetto
+  const CONTAINER_SELECTOR = ".view";
 
-  let wasActive = section.classList.contains("active");
+  // 2) Regola per dire "questo container è aperto/visibile"
+  //    Default: presenza della classe .active
+  const isOpen = (el) => el.classList.contains("active");
 
-  function resetHighlight() {
-    section.classList.remove("highlight-animating");
+  // 3) Target dentro al container
+  const TARGET_SELECTOR = ".hl-sweep";
+
+  function resetTargets(container) {
+    container.querySelectorAll(TARGET_SELECTOR).forEach((t) => {
+      t.classList.remove("hl-animating");
+    });
   }
 
-  function playHighlightOnceForThisOpen() {
-    // reset completo
-    resetHighlight();
+  function playTargets(container) {
+    const targets = container.querySelectorAll(TARGET_SELECTOR);
+    if (!targets.length) return;
 
-    // reflow per ri-trigger affidabile
-    void section.offsetHeight;
-
-    // avvia animazione (rimane evidenziato finché la section resta aperta)
-    section.classList.add("highlight-animating");
+    // reset -> reflow -> play (ri-trigger affidabile)
+    targets.forEach((t) => t.classList.remove("hl-animating"));
+    void container.offsetHeight;
+    targets.forEach((t) => t.classList.add("hl-animating"));
   }
 
-  const observer = new MutationObserver(() => {
-    const isActive = section.classList.contains("active");
+  // Stato precedente per evitare loop (come abbiamo fatto prima)
+  const state = new WeakMap();
 
-    // reagisci SOLO al cambio di stato active (evita loop)
-    if (isActive !== wasActive) {
-      wasActive = isActive;
+  function initContainer(container) {
+    state.set(container, isOpen(container));
 
-      if (isActive) {
-        playHighlightOnceForThisOpen();
-      } else {
-        resetHighlight();
+    // se parte già aperto
+    if (isOpen(container)) playTargets(container);
+
+    const obs = new MutationObserver(() => {
+      const prev = state.get(container);
+      const now = isOpen(container);
+
+      if (now !== prev) {
+        state.set(container, now);
+        if (now) playTargets(container);
+        else resetTargets(container);
       }
-    }
-  });
+    });
 
-  observer.observe(section, {
-    attributes: true,
-    attributeFilter: ["class"],
-  });
-
-  // se parte già attiva
-  if (wasActive) {
-    playHighlightOnceForThisOpen();
+    obs.observe(container, { attributes: true, attributeFilter: ["class"] });
   }
+
+  document.querySelectorAll(CONTAINER_SELECTOR).forEach(initContainer);
 })();
 </script>
+
 
 
   </body>
