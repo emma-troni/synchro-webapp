@@ -134,3 +134,36 @@
     transform: rotate(-360deg);
   }
 }
+
+
+
+/* ================================
+   HIGHLIGHT – #more-about-personal
+   - niente background prima
+   - animazione 1x per apertura
+
+
+#more-about-personal .comment-content p span {
+  position: relative;
+  font-weight: 800;
+  z-index: 0;
+  padding: 0.05em 0.15em;
+  background: transparent !important;
+}
+#more-about-personal .comment-content p span::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: -1;
+
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: none;
+}
+
+#more-about-personal.highlight-animating .comment-content p span::before {
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: scaleX(1);
+}
+================================ */

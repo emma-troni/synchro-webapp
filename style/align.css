@@ -65,33 +65,26 @@
   height: 100%;
   background: none;
   border: none;
-  text-align: center;
+  text-align: left;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: start;
   gap: 4px;
+}
 
-}
-.align-values .value:first-of-type {
-  align-items: flex-start;
-  justify-content: center;
-  text-align: left;
-}
-.align-values .value:last-of-type {
-  align-items: flex-end;
-  justify-content: center;
-  text-align: left;
-}
 .value-name {
   text-transform: uppercase;
   font-family: "helvetica-neue-lt-pro-cond", sans-serif;
   font-size: 1rem;
+  text-align: left;
   font-style: normal;
   font-weight: 700;
   letter-spacing: -2%;
   display: flex;
   flex-direction: row;
   gap: 8px;
-  width: 100%;
+  width: fit-content;
 }
 
 .value-percentage {
