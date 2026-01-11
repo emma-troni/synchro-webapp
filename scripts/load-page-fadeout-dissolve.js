@@ -25,6 +25,10 @@
       setTimeout(() => {
         loadPage.style.pointerEvents = "none";
         loadPage.remove();
+        // Trigger per iniziare animazione degli svg pagina align (align-svgs-reveal.js)
+        if (typeof window.revealGraphics === "function") {
+          window.revealGraphics();
+        }
       }, FADE_DURATION);
     }, remaining);
   }
