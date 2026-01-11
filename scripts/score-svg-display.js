@@ -7,6 +7,8 @@ const SVG_CONFIG = {
   NUM_SEGMENTS: 24,
   ID_PREFIX: "_x3C_Rettangolo",
   ID_SUFFIX: "_x3E_",
+  ACTIVE_OPACITY: 1,
+  INACTIVE_OPACITY: 0.2,
 };
 
 function updatePersonalVisual() {
@@ -24,7 +26,10 @@ function updatePersonalVisual() {
     const polygon = document.getElementById(elementId);
 
     if (polygon) {
-      polygon.style.fillOpacity = i < activeSegments ? "1" : "0";
+      polygon.style.fillOpacity =
+        i < activeSegments
+          ? SVG_CONFIG.ACTIVE_OPACITY
+          : SVG_CONFIG.INACTIVE_OPACITY;
     }
   }
 }
