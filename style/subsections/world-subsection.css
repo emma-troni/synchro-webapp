@@ -174,3 +174,15 @@
   animation: highlightFlash 2s ease forwards;
 }
 
+
+#world-rank-overlay .svg-holder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#world-rank-overlay svg {
+  height: 50%;
+  width: 50%;
+
+}
