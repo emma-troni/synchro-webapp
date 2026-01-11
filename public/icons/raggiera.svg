@@ -1,34 +1,28 @@
-<svg width="325" height="325" viewBox="0 0 325 324" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_3855_8641)">
-<rect x="155.435" width="14.1304" height="36.2236" fill="#1A1A1A"/>
-<rect x="155.435" y="287.776" width="14.1304" height="36.2236" fill="#1A1A1A"/>
-<rect width="14.1275" height="36.2311" transform="matrix(0.966125 -0.258076 0.259564 0.965726 113.617 7.34302)" fill="#1A1A1A" fill-opacity="0.2"/>
-<rect width="14.1275" height="36.2311" transform="matrix(0.966125 -0.258076 0.259564 0.965726 188.329 285.314)" fill="#1A1A1A"/>
-<rect width="14.1196" height="36.2516" transform="matrix(0.866691 -0.498845 0.501156 0.865357 75.1313 25.2258)" fill="#1A1A1A" fill-opacity="0.2"/>
-<rect width="14.1196" height="36.2516" transform="matrix(0.866691 -0.498845 0.501156 0.865357 219.464 274.448)" fill="#1A1A1A"/>
-<rect width="14.1087" height="36.2795" transform="matrix(0.708195 -0.706016 0.708195 0.706016 42.5992 52.4297)" fill="#1A1A1A" fill-opacity="0.2"/>
-<rect width="14.1087" height="36.2795" transform="matrix(0.708195 -0.706016 0.708195 0.706016 246.716 255.918)" fill="#1A1A1A"/>
-<rect width="14.0978" height="36.3075" transform="matrix(0.501156 -0.865357 0.866691 0.498845 18.2383 87.1003)" fill="#1A1A1A" fill-opacity="0.2"/>
-<rect width="14.0978" height="36.3075" transform="matrix(0.501156 -0.865357 0.866691 0.498845 268.229 230.989)" fill="#1A1A1A"/>
-<rect width="14.0899" height="36.3279" transform="matrix(0.259564 -0.965726 0.966125 0.258076 3.70837 126.875)" fill="#1A1A1A" fill-opacity="0.2"/>
-<rect width="14.0899" height="36.3279" transform="matrix(0.259564 -0.965726 0.966125 0.258076 282.537 201.357)" fill="#1A1A1A"/>
-<rect width="14.1304" height="36.2236" transform="matrix(-1 0 0 1 169.565 287.776)" fill="#1A1A1A"/>
-<rect width="14.1275" height="36.2311" transform="matrix(-0.966125 -0.258076 -0.259564 0.965726 211.382 7.34326)" fill="#1A1A1A"/>
-<rect width="14.1275" height="36.2311" transform="matrix(-0.966125 -0.258076 -0.259564 0.965726 136.67 285.314)" fill="#1A1A1A"/>
-<rect width="14.1196" height="36.2516" transform="matrix(-0.866691 -0.498845 -0.501156 0.865357 249.869 25.2261)" fill="#1A1A1A"/>
-<rect width="14.1196" height="36.2516" transform="matrix(-0.866691 -0.498845 -0.501156 0.865357 105.536 274.448)" fill="#1A1A1A"/>
-<rect width="14.1087" height="36.2795" transform="matrix(-0.708195 -0.706016 -0.708195 0.706016 282.4 52.4297)" fill="#1A1A1A"/>
-<rect width="14.1087" height="36.2795" transform="matrix(-0.708195 -0.706016 -0.708195 0.706016 78.2838 255.918)" fill="#1A1A1A"/>
-<rect width="14.0978" height="36.3075" transform="matrix(-0.501156 -0.865357 -0.866691 0.498845 306.761 87.1001)" fill="#1A1A1A"/>
-<rect width="14.0978" height="36.3075" transform="matrix(-0.501156 -0.865357 -0.866691 0.498845 56.7708 230.988)" fill="#1A1A1A"/>
-<rect width="14.0899" height="36.3279" transform="matrix(-0.259564 -0.965726 -0.966125 0.258076 321.291 126.875)" fill="#1A1A1A"/>
-<rect width="14.0899" height="36.3279" transform="matrix(-0.259564 -0.965726 -0.966125 0.258076 42.4629 201.357)" fill="#1A1A1A"/>
-<rect x="-0.00012207" y="169.044" width="14.087" height="36.3354" transform="rotate(-90 -0.00012207 169.044)" fill="#1A1A1A" fill-opacity="0.2"/>
-<rect x="288.665" y="169.044" width="14.087" height="36.3354" transform="rotate(-90 288.665 169.044)" fill="#1A1A1A"/>
-</g>
-<defs>
-<clipPath id="clip0_3855_8641">
-<rect width="325" height="324" fill="white"/>
-</clipPath>
-</defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Livello_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 325 325">
+  <!-- Generator: Adobe Illustrator 30.1.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 136)  -->
+  <rect id="_x3C_Rettangolo00_x3E_" x="155.4" y=".5" width="14.1" height="36.2" style="fill: #1a1a1a;"/>
+  <polygon id="_x3C_Rettangolo01_x3E_" points="211.4 7.8 197.7 4.2 188.3 39.2 202 42.8 211.4 7.8" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo02_x3E_" points="249.9 25.7 237.6 18.7 219.5 50.1 231.7 57.1 249.9 25.7" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo03_x3E_" points="282.4 52.9 272.4 43 246.7 68.6 256.7 78.5 282.4 52.9" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo04_x3E_" points="306.8 87.6 299.7 75.4 268.2 93.5 275.3 105.7 306.8 87.6" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo05_x3E_" points="321.3 127.4 317.6 113.8 282.5 123.1 286.2 136.8 321.3 127.4" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <rect id="_x3C_Rettangolo06_x3E_" x="288.7" y="155.5" width="36.3" height="14.1" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo07_x3E_" points="282.5 201.9 286.2 188.3 321.3 197.6 317.6 211.2 282.5 201.9" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo08_x3E_" points="268.2 231.5 275.3 219.3 306.8 237.4 299.7 249.6 268.2 231.5" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo09_x3E_" points="246.7 256.4 256.7 246.5 282.4 272.1 272.4 282 246.7 256.4" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo10_x3E_" points="219.5 274.9 231.7 267.9 249.9 299.3 237.6 306.3 219.5 274.9" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo11_x3E_" points="188.3 285.8 202 282.2 211.4 317.2 197.7 320.8 188.3 285.8" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <rect id="_x3C_Rettangolo12_x3E_" x="155.4" y="288.3" width="14.1" height="36.2" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo13_x3E_" points="136.7 285.8 123 282.2 113.6 317.2 127.3 320.8 136.7 285.8" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo14_x3E_" points="105.5 274.9 93.3 267.9 75.1 299.3 87.4 306.3 105.5 274.9" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo15_x3E_" points="78.3 256.4 68.3 246.5 42.6 272.1 52.6 282 78.3 256.4" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo16_x3E_" points="56.8 231.5 49.7 219.3 18.2 237.4 25.3 249.6 56.8 231.5" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo17_x3E_" points="42.5 201.9 38.8 188.3 3.7 197.6 7.4 211.2 42.5 201.9" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <rect id="_x3C_Rettangolo18_x3E_" x="0" y="155.5" width="36.3" height="14.1" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo19_x3E_" points="3.7 127.4 7.4 113.8 42.5 123.1 38.8 136.8 3.7 127.4" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo20_x3E_" points="18.2 87.6 25.3 75.4 56.8 93.5 49.7 105.7 18.2 87.6" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo21_x3E_" points="42.6 52.9 52.6 43 78.3 68.6 68.3 78.5 42.6 52.9" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo22_x3E_" points="75.1 25.7 87.4 18.7 105.5 50.1 93.3 57.1 75.1 25.7" style="fill: #1a1a1a; fill-opacity: .2;"/>
+  <polygon id="_x3C_Rettangolo23_x3E_" points="113.6 7.8 127.3 4.2 136.7 39.2 123 42.8 113.6 7.8" style="fill: #1a1a1a; fill-opacity: .2;"/>
 </svg>

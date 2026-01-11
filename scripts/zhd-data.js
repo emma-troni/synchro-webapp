@@ -10,7 +10,8 @@
 
 const ZHD_CONFIG = {
   SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
-  APP_SCRIPT_ID: "AKfycbxA3Pcrdu8E8Hg66VjdiIFWjx8ujo0Z9ibDlsmbSMZVdJzsDmmJfnke2JN9hiftFflQ",
+  APP_SCRIPT_ID:
+    "AKfycbxA3Pcrdu8E8Hg66VjdiIFWjx8ujo0Z9ibDlsmbSMZVdJzsDmmJfnke2JN9hiftFflQ",
   RANKING_REFRESH_INTERVAL: 180000,
   INITIAL_DELAY: 1000,
 };
@@ -32,10 +33,30 @@ const ACTIVITY_MAP = {
 };
 
 const T_0_MODEL = {
-  0: "Sleep", 1: "Sleep", 2: "Sleep", 3: "Sleep", 4: "Sleep", 5: "Sleep", 6: "Sleep",
-  7: "Eat", 8: "Other", 9: "Work", 10: "Work", 11: "Work", 12: "Work",
-  13: "Eat", 14: "Work", 15: "Work", 16: "Work", 17: "Work",
-  18: "Other", 19: "Eat", 20: "Other", 21: "Other", 22: "Other", 23: "Sleep",
+  0: "Sleep",
+  1: "Sleep",
+  2: "Sleep",
+  3: "Sleep",
+  4: "Sleep",
+  5: "Sleep",
+  6: "Sleep",
+  7: "Eat",
+  8: "Other",
+  9: "Work",
+  10: "Work",
+  11: "Work",
+  12: "Work",
+  13: "Eat",
+  14: "Work",
+  15: "Work",
+  16: "Work",
+  17: "Work",
+  18: "Other",
+  19: "Eat",
+  20: "Other",
+  21: "Other",
+  22: "Other",
+  23: "Sleep",
 };
 
 const D_MAX = Math.sqrt(96);
@@ -341,9 +362,18 @@ function zhdUpdatePersonalScore() {
     }
   }
 
-  const personalOverlay = document.querySelector("#align-personal-overlay .view-score");
+  const personalOverlay = document.querySelector(
+    "#align-personal-overlay .view-score"
+  );
   if (personalOverlay) {
-    personalOverlay.textContent = zhdFormatScoreItalian(window.ZHD.personalScore);
+    personalOverlay.textContent = zhdFormatScoreItalian(
+      window.ZHD.personalScore
+    );
+  }
+
+  // trigger (visual update if score-svg-display.js is loaded)
+  if (typeof updatePersonalVisual === "function") {
+    updatePersonalVisual();
   }
 }
 
@@ -356,16 +386,22 @@ function zhdUpdateCountryScore() {
     }
   }
 
-  const countryOverlay = document.querySelector("#align-country-overlay .view-score");
+  const countryOverlay = document.querySelector(
+    "#align-country-overlay .view-score"
+  );
   if (countryOverlay) {
-    countryOverlay.textContent = zhdFormatScoreItalian(window.ZHD.italyData.score);
+    countryOverlay.textContent = zhdFormatScoreItalian(
+      window.ZHD.italyData.score
+    );
   }
 
   zhdUpdateCommentSection();
 }
 
 function zhdUpdateCommentSection() {
-  const commentEl = document.querySelector(".comment-section-wrap .comment-content");
+  const commentEl = document.querySelector(
+    ".comment-section-wrap .comment-content"
+  );
   if (!commentEl) return;
 
   const personal = window.ZHD.personalScore;
@@ -374,9 +410,13 @@ function zhdUpdateCommentSection() {
 
   let message;
   if (diff >= 0) {
-    message = `You are currently overperforming. You're ${Math.abs(diff).toFixed(0)}% above your country's average.`;
+    message = `You are currently overperforming. You're ${Math.abs(
+      diff
+    ).toFixed(0)}% above your country's average.`;
   } else {
-    message = `You are currently underperforming. You're ${Math.abs(diff).toFixed(0)}% below your country's average.`;
+    message = `You are currently underperforming. You're ${Math.abs(
+      diff
+    ).toFixed(0)}% below your country's average.`;
   }
 
   commentEl.textContent = message;
@@ -453,7 +493,9 @@ async function zhdInit() {
 
     window.ZHD.currentRanking = zhdGenerateLocalRanking(risultato.score);
 
-    const italyInRanking = window.ZHD.currentRanking.find((r) => r.country === "Italy");
+    const italyInRanking = window.ZHD.currentRanking.find(
+      (r) => r.country === "Italy"
+    );
     window.ZHD.italyData = {
       rank: italyInRanking ? italyInRanking.rank : 0,
       score: risultato.score,
@@ -476,7 +518,6 @@ async function zhdInit() {
     console.log("   User ID:", userId);
     console.log("   Personal:", window.ZHD.personalScore.toFixed(1));
     console.log("   Italy:", risultato.score.toFixed(1));
-
   } catch (error) {
     console.error("❌ ZHD init error:", error);
   }
