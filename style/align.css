@@ -120,9 +120,8 @@
   padding: var(--padding);
   font-style: normal;
   font-weight: 400;
-   font-size: clamp(1.4rem, 4cqi, 1.8rem);
+  font-size: clamp(1.4rem, 4cqi, 1.8rem);
   letter-spacing: -3%;
   line-height: 1;
   overflow: hidden;
 }
-
