@@ -1,5 +1,4 @@
 /***********************
- * SCORE-SVG-DISPLAY.JS
  * Visual representation of personal and country scores on SVG graphics
  * With animated fill-opacity transitions
  * Updates both main graphics and overlay raggiere
@@ -36,12 +35,10 @@ function animateSegments(
           : SVG_CONFIG.INACTIVE_OPACITY;
 
       if (useStagger) {
-        // Stagger the animation for a wave effect
         setTimeout(() => {
           polygon.style.fillOpacity = targetOpacity;
         }, i * SVG_CONFIG.STAGGER_DELAY);
       } else {
-        // Immediate update (no stagger)
         polygon.style.fillOpacity = targetOpacity;
       }
     }
@@ -65,7 +62,7 @@ function updatePersonalVisual() {
     SVG_CONFIG.PERSONAL_ID_PREFIX,
     SVG_CONFIG.PERSONAL_ID_SUFFIX,
     activeSegments,
-    true // use stagger
+    true
   );
 
   // Overlay internal graphic (in align-personal-overlay)
@@ -77,8 +74,16 @@ function updatePersonalVisual() {
     SVG_CONFIG.PERSONAL_ID_PREFIX,
     SVG_CONFIG.PERSONAL_ID_SUFFIX,
     activeSegments,
-    false // no stagger for overlay
+    false
   );
+
+  // Update view-score text in personal overlay
+  const personalScoreEl = document.querySelector(
+    "#align-personal-overlay .view-score"
+  );
+  if (personalScoreEl) {
+    personalScoreEl.textContent = percentage.toFixed(1).replace(".", ",") + "%";
+  }
 }
 
 function updateCountryVisual() {
@@ -96,7 +101,7 @@ function updateCountryVisual() {
     SVG_CONFIG.COUNTRY_ID_PREFIX,
     SVG_CONFIG.COUNTRY_ID_SUFFIX,
     activeSegments,
-    true // use stagger
+    true
   );
 
   // Overlay external graphic (in align-country-overlay)
@@ -108,8 +113,16 @@ function updateCountryVisual() {
     SVG_CONFIG.COUNTRY_ID_PREFIX,
     SVG_CONFIG.COUNTRY_ID_SUFFIX,
     activeSegments,
-    false // no stagger for overlay
+    false
   );
+
+  // Update view-score text in country overlay
+  const countryScoreEl = document.querySelector(
+    "#align-country-overlay .view-score"
+  );
+  if (countryScoreEl) {
+    countryScoreEl.textContent = percentage.toFixed(1).replace(".", ",") + "%";
+  }
 }
 
 function updateAllVisuals() {
@@ -117,22 +130,58 @@ function updateAllVisuals() {
   updateCountryVisual();
 }
 
+// Re-update when overlay becomes visible (SVGs might not be loaded initially)
+function setupOverlayObservers() {
+  const personalOverlay = document.getElementById("align-personal-overlay");
+  const countryOverlay = document.getElementById("align-country-overlay");
+
+  const observerCallback = (mutations, observer) => {
+    for (const mutation of mutations) {
+      if (
+        mutation.type === "attributes" &&
+        mutation.attributeName === "class"
+      ) {
+        const target = mutation.target;
+        if (target.classList.contains("active")) {
+          // Overlay just became visible, update its visual
+          setTimeout(() => {
+            if (target.id === "align-personal-overlay") {
+              updatePersonalVisual();
+            } else if (target.id === "align-country-overlay") {
+              updateCountryVisual();
+            }
+          }, 100); // Small delay to ensure SVG is rendered
+        }
+      }
+    }
+  };
+
+  const observer = new MutationObserver(observerCallback);
+
+  if (personalOverlay) {
+    observer.observe(personalOverlay, { attributes: true });
+  }
+  if (countryOverlay) {
+    observer.observe(countryOverlay, { attributes: true });
+  }
+}
+
 // Listen for data updates
 document.addEventListener("zhd-ranking-updated", updateAllVisuals);
 
-// Initial update when page loads
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
-    if (window.ZHD && window.ZHD.isLoaded) {
-      updateAllVisuals();
-    } else if (window.ZHD) {
-      window.ZHD.onDataReady.push(updateAllVisuals);
-    }
-  });
-} else {
+// Initial setup
+function init() {
+  setupOverlayObservers();
+
   if (window.ZHD && window.ZHD.isLoaded) {
     updateAllVisuals();
   } else if (window.ZHD) {
     window.ZHD.onDataReady.push(updateAllVisuals);
   }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
 }
