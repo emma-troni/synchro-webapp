@@ -2,7 +2,6 @@
 
 (function () {
   const MIN_DURATION = 2000; // 2s minimi
-
   // 🔧 TUNING ANIMAZIONE
   const DURATION = 1100; // prima 800 → ora più fluida
   const EASING = "cubic-bezier(0.16, 1, 0.3, 1)";
@@ -40,11 +39,29 @@
         }
       );
 
-      anim.addEventListener("finish", () => loader.remove(), { once: true });
+      anim.addEventListener(
+        "finish",
+        () => {
+          loader.remove();
+
+          // Trigger staged reveal (defined in align-svgs-reveal.js)
+          if (typeof window.revealGraphics === "function") {
+            window.revealGraphics();
+          }
+        },
+        { once: true }
+      );
 
       // fallback di sicurezza
       setTimeout(() => {
-        if (document.contains(loader)) loader.remove();
+        if (document.contains(loader)) {
+          loader.remove();
+
+          // Trigger reveal anche nel fallback
+          if (typeof window.revealGraphics === "function") {
+            window.revealGraphics();
+          }
+        }
       }, DURATION + 300);
     }, remaining);
   }
