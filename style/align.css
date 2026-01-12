@@ -70,7 +70,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  gap: 4px;
+  gap: 8px;
 }
 
 .value-name {
@@ -124,4 +124,140 @@
   letter-spacing: -3%;
   line-height: 1;
   overflow: hidden;
+}
+
+/*
+=================================
+=================================
+=================================
+predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
+=================================
+=================================
+=================================
+*/
+
+@media screen and (max-width: 429px) {
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /*==============================================*/
+
+  .content .alignment-content {
+    width: 100%;
+    height: 80%;
+  }
+
+  .content .alignment-content .align-graphic {
+    width: var(--width-small);
+    padding: var(--padding-small);
+    height: calc(100% - 24%);
+    position: relative;
+  }
+  .external-graphic,
+  .internal-graphic {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .content .alignment-content .align-graphic span {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .external-graphic svg {
+    width: 80%;
+    height: 80%;
+  }
+  .internal-graphic svg {
+    width: 54%;
+    height: 54%;
+  }
+  /*==============================================*/
+  .content .alignment-content .align-values {
+    width: var(--width-small);
+    padding: var(--padding-small);
+    height: 24%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .align-values .value {
+    width: 48%;
+    height: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 8px;
+
+  }
+
+  .value-name {
+    text-transform: uppercase;
+    font-family: "helvetica-neue-lt-pro-cond", sans-serif;
+    font-size: 1rem;
+    text-align: left;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: -2%;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: fit-content;
+  }
+
+  .value-percentage {
+    text-transform: uppercase;
+    font-family: "helvetica-neue-lt-pro", sans-serif;
+    font-size: 2.2rem;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: -3%;
+    line-height: 0.84;
+    width: 100%;
+  }
+
+  .align-values .line-vertical {
+    width: 1.5px;
+    height: 48%;
+    background: var(--secondary-color);
+  }
+
+  /*==============================================*/
+  .content .comment-section-wrap {
+    width: 100%;
+    height: 20%;
+    border-top: var(--border);
+  }
+  .comment-section-wrap .comment-content {
+    width: calc(100% - 40px);
+    height: calc(100%);
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+    padding: var(--padding);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 5cqi;
+    letter-spacing: -3%;
+    line-height: 1;
+    overflow: hidden;
+  }
 }
