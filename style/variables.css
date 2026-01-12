@@ -44,3 +44,41 @@ button:focus {
 button:active {
   background: none;
 }
+
+
+
+
+
+/* ================================
+   TOOLTIP – fixed (no flow)
+================================ */
+
+.app-tooltip {
+  position: fixed;
+  bottom: 64px; /* sopra il footer */
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: -2%;
+
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+
+  pointer-events: none;
+  z-index: 9999;
+
+  opacity: 0;
+  transition:
+    opacity 400ms ease,
+    transform 400ms ease;
+}
+
+.app-tooltip.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

@@ -136,158 +136,220 @@
   }
 }
 
-
-
 /*
 =================================
 =================================
 =================================
-predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
+RESPONSIVE – iPhone 15 / 14 / 13 / 12 (6.1")
+FIX footer non cliccabile
 =================================
 =================================
 =================================
 */
 
-@media screen and (max-width: 400px) {
- 
-/*============== personal overlay =====================*/
-.more-about .upper-content-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: calc(100% - 52px);
-  position: relative;
-}
+@media screen and (max-width: 410px) {
 
-/*==============================================*/
+  /*============== personal overlay =====================*/
+  .more-about .upper-content-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: calc(100% - 52px);
+    position: relative;
 
-.more-about .upper-content-wrap .recap-lock-content {
-  padding: var(--padding-vertical);
-  width: var(--width);
-  height: calc(100% - 70%);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border: none;
-}
+    /* FIX: evita overlay invisibili sopra il footer */
+    overflow: hidden;
+  }
 
-.more-about .upper-content-wrap button {
-  width: 44px;
-  aspect-ratio: 1/1;
-  border-radius: 0;
-  color: var(--secondary-color);
-  border: none;
-  background: none;
-  position: absolute;
-  z-index: 500;
-}
+  /*==============================================*/
 
-.more-about .upper-content-wrap .recap-lock-content .view-graphic {
-  height: 100%;
-  position: relative;
-}
+  .more-about .upper-content-wrap .recap-lock-content {
+    padding: var(--padding-vertical);
+    width: var(--width);
+    height: 30%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: none;
+  }
 
-.more-about .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap {
-  height: 100%;
-  width: 100%;
-  aspect-ratio: 1/1;
-  position: relative;
-}
+  .more-about .upper-content-wrap button {
+    width: 44px;
+    aspect-ratio: 1 / 1;
+    border-radius: 0;
+    color: var(--secondary-color);
+    border: none;
+    background: none;
+    position: absolute;
+    z-index: 500;
+  }
 
-.more-about .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap .holder {
-  height: 100%;
-  aspect-ratio: 1/1;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
-}
+  .more-about .upper-content-wrap .recap-lock-content .view-graphic {
+    height: 100%;
+    position: relative;
+  }
 
-.more-about .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap .holder span {
-  height: 100%;
-  width: 100%;
-}
+  .more-about .upper-content-wrap
+    .recap-lock-content
+    .view-graphic
+    .graphic-wrap {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+  }
 
+  .more-about .upper-content-wrap
+    .recap-lock-content
+    .view-graphic
+    .graphic-wrap
+    .holder {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
 
-.more-about .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap svg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+  .more-about .upper-content-wrap
+    .recap-lock-content
+    .view-graphic
+    .graphic-wrap
+    .holder
+    span {
+    height: 100%;
+    width: 100%;
+  }
 
-.more-about .graphic-wrap .ext span svg {
-  height: 100%;
-  width: 100%;
-}
+  .more-about
+    .upper-content-wrap
+    .recap-lock-content
+    .view-graphic
+    .graphic-wrap
+    svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
-.more-about .graphic-wrap .int span svg {
-  width: 70%;
-  height: 70%;
-}
+  .more-about .graphic-wrap .ext span svg {
+    height: 100%;
+    width: 100%;
+  }
 
-/*==============================================*/
+  .more-about .graphic-wrap .int span svg {
+    width: 70%;
+    height: 70%;
+  }
 
-.more-about .comment-overlay-section-wrap {
-  width: 100%;
-  height: 70%;
-}
+  /*==============================================*/
 
-.more-about .comment-overlay-section-wrap .comment-content {
-  width: calc(100% - 40px);
-  height: calc(100% - 40px);
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  justify-content: start;
-  padding: var(--padding);
-  font-style: normal;
-  font-weight: 500;
-  font-size: 1rem;
-  letter-spacing: -3%;
-  line-height: 1.2;
+  .more-about .comment-overlay-section-wrap {
+    width: 100%;
+    height: 70%;
+    position: relative;
+  }
+
+  .more-about .comment-overlay-section-wrap .comment-content {
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: var(--padding);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: -3%;
+    line-height: 1.2;
+  }
+
+  .more-about .comment-overlay-section-wrap .comment-content p {
+    overflow: auto;
+  }
+
+  /*============== SVG =====================*/
+
+  .more-about .holder .svg-holder {
+    display: inline-block;
+  }
+
+  /* FIX CRITICO: SVG non devono intercettare tap */
+  .more-about .graphic-wrap,
+  .more-about .graphic-wrap .holder,
+  .more-about .graphic-wrap .svg-holder,
+  .more-about .graphic-wrap svg {
+    pointer-events: none;
+  }
+
+  /* rotazione oraria */
+  .more-about .holder.ext .svg-holder {
+    animation: rotate-cw 40s linear infinite;
+  }
+
+  /* rotazione antioraria */
+  .more-about .holder.int .svg-holder {
+    animation: rotate-ccw 40s linear infinite;
+  }
+
+  @keyframes rotate-cw {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes rotate-ccw {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+
+  /*============== FOOTER =====================*/
+
+  .more-about footer {
+    height: 52px;
+
+    /* FIX FINALE: footer sempre cliccabile */
+    position: relative;
+    z-index: 100;
+  }
 }
 
 .more-about .comment-overlay-section-wrap .comment-content p {
-  overflow: scroll;
+  overflow-y: auto;
+
+  /* Firefox */
+  scrollbar-width: none;
+
+  /* iOS momentum scroll */
+  -webkit-overflow-scrolling: touch;
 }
 
-/* base */
-.more-about .holder .svg-holder {
-  display: inline-block;
+/* Chrome, Safari, Edge */
+.more-about .comment-overlay-section-wrap .comment-content p::-webkit-scrollbar {
+  display: none;
 }
 
-/* rotazione oraria */
-.more-about .holder.ext .svg-holder {
-  animation: rotate-cw 40s linear infinite;
-}
 
-/* rotazione antioraria */
-.more-about .holder.int .svg-holder {
-  animation: rotate-ccw 40s linear infinite;
-}
 
-@keyframes rotate-cw {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
-@keyframes rotate-ccw {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(-360deg);
-  }
-}
 
-.more-about footer {
-  height: 52px;
-}
-}
+
+
+
+
+
+
+
+

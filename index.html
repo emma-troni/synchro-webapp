@@ -423,9 +423,7 @@
                   >external circle</span
                 >
                 shows the average of alignment of your country, based on all the
-                current votes. This gives an idea of percentage of citizen who
-                have already registered their measure is aligned with everyone
-                else's.
+                current votes. This gives an idea of the general trend of value in your nation.
                 <br />
                 <br />The
                 <span style="font-weight: 800" class="hl-sweep"
@@ -434,10 +432,11 @@
                 shows your percentage of alignment at this moment, based on all
                 the current votes of your country.
                 <br />
-                <br />Your personal score will keep on updating based on
-                everyone's measure till polls are closed. <br />The value shown
+                <br />Your score will keep on updating based on
+                all the new measures registered with CHRONODEX till polls are closed. <br />The value shown at that point
                 will be your final score and contribution to the definition of
-                the global rank.
+                the definitive global rank.
+                <br>
               </p>
             </div>
           </div>
@@ -740,5 +739,120 @@
         setTimeout(tryInit, 800);
       })();
     </script>
+
+
+<script>
+ /* ================================
+   TOOLTIP – GENERAL
+   - configura sezioni via ID
+   - testo diverso per ogni section
+   - mostra quando la section diventa .active
+   - auto-hide dopo 2s
+================================ */
+
+(function () {
+  // ✅ CONFIG: aggiungi qui tutte le sezioni che vuoi
+  const TOOLTIP_CONFIG = [
+    { id: "more-about-personal", message: "scroll to continue reading" },
+    { id: "more-about-world", message: "scroll"}
+    // { id: "recap", message: "tap a score to open" },
+    // { id: "stats", message: "swipe to compare" },
+  ];
+
+  const ACTIVE_CLASS = "active";
+  const TOOLTIP_CLASS = "app-tooltip";
+  const VISIBLE_CLASS = "is-visible";
+
+  const SHOW_MS = 2000;
+  const ANIM_MS = 400;
+
+  let tooltipEl = null;
+  let hideTimer = null;
+
+  function ensureTooltipEl() {
+    if (tooltipEl) return tooltipEl;
+    tooltipEl = document.createElement("div");
+    tooltipEl.className = TOOLTIP_CLASS;
+    document.body.appendChild(tooltipEl);
+    return tooltipEl;
+  }
+
+  function clearTimers() {
+    if (hideTimer) {
+      clearTimeout(hideTimer);
+      hideTimer = null;
+    }
+  }
+
+  function showTooltip(message) {
+    clearTimers();
+
+    const el = ensureTooltipEl();
+    el.textContent = message;
+
+    // forza reflow per transizione affidabile
+    void el.offsetHeight;
+    el.classList.add(VISIBLE_CLASS);
+
+    hideTimer = setTimeout(() => {
+      hideTooltip();
+    }, SHOW_MS);
+  }
+
+  function hideTooltip() {
+    clearTimers();
+    if (!tooltipEl) return;
+
+    tooltipEl.classList.remove(VISIBLE_CLASS);
+
+    // rimuovo dal DOM dopo la transizione (così non resta “fantasma”)
+    setTimeout(() => {
+      tooltipEl?.remove();
+      tooltipEl = null;
+    }, ANIM_MS);
+  }
+
+  function attachObserverToSection(sectionEl, message) {
+    const observer = new MutationObserver(() => {
+      const isActive = sectionEl.classList.contains(ACTIVE_CLASS);
+      if (isActive) showTooltip(message);
+      else hideTooltip();
+    });
+
+    observer.observe(sectionEl, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    // se già attiva al load
+    if (sectionEl.classList.contains(ACTIVE_CLASS)) {
+      showTooltip(message);
+    }
+  }
+
+  // init
+  TOOLTIP_CONFIG.forEach(({ id, message }) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    attachObserverToSection(el, message);
+  });
+
+  // opzionale: nascondi tooltip quando cambia tab / app in background
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) hideTooltip();
+  });
+})();
+
+
+
+/*modalità di funzionamento spiefgazione
+
+Ti basta aggiungere righe in TOOLTIP_CONFIG, ad esempio:
+{ id: "more-about-personal", message: "scroll for more" },
+{ id: "more-about-work", message: "scroll to read" },
+{ id: "recap", message: "tap to open details" },
+*/
+
+</script>
   </body>
 </html>
