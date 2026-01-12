@@ -148,3 +148,35 @@ body.instant-switch main .view {
   transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
   transform: scaleX(1);
 }
+
+
+
+
+/* ================================
+   WAITING SVG – sequential reveal/hide
+   (JS applica le animazioni via WAAPI)
+================================ */
+
+#waiting svg,
+.wait svg {
+  overflow: visible;
+}
+
+/* migliora resa del disegno (se hai stroke) */
+#waiting svg [data-wait-part],
+.wait svg [data-wait-part] {
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  will-change: opacity, stroke-dashoffset;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  #waiting svg [data-wait-part],
+  .wait svg [data-wait-part] {
+    transition: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
