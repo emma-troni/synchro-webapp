@@ -118,3 +118,130 @@
 }
 
 
+
+/*
+=================================
+=================================
+=================================
+predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
+=================================
+=================================
+=================================
+*/
+
+@media screen and (max-width: 429px) {
+.align-subsection .upper-content-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/*==============================================*/
+
+.align-subsection .upper-content-wrap .recap-lock-content {
+  padding: var(--padding-vertical);
+  width: var(--width);
+  height: calc(100% - 40%);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.align-subsection .upper-content-wrap button {
+  width: 44px;
+  aspect-ratio: 1/1;
+  border-radius: 0;
+  color: var(--secondary-color);
+  border: none;
+  background: none;
+  position: absolute;
+  z-index: 500;
+}
+
+.align-subsection .upper-content-wrap .view-score {
+  height: 20%;
+  width: 100%;
+  text-transform: uppercase;
+  font-family: "helvetica-neue-lt-pro-cond", sans-serif;
+  font-size: 9.4cqh;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -2%;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  position: relative;
+}
+
+.align-subsection .upper-content-wrap .recap-lock-content .view-graphic {
+  height: 75%;
+  position: relative;
+}
+
+.align-subsection .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap {
+  height: 100%;
+  width: 100%;
+  aspect-ratio: 1/1;
+  right: 0;
+  position: relative;
+}
+
+.align-subsection .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap .holder {
+  height: 100%;
+  aspect-ratio: 1/1;
+  position: absolute;
+  right: 0;
+}
+
+.align-subsection .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap .holder span {
+  height: 100%;
+  width: 100%;
+}
+
+
+.align-subsection .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.align-subsection .graphic-wrap .ext span svg {
+  height: 100%;
+  width: 100%;
+}
+
+.align-subsection .graphic-wrap .int span svg {
+  width: 70%;
+  height: 70%;
+}
+
+/*==============================================*/
+
+.subsection .comment-overlay-section-wrap {
+  width: 100%;
+  height: 40%;
+  border-top: var(--border);
+}
+
+.comment-overlay-section-wrap .comment-content {
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: start;
+  padding: var(--padding);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 140%;
+  letter-spacing: -3%;
+  line-height: 1;
+}
+}
