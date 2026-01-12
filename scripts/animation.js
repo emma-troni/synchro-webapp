@@ -1,6 +1,71 @@
 /* ================================
+   UNIVERSAL HIGHLIGHT SWEEP
+   - Metti .hl-sweep sugli span
+   - Il contenitore diventa "open" quando ha .active (default)
+================================ */
+
+(function () {
+  // 1) Contenitori che, quando diventano "attivi", devono triggerare l'animazione
+  //    Nel tuo progetto: .view è perfetto
+  const CONTAINER_SELECTOR = ".view";
+
+  // 2) Regola per dire "questo container è aperto/visibile"
+  //    Default: presenza della classe .active
+  const isOpen = (el) => el.classList.contains("active");
+
+  // 3) Target dentro al container
+  const TARGET_SELECTOR = ".hl-sweep";
+
+  function resetTargets(container) {
+    container.querySelectorAll(TARGET_SELECTOR).forEach((t) => {
+      t.classList.remove("hl-animating");
+    });
+  }
+
+  function playTargets(container) {
+    const targets = container.querySelectorAll(TARGET_SELECTOR);
+    if (!targets.length) return;
+
+    // reset -> reflow -> play (ri-trigger affidabile)
+    targets.forEach((t) => t.classList.remove("hl-animating"));
+    void container.offsetHeight;
+    targets.forEach((t) => t.classList.add("hl-animating"));
+  }
+
+  // Stato precedente per evitare loop (come abbiamo fatto prima)
+  const state = new WeakMap();
+
+  function initContainer(container) {
+    state.set(container, isOpen(container));
+
+    // se parte già aperto
+    if (isOpen(container)) playTargets(container);
+
+    const obs = new MutationObserver(() => {
+      const prev = state.get(container);
+      const now = isOpen(container);
+
+      if (now !== prev) {
+        state.set(container, now);
+        if (now) playTargets(container);
+        else resetTargets(container);
+      }
+    });
+
+    obs.observe(container, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+  }
+
+  document.querySelectorAll(CONTAINER_SELECTOR).forEach(initContainer);
+})();
+
+/* ================================
    WAITING SVG – step reveal all, then step hide all (infinite)
    target: svg dentro #waiting (o fallback .wait)
+
+   animazione loader pagina RECAP LOCK
 ================================ */
 
 (function () {
