@@ -112,7 +112,7 @@
   padding: var(--padding);
   font-style: normal;
   font-weight: 400;
-  font-size: 140%;
+  font-size: 1.2rem;
   letter-spacing: -3%;
   line-height: 1;
 }
@@ -129,7 +129,7 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
 =================================
 */
 
-@media screen and (max-width: 429px) {
+@media screen and (max-width: 400px) {
 .align-subsection .upper-content-wrap {
   display: flex;
   flex-direction: column;
@@ -231,8 +231,8 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
 
 .comment-overlay-section-wrap .comment-content {
   width: calc(100% - 40px);
-  height: calc(100% - 40px);
-  margin-top: 20px;
+  height: calc(100%);
+  margin-top: 0px;
   display: flex;
   flex-direction: column;
   align-items: left;
@@ -240,7 +240,7 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
   padding: var(--padding);
   font-style: normal;
   font-weight: 400;
-  font-size: 140%;
+  font-size: 1.2rem;
   letter-spacing: -3%;
   line-height: 1;
 }
