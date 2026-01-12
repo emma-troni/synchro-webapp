@@ -183,23 +183,18 @@
                 <span class="svg-holder" id="waiting"></span>
               </div>
               <div class="recap-text">
-                <p>
-                  <span style="font-weight: 500"
-                    >This is page is not available yet.</span
-                  >
-                  <br /><span class="specifics-recap"
-                    >Results will be visibile once the polls are closed.</span
-                  >
+                <p style="font-weight: 500">
+                  This is page is not available yet.
+                </p>
+                <p style="font-size: 1rem">
+                  Voting is still happening at the moment. <br />Final results
+                  will be visibile once the polls close.
                 </p>
               </div>
             </div>
           </div>
           <div class="timer-section-wrap">
             <div class="timer-content">
-              <p>
-                Voting is still happening at the moment. <br />Final results
-                will be visibile once the polls close in:
-              </p>
             </div>
           </div>
         </div>
@@ -685,9 +680,8 @@
 
           const revealTotal = (n - 1) * STEP + FADE; // finisce quando l'ultimo ha completato fade-in
           const hideStart = revealTotal + HOLD_ALL_ON; // inizio fase hide
-const hideTotal = hideStart + (n - 1) * STEP + FADE;
-const cycle = hideTotal; // chiude esattamente a opacity 0
-
+          const hideTotal = hideStart + (n - 1) * STEP + FADE;
+          const cycle = hideTotal; // chiude esattamente a opacity 0
 
           parts.forEach((el, i) => {
             const tRevealStart = i * STEP;
