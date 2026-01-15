@@ -6,7 +6,7 @@
 
 (function () {
   const HIGHLIGHT_COLOR = "#1a1a1a";
-  const POLL_INTERVAL = 60000; // 3 min - synced with RANKING_REFRESH_INTERVAL
+  const POLL_INTERVAL = 3000; // 30 s - synced with RANKING_REFRESH_INTERVAL
   const DEFAULT_TIMEZONE = 21; // Fallback if API fails
 
   let currentTimezone = null;
@@ -113,24 +113,31 @@
   function init() {
     svgElement = getSvgDocument();
 
-    if (!svgElement) {
-      console.warn("[ZHD-Timezone] SVG not found. Retrying in 1s...");
-      setTimeout(init, 1000);
+    if (svgElement) {
+      startUpdates();
       return;
     }
 
-    console.log("[ZHD-Timezone] SVG found, starting highlight updates");
-
-    // Initial update
-    updateTimezoneHighlight();
-
-    // Poll every 3 minutes (synced with RANKING_REFRESH_INTERVAL)
-    setInterval(updateTimezoneHighlight, POLL_INTERVAL);
-
-    // Also update when ranking changes
-    document.addEventListener("zhd-ranking-updated", () => {
-      updateTimezoneHighlight();
+    // SVG non ancora caricato: aspetta l'evento
+    document.addEventListener("svg-injected", function handler(e) {
+      // Verifica che sia l'SVG della mappa (opzionale, se hai più SVG)
+      const svg = e.detail.svg;
+      if (
+        svg &&
+        (svg.id === "Layer_1" ||
+          e.detail.container?.classList.contains("visual-map-content"))
+      ) {
+        svgElement = svg;
+        document.removeEventListener("svg-injected", handler);
+        startUpdates();
+      }
     });
+  }
+
+  function startUpdates() {
+    console.log("[ZHD-Timezone] SVG found, starting highlight updates");
+    updateTimezoneHighlight();
+    setInterval(updateTimezoneHighlight, POLL_INTERVAL);
   }
 
   // Start when DOM is ready

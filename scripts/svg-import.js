@@ -65,7 +65,15 @@ async function processOne(container, { forceInit = false } = {}) {
   if (container.dataset.svgInjected !== "1") {
     try {
       const svg = await injectSVG(container);
-      if (svg) container.dataset.svgInjected = "1";
+      if (svg) {
+        container.dataset.svgInjected = "1";
+        // Emetti evento per notificare altri script
+        document.dispatchEvent(
+          new CustomEvent("svg-injected", {
+            detail: { svg, container },
+          })
+        );
+      }
     } catch (err) {
       console.warn("SVG injection error for:", container, err);
       return;
