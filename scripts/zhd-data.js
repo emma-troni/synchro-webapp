@@ -12,7 +12,7 @@ const ZHD_CONFIG = {
   SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
   APP_SCRIPT_ID:
     "AKfycbzr8LnsA3ggkqV00PtW7tatUtqykH9pKZ4LpLx9GsqDMnN7XBd0lTRjxyx0rWklrDTj",
-  RANKING_REFRESH_INTERVAL: 180000,
+  RANKING_REFRESH_INTERVAL: 60000,
   INITIAL_DELAY: 1000,
 };
 
@@ -335,7 +335,7 @@ async function zhdFetchServerRanking() {
     const data = await response.json();
 
     if (data.error) {
-      console.error("❌ Server ranking error:", data.error);
+      console.error("Server ranking error:", data.error);
       return;
     }
 
@@ -347,7 +347,7 @@ async function zhdFetchServerRanking() {
 
     console.log("🔄 Ranking updated from server:", window.ZHD.italyData.rank);
   } catch (error) {
-    console.error("❌ Failed to fetch ranking:", error);
+    console.error("Failed to fetch ranking:", error);
   }
 }
 
