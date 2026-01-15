@@ -11,7 +11,7 @@
 const ZHD_CONFIG = {
   SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
   APP_SCRIPT_ID:
-    "AKfycby7UKUxKQB0IPEnl_fB9b2k7W5KVp4KIc7xknHvwD4cB8Vo2Iaxgof5yTyYw5D33TPY",
+    "AKfycbzr8LnsA3ggkqV00PtW7tatUtqykH9pKZ4LpLx9GsqDMnN7XBd0lTRjxyx0rWklrDTj",
   RANKING_REFRESH_INTERVAL: 180000,
   INITIAL_DELAY: 1000,
 };
