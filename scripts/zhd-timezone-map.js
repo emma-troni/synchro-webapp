@@ -2,12 +2,14 @@
  * ZHD-TIMEZONE-HIGHLIGHT.JS
  * Highlights the winning timezone on map-timezones.svg
  * Syncs with the same data source as zhd-data.js
+ * Updated: timezone values now match Physical_Timezone_Band (-11 to +14)
+ * SVG structure: groups with IDs like "_-10", "_-9", "_1", "_2", etc.
  ***********************/
 
 (function () {
   const HIGHLIGHT_COLOR = "#1a1a1a";
-  const POLL_INTERVAL = 3000; // 30 s - synced with RANKING_REFRESH_INTERVAL
-  const DEFAULT_TIMEZONE = 21; // Fallback if API fails
+  const POLL_INTERVAL = 3000; // 3s - synced with RANKING_REFRESH_INTERVAL
+  const DEFAULT_TIMEZONE = 9; // Fallback if API fails (Japan's timezone)
 
   let currentTimezone = null;
   let svgElement = null;
@@ -35,10 +37,11 @@
   function clearAllHighlights() {
     if (!svgElement) return;
 
-    for (let tz = 1; tz <= 24; tz++) {
-      const group =
-        svgElement.querySelector(`g#\\3${Math.floor(tz / 10)} ${tz % 10}`) ||
-        svgElement.getElementById(String(tz));
+    // Range: -11 to +14 (all possible timezone values in the SVG)
+    for (let tz = -11; tz <= 14; tz++) {
+      // SVG uses IDs like "_-10", "_-9", "_1", "_2", etc.
+      const groupId = tz < 0 ? `_${tz}` : `_${tz}`;
+      const group = svgElement.getElementById(groupId);
       if (group) {
         const shapes = group.querySelectorAll("polygon, rect, path");
         shapes.forEach((shape) => {
@@ -52,22 +55,26 @@
    * Highlight a specific timezone
    */
   function highlightTimezone(timezone) {
-    if (!svgElement || !timezone) return;
+    if (!svgElement || timezone === null || timezone === undefined) return;
 
     // Clear previous
     clearAllHighlights();
 
-    // Highlight new
-    const group = svgElement.getElementById(String(timezone));
+    // SVG uses IDs like "_-10", "_-9", "_1", "_2", etc.
+    const groupId = timezone < 0 ? `_${timezone}` : `_${timezone}`;
+    const group = svgElement.getElementById(groupId);
+
     if (group) {
       const shapes = group.querySelectorAll("polygon, rect, path");
       shapes.forEach((shape) => {
         shape.style.fill = HIGHLIGHT_COLOR;
       });
-      console.log(`[ZHD-Timezone] Highlighted timezone ${timezone}`);
+      console.log(
+        `[ZHD-Timezone] Highlighted timezone ${timezone} (ID: ${groupId})`
+      );
     } else {
       console.warn(
-        `[ZHD-Timezone] Group with id="${timezone}" not found in SVG`
+        `[ZHD-Timezone] Group with id="${groupId}" not found in SVG`
       );
     }
   }
@@ -88,7 +95,8 @@
         return DEFAULT_TIMEZONE;
       }
 
-      return data.timezone || DEFAULT_TIMEZONE;
+      // API now returns Physical_Timezone_Band value (-6 to +12)
+      return data.timezone !== undefined ? data.timezone : DEFAULT_TIMEZONE;
     } catch (error) {
       console.error("[ZHD-Timezone] Fetch error, using default:", error);
       return DEFAULT_TIMEZONE;
@@ -101,7 +109,7 @@
   async function updateTimezoneHighlight() {
     const newTimezone = await fetchWinnerTimezone();
 
-    if (newTimezone && newTimezone !== currentTimezone) {
+    if (newTimezone !== null && newTimezone !== currentTimezone) {
       currentTimezone = newTimezone;
       highlightTimezone(currentTimezone);
     }
@@ -120,7 +128,7 @@
 
     // SVG non ancora caricato: aspetta l'evento
     document.addEventListener("svg-injected", function handler(e) {
-      // Verifica che sia l'SVG della mappa (opzionale, se hai più SVG)
+      // Verifica che sia l'SVG della mappa
       const svg = e.detail.svg;
       if (
         svg &&
