@@ -11,7 +11,7 @@
 const ZHD_CONFIG = {
   SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
   APP_SCRIPT_ID:
-    "AKfycbxA3Pcrdu8E8Hg66VjdiIFWjx8ujo0Z9ibDlsmbSMZVdJzsDmmJfnke2JN9hiftFflQ",
+    "AKfycby7UKUxKQB0IPEnl_fB9b2k7W5KVp4KIc7xknHvwD4cB8Vo2Iaxgof5yTyYw5D33TPY",
   RANKING_REFRESH_INTERVAL: 180000,
   INITIAL_DELAY: 1000,
 };
@@ -413,7 +413,8 @@ function zhdUpdateCommentSection() {
 
   // If no user data, show a different message
   if (!window.ZHD.hasUserData || window.ZHD.personalScore === null) {
-    commentEl.textContent = "No personal data available. Visit the installation to record your daily routine.";
+    commentEl.textContent =
+      "No personal data available. Visit the installation to record your daily routine.";
     return;
   }
 
@@ -555,10 +556,9 @@ async function zhdInit() {
     // Start server ranking refresh
     setTimeout(zhdFetchServerRanking, ZHD_CONFIG.INITIAL_DELAY);
     setInterval(zhdFetchServerRanking, ZHD_CONFIG.RANKING_REFRESH_INTERVAL);
-
   } catch (error) {
     console.error("❌ ZHD init error:", error);
-    
+
     // Even on error, mark as loaded so UI doesn't hang
     window.ZHD.isLoaded = true;
     window.ZHD.onDataReady.forEach((cb) => cb());
