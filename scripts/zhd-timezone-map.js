@@ -7,7 +7,8 @@
  ***********************/
 
 (function () {
-  const HIGHLIGHT_COLOR = "#1a1a1a";
+  const HIGHLIGHT_STROKE_COLOR = "red";
+  const HIGHLIGHT_STROKE_WIDTH = "2px";
   const POLL_INTERVAL = 3000; // 3s - synced with RANKING_REFRESH_INTERVAL
   const DEFAULT_TIMEZONE = 9; // Fallback if API fails (Japan's timezone)
 
@@ -45,7 +46,12 @@
       if (group) {
         const shapes = group.querySelectorAll("polygon, rect, path");
         shapes.forEach((shape) => {
-          shape.style.fill = "";
+          // Reset to original inline style values
+          const style = shape.getAttribute("style") || "";
+          const newStyle = style
+            .replace(/stroke:\s*[^;]+;?/gi, "stroke: #000;")
+            .replace(/stroke-width:\s*[^;]+;?/gi, "stroke-width: .25px;");
+          shape.setAttribute("style", newStyle);
         });
       }
     }
@@ -66,9 +72,37 @@
 
     if (group) {
       const shapes = group.querySelectorAll("polygon, rect, path");
-      shapes.forEach((shape) => {
-        shape.style.fill = HIGHLIGHT_COLOR;
+      console.log(
+        `[ZHD-Timezone] Found ${shapes.length} shapes in group ${groupId}`
+      );
+
+      shapes.forEach((shape, index) => {
+        // Get current inline style and replace stroke values
+        const currentStyle = shape.getAttribute("style") || "";
+        console.log(
+          `[ZHD-Timezone] Shape ${index} original style:`,
+          currentStyle
+        );
+
+        let newStyle = currentStyle
+          .replace(/stroke:\s*[^;]+;?/gi, `stroke: ${HIGHLIGHT_STROKE_COLOR};`)
+          .replace(
+            /stroke-width:\s*[^;]+;?/gi,
+            `stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`
+          );
+
+        // If stroke wasn't in the style, add it
+        if (!currentStyle.includes("stroke:")) {
+          newStyle += ` stroke: ${HIGHLIGHT_STROKE_COLOR};`;
+        }
+        if (!currentStyle.includes("stroke-width:")) {
+          newStyle += ` stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`;
+        }
+
+        shape.setAttribute("style", newStyle);
+        console.log(`[ZHD-Timezone] Shape ${index} new style:`, newStyle);
       });
+
       console.log(
         `[ZHD-Timezone] Highlighted timezone ${timezone} (ID: ${groupId})`
       );
@@ -90,13 +124,26 @@
       );
       const data = await response.json();
 
+      console.log("[ZHD-Timezone] API response:", data);
+
       if (data.error) {
         console.error("[ZHD-Timezone] API error:", data.error);
         return DEFAULT_TIMEZONE;
       }
 
-      // API now returns Physical_Timezone_Band value (-6 to +12)
-      return data.timezone !== undefined ? data.timezone : DEFAULT_TIMEZONE;
+      // API returns Physical_Timezone_Band value (-11 to +14)
+      const timezone =
+        data.timezone !== undefined ? data.timezone : DEFAULT_TIMEZONE;
+
+      // Validate timezone range
+      if (timezone < -11 || timezone > 14) {
+        console.error(
+          `[ZHD-Timezone] Invalid timezone value: ${timezone}, using default`
+        );
+        return DEFAULT_TIMEZONE;
+      }
+
+      return timezone;
     } catch (error) {
       console.error("[ZHD-Timezone] Fetch error, using default:", error);
       return DEFAULT_TIMEZONE;
