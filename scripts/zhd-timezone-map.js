@@ -2,14 +2,14 @@
  * ZHD-TIMEZONE-HIGHLIGHT.JS
  * Highlights the winning timezone on map-timezones.svg
  * Syncs with the same data source as zhd-data.js
- * Updated: timezone values now match Physical_Timezone_Band (-11 to +14)
- * SVG structure: groups with IDs like "_-10", "_-9", "_1", "_2", etc.
+ * Updated: timezone values now range from 1 to 26 (original -11 to +14 shifted by +12)
+ * SVG structure: groups with IDs like "_1", "_2", "_3", etc.
  ***********************/
 
 (function () {
   const HIGHLIGHT_STROKE_WIDTH = "2px";
   const POLL_INTERVAL = 3000; // 3s - synced with RANKING_REFRESH_INTERVAL
-  const DEFAULT_TIMEZONE = 9; // Fallback if API fails (Japan's timezone)
+  const DEFAULT_TIMEZONE = 21; // Fallback if API fails (Japan's timezone, was 9, now 9+12=21)
 
   let currentTimezone = null;
   let svgElement = null;
@@ -37,10 +37,10 @@
   function clearAllHighlights() {
     if (!svgElement) return;
 
-    // Range: -11 to +14 (all possible timezone values in the SVG)
-    for (let tz = -11; tz <= 14; tz++) {
-      // SVG uses IDs like "_-10", "_-9", "_1", "_2", etc.
-      const groupId = tz < 0 ? `_${tz}` : `_${tz}`;
+    // Range: 1 to 26 (original -11 to +14 shifted by +12)
+    for (let tz = 1; tz <= 26; tz++) {
+      // SVG uses IDs like "_1", "_2", "_3", etc.
+      const groupId = `_${tz}`;
       const group = svgElement.getElementById(groupId);
       if (group) {
         const shapes = group.querySelectorAll("polygon, rect, path");
@@ -66,8 +66,8 @@
     // Clear previous
     clearAllHighlights();
 
-    // SVG uses IDs like "_-10", "_-9", "_1", "_2", etc.
-    const groupId = timezone < 0 ? `_${timezone}` : `_${timezone}`;
+    // SVG uses IDs like "_1", "_2", "_3", etc.
+    const groupId = `_${timezone}`;
     const group = svgElement.getElementById(groupId);
 
     if (group) {
@@ -126,12 +126,12 @@
         return DEFAULT_TIMEZONE;
       }
 
-      // API returns Physical_Timezone_Band value (-11 to +14)
+      // API returns timezone value (1 to 26)
       const timezone =
         data.timezone !== undefined ? data.timezone : DEFAULT_TIMEZONE;
 
-      // Validate timezone range
-      if (timezone < -11 || timezone > 14) {
+      // Validate timezone range (1 to 26)
+      if (timezone < 1 || timezone > 26) {
         console.error(
           `[ZHD-Timezone] Invalid timezone value: ${timezone}, using default`
         );
