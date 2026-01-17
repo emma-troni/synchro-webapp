@@ -14,6 +14,7 @@ const ZHD_CONFIG = {
     "AKfycbzr8LnsA3ggkqV00PtW7tatUtqykH9pKZ4LpLx9GsqDMnN7XBd0lTRjxyx0rWklrDTj",
   RANKING_REFRESH_INTERVAL: 30000,
   INITIAL_DELAY: 1000,
+  EVENT_DEBOUNCE_MS: 100, // Debounce time for ranking update events
 };
 
 ZHD_CONFIG.SHEET_URL = `https://docs.google.com/spreadsheets/d/${ZHD_CONFIG.SHEET_ID}/gviz/tq?tqx=out:json`;
@@ -274,6 +275,7 @@ function zhdCalcolaScorePaese(rowsDati) {
       }
     });
   });
+
   for (let h = 0; h < 24; h++) {
     for (let c = 0; c < 4; c++) {
       T_model_full[h][c] /= N + 1;
@@ -371,7 +373,7 @@ async function zhdFetchServerRanking() {
       }
     }
 
-    // Trigger single event with both ranking AND timezone
+    // Trigger single event with both ranking AND timezone (debounced)
     zhdTriggerRankingUpdate();
 
     console.log("🔄 Ranking & Timezone updated:", {
@@ -479,15 +481,45 @@ function zhdUpdateUserId() {
   }
 }
 
+/***********************
+ * DEBOUNCED EVENT TRIGGER
+ * Prevents duplicate events from firing in quick succession
+ ***********************/
+
+let _rankingUpdateTimeout = null;
+let _lastEventData = null;
+
 function zhdTriggerRankingUpdate() {
-  const event = new CustomEvent("zhd-ranking-updated", {
-    detail: {
-      ranking: window.ZHD.currentRanking,
-      italy: window.ZHD.italyData,
-      timezone: window.ZHD.winnerTimezone, // NEW: include timezone in event
-    },
-  });
-  document.dispatchEvent(event);
+  // Clear any pending event
+  if (_rankingUpdateTimeout) {
+    clearTimeout(_rankingUpdateTimeout);
+  }
+
+  // Store the current data
+  const eventData = {
+    ranking: window.ZHD.currentRanking,
+    italy: window.ZHD.italyData,
+    timezone: window.ZHD.winnerTimezone,
+  };
+
+  // Check if data actually changed
+  const dataString = JSON.stringify(eventData);
+  if (dataString === _lastEventData) {
+    // Data hasn't changed, skip event
+    return;
+  }
+
+  // Debounce: wait a bit before firing to avoid duplicates
+  _rankingUpdateTimeout = setTimeout(() => {
+    _lastEventData = dataString;
+
+    const event = new CustomEvent("zhd-ranking-updated", {
+      detail: eventData,
+    });
+    document.dispatchEvent(event);
+
+    _rankingUpdateTimeout = null;
+  }, ZHD_CONFIG.EVENT_DEBOUNCE_MS);
 }
 
 /***********************

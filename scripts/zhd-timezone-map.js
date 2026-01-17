@@ -13,8 +13,8 @@
 
 (function () {
   // Highlight styling - more visible!
-  const HIGHLIGHT_FILL = "rgba(255, 204, 0, 0.4)"; // Semi-transparent gold/yellow
-  const HIGHLIGHT_STROKE = "#cc9900"; // Darker gold for stroke
+  const HIGHLIGHT_FILL = "#c2c2c2"; // Semi-transparent gold/yellow
+  const HIGHLIGHT_STROKE = "#1a1a1a"; // Darker gold for stroke
   const HIGHLIGHT_STROKE_WIDTH = "1.5px";
 
   // Original styling (from SVG)
