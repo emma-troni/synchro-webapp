@@ -1,18 +1,28 @@
 /***********************
- * ZHD-TIMEZONE-HIGHLIGHT.JS
+ * ZHD-TIMEZONE-MAP.JS
  * Highlights the winning timezone on map-timezones.svg
  * Syncs with the same data source as zhd-data.js
- * Updated: timezone values now range from 1 to 26 (original -11 to +14 shifted by +12)
- * SVG structure: groups with IDs like "_1", "_2", "_3", etc.
+ *
+ * API returns: 1 to 24 (already converted timezone values)
+ * SVG IDs: _tz1 to _tz26 (with "tz" prefix)
+ * No conversion needed - API value maps directly to SVG ID
  ***********************/
 
 (function () {
   const HIGHLIGHT_STROKE_WIDTH = "2px";
   const POLL_INTERVAL = 3000; // 3s - synced with RANKING_REFRESH_INTERVAL
-  const DEFAULT_TIMEZONE = 21; // Fallback if API fails (Japan's timezone, was 9, now 9+12=21)
+  const DEFAULT_TIMEZONE = 21; // Japan's timezone (was UTC+9, now 9+12=21)
 
   let currentTimezone = null;
   let svgElement = null;
+
+  /**
+   * Convert API timezone (1-24) to SVG ID (_tz1 to _tz24)
+   * No offset needed - direct mapping
+   */
+  function timezoneToSvgId(timezone) {
+    return `_tz${timezone}`;
+  }
 
   /**
    * Find the SVG element loaded by svg-import.js
@@ -24,8 +34,10 @@
     );
     if (mapContainer) return mapContainer;
 
-    // Fallback: any SVG with id Layer_1 (the map's root id)
-    const inlineSvg = document.querySelector("svg#Layer_1");
+    // Fallback: any SVG with id Layer_1 or Layer_3
+    const inlineSvg =
+      document.querySelector("svg#Layer_1") ||
+      document.querySelector("svg#Layer_3");
     if (inlineSvg) return inlineSvg;
 
     return null;
@@ -37,15 +49,13 @@
   function clearAllHighlights() {
     if (!svgElement) return;
 
-    // Range: 1 to 26 (original -11 to +14 shifted by +12)
+    // Range: _tz1 to _tz26
     for (let tz = 1; tz <= 26; tz++) {
-      // SVG uses IDs like "_1", "_2", "_3", etc.
-      const groupId = `_${tz}`;
+      const groupId = `_tz${tz}`;
       const group = svgElement.getElementById(groupId);
       if (group) {
         const shapes = group.querySelectorAll("polygon, rect, path");
         shapes.forEach((shape) => {
-          // Reset to original stroke-width only
           const style = shape.getAttribute("style") || "";
           const newStyle = style.replace(
             /stroke-width:\s*[^;]+;?/gi,
@@ -66,8 +76,8 @@
     // Clear previous
     clearAllHighlights();
 
-    // SVG uses IDs like "_1", "_2", "_3", etc.
-    const groupId = `_${timezone}`;
+    // Convert to SVG ID (direct mapping, no offset)
+    const groupId = timezoneToSvgId(timezone);
     const group = svgElement.getElementById(groupId);
 
     if (group) {
@@ -76,26 +86,19 @@
         `[ZHD-Timezone] Found ${shapes.length} shapes in group ${groupId}`
       );
 
-      shapes.forEach((shape, index) => {
-        // Get current inline style and replace stroke-width only
+      shapes.forEach((shape) => {
         const currentStyle = shape.getAttribute("style") || "";
-        console.log(
-          `[ZHD-Timezone] Shape ${index} original style:`,
-          currentStyle
-        );
 
         let newStyle = currentStyle.replace(
           /stroke-width:\s*[^;]+;?/gi,
           `stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`
         );
 
-        // If stroke-width wasn't in the style, add it
         if (!currentStyle.includes("stroke-width:")) {
           newStyle += ` stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`;
         }
 
         shape.setAttribute("style", newStyle);
-        console.log(`[ZHD-Timezone] Shape ${index} new style:`, newStyle);
       });
 
       console.log(
@@ -126,7 +129,7 @@
         return DEFAULT_TIMEZONE;
       }
 
-      // API returns timezone value (1 to 26)
+      // API returns timezone value (1 to 24)
       const timezone =
         data.timezone !== undefined ? data.timezone : DEFAULT_TIMEZONE;
 
@@ -170,11 +173,11 @@
 
     // SVG non ancora caricato: aspetta l'evento
     document.addEventListener("svg-injected", function handler(e) {
-      // Verifica che sia l'SVG della mappa
       const svg = e.detail.svg;
       if (
         svg &&
         (svg.id === "Layer_1" ||
+          svg.id === "Layer_3" ||
           e.detail.container?.classList.contains("visual-map-content"))
       ) {
         svgElement = svg;
@@ -194,7 +197,6 @@
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
-    // Give SVG time to load if using <object>
     setTimeout(init, 100);
   }
 
