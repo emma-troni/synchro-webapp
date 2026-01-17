@@ -13,8 +13,8 @@
 
 (function () {
   // Highlight styling - more visible!
-  const HIGHLIGHT_FILL = "#c2c2c2"; // Semi-transparent gold/yellow
-  const HIGHLIGHT_STROKE = "#1a1a1a"; // Darker gold for stroke
+  const HIGHLIGHT_FILL = "rgba(255, 204, 0, 0.4)"; // Semi-transparent gold/yellow
+  const HIGHLIGHT_STROKE = "#cc9900"; // Darker gold for stroke
   const HIGHLIGHT_STROKE_WIDTH = "1.5px";
 
   // Original styling (from SVG)
@@ -25,6 +25,7 @@
   let currentTimezone = null;
   let svgElement = null;
   let pendingTimezone = null; // Store timezone if SVG not ready yet
+  let lastKnownTimezone = null; // Remember timezone for view changes
 
   /**
    * Convert timezone (1-26) to SVG ID (_tz1 to _tz26)
@@ -35,9 +36,20 @@
 
   /**
    * Find the SVG element loaded by svg-import.js
+   * Prioritizes SVG in the active view
    */
   function getSvgDocument() {
-    // Look for SVG inside .visual-map-content (loaded by svg-import.js)
+    // First try: SVG inside active view's .visual-map-content
+    const activeViewSvg = document.querySelector(
+      ".view.active .visual-map-content .svg-holder svg"
+    );
+    if (activeViewSvg) return activeViewSvg;
+
+    // Second try: SVG#Layer_3 inside active view
+    const activeLayerSvg = document.querySelector(".view.active svg#Layer_3");
+    if (activeLayerSvg) return activeLayerSvg;
+
+    // Third try: any .visual-map-content
     const mapContainer = document.querySelector(
       ".visual-map-content .svg-holder svg"
     );
@@ -45,31 +57,31 @@
 
     // Fallback: any SVG with id Layer_1 or Layer_3
     const inlineSvg =
-      document.querySelector("svg#Layer_1") ||
-      document.querySelector("svg#Layer_3");
+      document.querySelector("svg#Layer_3") ||
+      document.querySelector("svg#Layer_1");
     if (inlineSvg) return inlineSvg;
 
     return null;
   }
 
   /**
-   * Reset a shape to default styling
+   * Reset a shape to default styling using .style properties
    */
   function resetShapeStyle(shape) {
-    shape.setAttribute(
-      "style",
-      `fill: ${DEFAULT_FILL}; stroke: ${DEFAULT_STROKE}; stroke-miterlimit: 10; stroke-width: ${DEFAULT_STROKE_WIDTH};`
-    );
+    shape.style.fill = DEFAULT_FILL;
+    shape.style.stroke = DEFAULT_STROKE;
+    shape.style.strokeWidth = DEFAULT_STROKE_WIDTH;
+    shape.style.strokeMiterlimit = "10";
   }
 
   /**
-   * Apply highlight styling to a shape
+   * Apply highlight styling to a shape using .style properties
    */
   function highlightShapeStyle(shape) {
-    shape.setAttribute(
-      "style",
-      `fill: ${HIGHLIGHT_FILL}; stroke: ${HIGHLIGHT_STROKE}; stroke-miterlimit: 10; stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`
-    );
+    shape.style.fill = HIGHLIGHT_FILL;
+    shape.style.stroke = HIGHLIGHT_STROKE;
+    shape.style.strokeWidth = HIGHLIGHT_STROKE_WIDTH;
+    shape.style.strokeMiterlimit = "10";
   }
 
   /**
@@ -108,10 +120,18 @@
   /**
    * Highlight a specific timezone
    */
-  function highlightTimezone(timezone) {
+  function highlightTimezone(timezone, forceRefreshSvg = false) {
     if (timezone === null || timezone === undefined) return;
 
-    // If SVG not ready, store for later
+    // Store for later use (view changes)
+    lastKnownTimezone = timezone;
+
+    // Refresh SVG reference if requested or not set
+    if (forceRefreshSvg || !svgElement) {
+      svgElement = getSvgDocument();
+    }
+
+    // If SVG still not ready, store for later
     if (!svgElement) {
       pendingTimezone = timezone;
       console.log("[ZHD-Timezone] SVG not ready, queuing timezone:", timezone);
@@ -124,8 +144,8 @@
       return;
     }
 
-    // Skip if same as current
-    if (timezone === currentTimezone) return;
+    // Skip if same as current (unless forcing refresh)
+    if (timezone === currentTimezone && !forceRefreshSvg) return;
 
     // Clear only the previous highlight (not all timezones)
     clearCurrentHighlight();
@@ -165,7 +185,42 @@
         "[ZHD-Timezone] Received timezone from ranking event:",
         timezone
       );
-      highlightTimezone(timezone);
+      highlightTimezone(timezone, true); // Force refresh SVG reference
+    }
+  }
+
+  /**
+   * Handle view changes - re-apply highlight when WORLD view becomes active
+   */
+  function onViewChange(mutations) {
+    for (const mutation of mutations) {
+      if (
+        mutation.type === "attributes" &&
+        mutation.attributeName === "class"
+      ) {
+        const target = mutation.target;
+
+        // Check if a view became active
+        if (
+          target.classList.contains("view") &&
+          target.classList.contains("active")
+        ) {
+          // Check if this view contains our timezone map
+          const hasTzMap =
+            target.querySelector(".visual-map-content svg#Layer_3") ||
+            target.querySelector("svg#Layer_3");
+
+          if (hasTzMap && lastKnownTimezone !== null) {
+            console.log("[ZHD-Timezone] View changed, re-applying highlight");
+            // Small delay to ensure SVG is fully ready
+            setTimeout(() => {
+              currentTimezone = null; // Reset to force re-highlight
+              svgElement = null; // Reset SVG reference
+              highlightTimezone(lastKnownTimezone, true);
+            }, 100);
+          }
+        }
+      }
     }
   }
 
@@ -205,6 +260,15 @@
     // Listen for ranking updates (main data source)
     document.addEventListener("zhd-ranking-updated", onRankingUpdated);
 
+    // Watch for view changes (class changes on .view elements)
+    const viewObserver = new MutationObserver(onViewChange);
+    const mainElement = document.querySelector("main") || document.body;
+    viewObserver.observe(mainElement, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
     // Try to get SVG immediately
     if (initSvg()) {
       return;
@@ -221,6 +285,11 @@
       ) {
         document.removeEventListener("svg-injected", handler);
         initSvg();
+
+        // Re-apply last known timezone if available
+        if (lastKnownTimezone !== null) {
+          setTimeout(() => highlightTimezone(lastKnownTimezone, true), 100);
+        }
       }
     });
 
@@ -240,5 +309,6 @@
     clear: clearAllHighlights,
     getSvg: getSvgDocument,
     getCurrentTimezone: () => currentTimezone,
+    refresh: () => highlightTimezone(lastKnownTimezone, true),
   };
 })();
