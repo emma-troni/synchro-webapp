@@ -13,8 +13,8 @@
 
 (function () {
   // Highlight styling - more visible!
-  const HIGHLIGHT_FILL = "rgba(255, 204, 0, 0.4)"; // Semi-transparent gold/yellow
-  const HIGHLIGHT_STROKE = "#cc9900"; // Darker gold for stroke
+  const HIGHLIGHT_FILL = "#c2c2c2"; // Semi-transparent gold/yellow
+  const HIGHLIGHT_STROKE = "#1a1a1a"; // Darker gold for stroke
   const HIGHLIGHT_STROKE_WIDTH = "1.5px";
 
   // Original styling (from SVG)
@@ -73,6 +73,21 @@
   }
 
   /**
+   * Clear only the current highlighted timezone (not all)
+   */
+  function clearCurrentHighlight() {
+    if (!svgElement || currentTimezone === null) return;
+
+    const groupId = timezoneToSvgId(currentTimezone);
+    const group = svgElement.getElementById(groupId);
+    if (group) {
+      const shapes = group.querySelectorAll("polygon, rect, path");
+      shapes.forEach(resetShapeStyle);
+    }
+    currentTimezone = null;
+  }
+
+  /**
    * Clear all timezone highlights
    */
   function clearAllHighlights() {
@@ -112,15 +127,8 @@
     // Skip if same as current
     if (timezone === currentTimezone) return;
 
-    // Clear previous highlight
-    if (currentTimezone !== null) {
-      const prevGroupId = timezoneToSvgId(currentTimezone);
-      const prevGroup = svgElement.getElementById(prevGroupId);
-      if (prevGroup) {
-        const shapes = prevGroup.querySelectorAll("polygon, rect, path");
-        shapes.forEach(resetShapeStyle);
-      }
-    }
+    // Clear only the previous highlight (not all timezones)
+    clearCurrentHighlight();
 
     // Convert to SVG ID
     const groupId = timezoneToSvgId(timezone);
