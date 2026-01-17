@@ -30,10 +30,10 @@
    * ACTIVITY COLORS
    ***********************/
   const ACTIVITY_COLORS = {
-    Sleep: "#0066cc", // Blue
-    Work: "#cc0000", // Red
-    Eat: "#cccc00", // Yellow
-    Other: "#00cc66", // Green
+    Sleep: "#566CD2", // Blue
+    Work: "#A51538", // Red
+    Eat: "#E1A65E", // Yellow
+    Other: "#1A8E8F", // Green
   };
 
   const ACTIVITY_MAP = {
