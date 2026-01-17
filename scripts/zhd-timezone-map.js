@@ -1,24 +1,33 @@
 /***********************
  * ZHD-TIMEZONE-MAP.JS
  * Highlights the winning timezone on map-timezones.svg
- * Syncs with the same data source as zhd-data.js
  *
- * API returns: 1 to 24 (already converted timezone values)
+ * SYNCED WITH zhd-data.js:
+ * - Listens to 'zhd-ranking-updated' event (includes timezone)
+ * - No separate API calls - uses data from zhd-data.js
+ * - Map updates exactly when ranking updates
+ *
+ * API returns: 1 to 26 (timezone values)
  * SVG IDs: _tz1 to _tz26 (with "tz" prefix)
- * No conversion needed - API value maps directly to SVG ID
  ***********************/
 
 (function () {
-  const HIGHLIGHT_STROKE_WIDTH = "2px";
-  const POLL_INTERVAL = 3000; // 3s - synced with RANKING_REFRESH_INTERVAL
-  const DEFAULT_TIMEZONE = 21; // Japan's timezone (was UTC+9, now 9+12=21)
+  // Highlight styling - more visible!
+  const HIGHLIGHT_FILL = "rgba(255, 204, 0, 0.4)"; // Semi-transparent gold/yellow
+  const HIGHLIGHT_STROKE = "#cc9900"; // Darker gold for stroke
+  const HIGHLIGHT_STROKE_WIDTH = "1.5px";
+
+  // Original styling (from SVG)
+  const DEFAULT_FILL = "none";
+  const DEFAULT_STROKE = "#000";
+  const DEFAULT_STROKE_WIDTH = ".25px";
 
   let currentTimezone = null;
   let svgElement = null;
+  let pendingTimezone = null; // Store timezone if SVG not ready yet
 
   /**
-   * Convert API timezone (1-24) to SVG ID (_tz1 to _tz24)
-   * No offset needed - direct mapping
+   * Convert timezone (1-26) to SVG ID (_tz1 to _tz26)
    */
   function timezoneToSvgId(timezone) {
     return `_tz${timezone}`;
@@ -44,6 +53,26 @@
   }
 
   /**
+   * Reset a shape to default styling
+   */
+  function resetShapeStyle(shape) {
+    shape.setAttribute(
+      "style",
+      `fill: ${DEFAULT_FILL}; stroke: ${DEFAULT_STROKE}; stroke-miterlimit: 10; stroke-width: ${DEFAULT_STROKE_WIDTH};`
+    );
+  }
+
+  /**
+   * Apply highlight styling to a shape
+   */
+  function highlightShapeStyle(shape) {
+    shape.setAttribute(
+      "style",
+      `fill: ${HIGHLIGHT_FILL}; stroke: ${HIGHLIGHT_STROKE}; stroke-miterlimit: 10; stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`
+    );
+  }
+
+  /**
    * Clear all timezone highlights
    */
   function clearAllHighlights() {
@@ -55,28 +84,45 @@
       const group = svgElement.getElementById(groupId);
       if (group) {
         const shapes = group.querySelectorAll("polygon, rect, path");
-        shapes.forEach((shape) => {
-          const style = shape.getAttribute("style") || "";
-          const newStyle = style.replace(
-            /stroke-width:\s*[^;]+;?/gi,
-            "stroke-width: .25px;"
-          );
-          shape.setAttribute("style", newStyle);
-        });
+        shapes.forEach(resetShapeStyle);
       }
     }
+    currentTimezone = null;
   }
 
   /**
    * Highlight a specific timezone
    */
   function highlightTimezone(timezone) {
-    if (!svgElement || timezone === null || timezone === undefined) return;
+    if (timezone === null || timezone === undefined) return;
 
-    // Clear previous
-    clearAllHighlights();
+    // If SVG not ready, store for later
+    if (!svgElement) {
+      pendingTimezone = timezone;
+      console.log("[ZHD-Timezone] SVG not ready, queuing timezone:", timezone);
+      return;
+    }
 
-    // Convert to SVG ID (direct mapping, no offset)
+    // Validate timezone
+    if (timezone < 1 || timezone > 26) {
+      console.warn(`[ZHD-Timezone] Invalid timezone: ${timezone}`);
+      return;
+    }
+
+    // Skip if same as current
+    if (timezone === currentTimezone) return;
+
+    // Clear previous highlight
+    if (currentTimezone !== null) {
+      const prevGroupId = timezoneToSvgId(currentTimezone);
+      const prevGroup = svgElement.getElementById(prevGroupId);
+      if (prevGroup) {
+        const shapes = prevGroup.querySelectorAll("polygon, rect, path");
+        shapes.forEach(resetShapeStyle);
+      }
+    }
+
+    // Convert to SVG ID
     const groupId = timezoneToSvgId(timezone);
     const group = svgElement.getElementById(groupId);
 
@@ -86,23 +132,11 @@
         `[ZHD-Timezone] Found ${shapes.length} shapes in group ${groupId}`
       );
 
-      shapes.forEach((shape) => {
-        const currentStyle = shape.getAttribute("style") || "";
+      shapes.forEach(highlightShapeStyle);
 
-        let newStyle = currentStyle.replace(
-          /stroke-width:\s*[^;]+;?/gi,
-          `stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`
-        );
-
-        if (!currentStyle.includes("stroke-width:")) {
-          newStyle += ` stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`;
-        }
-
-        shape.setAttribute("style", newStyle);
-      });
-
+      currentTimezone = timezone;
       console.log(
-        `[ZHD-Timezone] Highlighted timezone ${timezone} (ID: ${groupId})`
+        `[ZHD-Timezone] Highlighted timezone ${timezone} (ID: ${groupId}) with fill: ${HIGHLIGHT_FILL}`
       );
     } else {
       console.warn(
@@ -112,66 +146,63 @@
   }
 
   /**
-   * Fetch winner timezone from API
-   * Returns DEFAULT_TIMEZONE if API fails
+   * Handle ranking update event from zhd-data.js
+   * This is the main way we receive timezone updates
    */
-  async function fetchWinnerTimezone() {
-    try {
-      const response = await fetch(
-        `${ZHD_CONFIG.SCRIPT_URL}?action=winner&t=${Date.now()}`
+  function onRankingUpdated(event) {
+    const { timezone } = event.detail;
+
+    if (timezone !== undefined && timezone !== null) {
+      console.log(
+        "[ZHD-Timezone] Received timezone from ranking event:",
+        timezone
       );
-      const data = await response.json();
-
-      console.log("[ZHD-Timezone] API response:", data);
-
-      if (data.error) {
-        console.error("[ZHD-Timezone] API error:", data.error);
-        return DEFAULT_TIMEZONE;
-      }
-
-      // API returns timezone value (1 to 24)
-      const timezone =
-        data.timezone !== undefined ? data.timezone : DEFAULT_TIMEZONE;
-
-      // Validate timezone range (1 to 26)
-      if (timezone < 1 || timezone > 26) {
-        console.error(
-          `[ZHD-Timezone] Invalid timezone value: ${timezone}, using default`
-        );
-        return DEFAULT_TIMEZONE;
-      }
-
-      return timezone;
-    } catch (error) {
-      console.error("[ZHD-Timezone] Fetch error, using default:", error);
-      return DEFAULT_TIMEZONE;
+      highlightTimezone(timezone);
     }
   }
 
   /**
-   * Update the map with current winner
+   * Initialize SVG reference
    */
-  async function updateTimezoneHighlight() {
-    const newTimezone = await fetchWinnerTimezone();
+  function initSvg() {
+    svgElement = getSvgDocument();
 
-    if (newTimezone !== null && newTimezone !== currentTimezone) {
-      currentTimezone = newTimezone;
-      highlightTimezone(currentTimezone);
+    if (svgElement) {
+      console.log("[ZHD-Timezone] SVG found");
+
+      // If we have a pending timezone, apply it now
+      if (pendingTimezone !== null) {
+        console.log(
+          "[ZHD-Timezone] Applying pending timezone:",
+          pendingTimezone
+        );
+        highlightTimezone(pendingTimezone);
+        pendingTimezone = null;
+      }
+
+      // Also check if ZHD already has timezone data
+      if (window.ZHD && window.ZHD.winnerTimezone) {
+        highlightTimezone(window.ZHD.winnerTimezone);
+      }
+
+      return true;
     }
+    return false;
   }
 
   /**
    * Initialize the timezone highlighter
    */
   function init() {
-    svgElement = getSvgDocument();
+    // Listen for ranking updates (main data source)
+    document.addEventListener("zhd-ranking-updated", onRankingUpdated);
 
-    if (svgElement) {
-      startUpdates();
+    // Try to get SVG immediately
+    if (initSvg()) {
       return;
     }
 
-    // SVG non ancora caricato: aspetta l'evento
+    // SVG not ready yet - wait for injection event
     document.addEventListener("svg-injected", function handler(e) {
       const svg = e.detail.svg;
       if (
@@ -180,30 +211,26 @@
           svg.id === "Layer_3" ||
           e.detail.container?.classList.contains("visual-map-content"))
       ) {
-        svgElement = svg;
         document.removeEventListener("svg-injected", handler);
-        startUpdates();
+        initSvg();
       }
     });
-  }
 
-  function startUpdates() {
-    console.log("[ZHD-Timezone] SVG found, starting highlight updates");
-    updateTimezoneHighlight();
-    setInterval(updateTimezoneHighlight, POLL_INTERVAL);
+    console.log("[ZHD-Timezone] Initialized, waiting for SVG and data");
   }
 
   // Start when DOM is ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
-    setTimeout(init, 100);
+    init();
   }
 
-  // Export for manual control
+  // Export for manual control / debugging
   window.ZHD_Timezone = {
     highlight: highlightTimezone,
     clear: clearAllHighlights,
-    refresh: updateTimezoneHighlight,
+    getSvg: getSvgDocument,
+    getCurrentTimezone: () => currentTimezone,
   };
 })();

@@ -196,6 +196,7 @@ const BASE_RANKING = [
 window.ZHD = {
   currentRanking: [],
   italyData: { rank: 0, score: 0, citizens: 0 },
+  winnerTimezone: null, // NEW: timezone of the winning country
   personalScore: null, // null = no user data
   userTimeline: null,
   userId: null,
@@ -327,27 +328,58 @@ function zhdUpdateItalyOnSheet(scoreItalia) {
   console.log("📤 Italy score sent:", scoreItalia.toFixed(1));
 }
 
+/**
+ * Fetch both ranking AND winner timezone in parallel
+ * This ensures they update at the same time
+ */
 async function zhdFetchServerRanking() {
   try {
-    const response = await fetch(
-      `${ZHD_CONFIG.SCRIPT_URL}?action=ranking&top=50&t=${Date.now()}`
-    );
-    const data = await response.json();
+    // Fetch ranking and winner in parallel
+    const [rankingResponse, winnerResponse] = await Promise.all([
+      fetch(`${ZHD_CONFIG.SCRIPT_URL}?action=ranking&top=50&t=${Date.now()}`),
+      fetch(`${ZHD_CONFIG.SCRIPT_URL}?action=winner&t=${Date.now()}`),
+    ]);
 
-    if (data.error) {
-      console.error("Server ranking error:", data.error);
-      return;
+    const [rankingData, winnerData] = await Promise.all([
+      rankingResponse.json(),
+      winnerResponse.json(),
+    ]);
+
+    // Process ranking data
+    if (rankingData.error) {
+      console.error("Server ranking error:", rankingData.error);
+    } else {
+      window.ZHD.currentRanking = rankingData.ranking;
+      window.ZHD.italyData = rankingData.italy;
+      zhdUpdateCountryScore();
     }
 
-    window.ZHD.currentRanking = data.ranking;
-    window.ZHD.italyData = data.italy;
+    // Process winner timezone data
+    if (winnerData.error) {
+      console.error("Server winner error:", winnerData.error);
+    } else {
+      // Validate timezone (1-26 range)
+      const tz = winnerData.timezone;
+      if (tz !== undefined && tz !== null && tz >= 1 && tz <= 26) {
+        window.ZHD.winnerTimezone = tz;
+      } else {
+        console.warn("[ZHD-Data] Invalid timezone from API:", tz);
+        // Keep previous value or use default
+        if (window.ZHD.winnerTimezone === null) {
+          window.ZHD.winnerTimezone = 21; // Default to Japan (UTC+9 = 21)
+        }
+      }
+    }
 
-    zhdUpdateCountryScore();
+    // Trigger single event with both ranking AND timezone
     zhdTriggerRankingUpdate();
 
-    console.log("🔄 Ranking updated from server:", window.ZHD.italyData.rank);
+    console.log("🔄 Ranking & Timezone updated:", {
+      rank: window.ZHD.italyData.rank,
+      timezone: window.ZHD.winnerTimezone,
+    });
   } catch (error) {
-    console.error("Failed to fetch ranking:", error);
+    console.error("Failed to fetch ranking/winner:", error);
   }
 }
 
@@ -452,6 +484,7 @@ function zhdTriggerRankingUpdate() {
     detail: {
       ranking: window.ZHD.currentRanking,
       italy: window.ZHD.italyData,
+      timezone: window.ZHD.winnerTimezone, // NEW: include timezone in event
     },
   });
   document.dispatchEvent(event);
@@ -545,7 +578,6 @@ async function zhdInit() {
     // Update UI
     zhdUpdatePersonalScore();
     zhdUpdateCountryScore();
-    zhdTriggerRankingUpdate();
 
     window.ZHD.isLoaded = true;
     window.ZHD.onDataReady.forEach((cb) => cb());
@@ -553,8 +585,11 @@ async function zhdInit() {
     // Update Italy score on sheet
     zhdUpdateItalyOnSheet(risultato.score);
 
-    // Start server ranking refresh
-    setTimeout(zhdFetchServerRanking, ZHD_CONFIG.INITIAL_DELAY);
+    // Fetch server data immediately (ranking + timezone together)
+    // This ensures the map highlights as soon as possible
+    await zhdFetchServerRanking();
+
+    // Then start periodic refresh
     setInterval(zhdFetchServerRanking, ZHD_CONFIG.RANKING_REFRESH_INTERVAL);
   } catch (error) {
     console.error("❌ ZHD init error:", error);
