@@ -6,40 +6,18 @@
  * the time of the winning country's timezone
  * (fixed at page load, doesn't update with ranking)
  *
+ * TIMEZONE MAPPING: UTC offset = timezone_id - 12
+ * Examples:
+ *   tz=1  → UTC-11
+ *   tz=12 → UTC+0
+ *   tz=13 → UTC+1 (Central Europe / Italy)
+ *   tz=14 → UTC+2 (Eastern Europe)
+ *   tz=21 → UTC+9 (Japan)
+ *   tz=24 → UTC+12
+ *
  * PREVIOUS TIME: always UTC+1 (Central Europe / Italy)
  * CURRENT TIME: winner's timezone from URL parameter
  ***********************/
-
-// Mapping timezone ID (1-26) to UTC offset in hours
-// CORRECTED: tz14 = UTC+2, etc.
-const TIMEZONE_OFFSETS = {
-  1: -12, // UTC-12 (Baker Island)
-  2: -11, // UTC-11 (American Samoa)
-  3: -10, // UTC-10 (Hawaii)
-  4: -9, // UTC-9 (Alaska)
-  5: -8, // UTC-8 (Pacific Time)
-  6: -7, // UTC-7 (Mountain Time)
-  7: -6, // UTC-6 (Central Time)
-  8: -5, // UTC-5 (Eastern Time US)
-  9: -4, // UTC-4 (Atlantic Time)
-  10: -3, // UTC-3 (Brazil)
-  11: -2, // UTC-2 (Mid-Atlantic)
-  12: -1, // UTC-1 (Azores)
-  13: 0, // UTC+0 (UK, Portugal)
-  14: 2, // UTC+2 (Eastern Europe) - CORRECTED
-  15: 3, // UTC+3 (Moscow, Middle East)
-  16: 4, // UTC+4 (Gulf)
-  17: 5, // UTC+5 (Pakistan)
-  18: 5.5, // UTC+5:30 (India)
-  19: 6, // UTC+6 (Bangladesh)
-  20: 7, // UTC+7 (Thailand, Vietnam)
-  21: 8, // UTC+8 (China, Singapore)
-  22: 9, // UTC+9 (Japan, Korea)
-  23: 10, // UTC+10 (Australia East)
-  24: 11, // UTC+11 (Solomon Islands)
-  25: 12, // UTC+12 (New Zealand)
-  26: 1, // UTC+1 (Central Europe) - Italy timezone
-};
 
 // Previous time is always UTC+1 (Italy/Central Europe)
 const PREVIOUS_TIME_OFFSET = 1;
@@ -51,11 +29,16 @@ function getTimezoneFromUrl() {
   return tz ? parseInt(tz, 10) : null;
 }
 
+// Convert timezone ID to UTC offset
+// Formula: offset = timezone_id - 12
+function timezoneToOffset(timezoneId) {
+  if (timezoneId === null || timezoneId === undefined) return null;
+  return timezoneId - 12;
+}
+
 // Store timezone at load time (doesn't change)
 const WINNER_TIMEZONE_ID = getTimezoneFromUrl();
-const WINNER_UTC_OFFSET = WINNER_TIMEZONE_ID
-  ? TIMEZONE_OFFSETS[WINNER_TIMEZONE_ID]
-  : null;
+const WINNER_UTC_OFFSET = timezoneToOffset(WINNER_TIMEZONE_ID);
 
 // Calculate time with a specific UTC offset
 function getTimeWithOffset(utcOffset) {
@@ -104,7 +87,7 @@ function updateSystemTime() {
 }
 
 // Log timezone info at startup
-if (WINNER_TIMEZONE_ID) {
+if (WINNER_TIMEZONE_ID !== null) {
   console.log(
     `[System-Time] Winner timezone: ${WINNER_TIMEZONE_ID} (UTC${
       WINNER_UTC_OFFSET >= 0 ? "+" : ""
