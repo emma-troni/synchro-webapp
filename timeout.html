@@ -212,6 +212,7 @@
               <div class="graphics-wrap final-score-half">
                 <button
                   class="graphics-inner-wrap"
+                  id="personal-measure-raggiera"
                   data-svg="./public/icons/raggiera.svg"
                 >
                   <span class="svg-holder"></span>
@@ -219,6 +220,7 @@
                 </button>
                 <button
                   class="graphics-inner-wrap"
+                  id="nation-measure-raggiera"
                   data-svg="./public/icons/raggiera.svg"
                 >
                   <span class="svg-holder"></span>
@@ -317,7 +319,9 @@
           <div class="rank-section-wrap">
             <div class="search-wrap">
               <input type="search" placeholder="Cerca qui..." />
-              <button id="search-btn" data-svg="./public/icons/search.svg"><div class="svg-holder"></div></button>
+              <button id="search-btn" data-svg="./public/icons/search.svg">
+                <div class="svg-holder"></div>
+              </button>
             </div>
             <div class="rank-content" id="complete-list">
               <!--<div class="line-ranking">
@@ -458,11 +462,11 @@
     <!--gestione overlay-->
     <script src="./scripts/overlay.js" type="module"></script>
 
-    <!--orario di sistema-->
-    <script src="./scripts/system-time.js" type="module"></script>
+    <!--orario di sistema e timezone vincente-->
+    <script src="./scripts/system-time.js"></script>
 
     <!--import svg-->
-    <script src="./scripts/svg-import.js" type="module"></script>
+    <script src="./scripts/svg-import.js"></script>
 
     <!--script gestione spa-->
     <script src="./scripts/spa.js" type="module"></script>
@@ -479,7 +483,10 @@
     <!--loader - slide animation-->
     <script src="./scripts/load-page-fadeout-dissolve.js"></script>
 
-      <!--tooltip-->
+    <!--tooltip-->
     <script src="./scripts/tooltip.js"></script>
+
+    <!--dati utente, score finale e raggiere colorate-->
+    <script src="./scripts/vote-close/timeout-data.js"></script>
   </body>
 </html>
