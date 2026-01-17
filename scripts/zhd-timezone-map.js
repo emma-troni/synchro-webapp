@@ -7,7 +7,6 @@
  ***********************/
 
 (function () {
-  const HIGHLIGHT_STROKE_COLOR = "red";
   const HIGHLIGHT_STROKE_WIDTH = "2px";
   const POLL_INTERVAL = 3000; // 3s - synced with RANKING_REFRESH_INTERVAL
   const DEFAULT_TIMEZONE = 9; // Fallback if API fails (Japan's timezone)
@@ -46,11 +45,12 @@
       if (group) {
         const shapes = group.querySelectorAll("polygon, rect, path");
         shapes.forEach((shape) => {
-          // Reset to original inline style values
+          // Reset to original stroke-width only
           const style = shape.getAttribute("style") || "";
-          const newStyle = style
-            .replace(/stroke:\s*[^;]+;?/gi, "stroke: #000;")
-            .replace(/stroke-width:\s*[^;]+;?/gi, "stroke-width: .25px;");
+          const newStyle = style.replace(
+            /stroke-width:\s*[^;]+;?/gi,
+            "stroke-width: .25px;"
+          );
           shape.setAttribute("style", newStyle);
         });
       }
@@ -77,24 +77,19 @@
       );
 
       shapes.forEach((shape, index) => {
-        // Get current inline style and replace stroke values
+        // Get current inline style and replace stroke-width only
         const currentStyle = shape.getAttribute("style") || "";
         console.log(
           `[ZHD-Timezone] Shape ${index} original style:`,
           currentStyle
         );
 
-        let newStyle = currentStyle
-          .replace(/stroke:\s*[^;]+;?/gi, `stroke: ${HIGHLIGHT_STROKE_COLOR};`)
-          .replace(
-            /stroke-width:\s*[^;]+;?/gi,
-            `stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`
-          );
+        let newStyle = currentStyle.replace(
+          /stroke-width:\s*[^;]+;?/gi,
+          `stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`
+        );
 
-        // If stroke wasn't in the style, add it
-        if (!currentStyle.includes("stroke:")) {
-          newStyle += ` stroke: ${HIGHLIGHT_STROKE_COLOR};`;
-        }
+        // If stroke-width wasn't in the style, add it
         if (!currentStyle.includes("stroke-width:")) {
           newStyle += ` stroke-width: ${HIGHLIGHT_STROKE_WIDTH};`;
         }
