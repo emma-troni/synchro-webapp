@@ -81,19 +81,19 @@
     if (personal <= 20) {
       // Score <= 20%
       message =
-        "Your final result was way too distant from the rest of your nation, with an extremely low score that barely contributed to a good position in the global rank. Your personal detachment precluded the chance of winning and determining the new unified timezone.";
+        "You resulted too detached from the rest of your nation, with an extremely low score that barely contributed to a good position in the global rank. This is going to significantly reduce your chances at determining the new unified timezone. Your personal detachment is very likely precluding the chance of winning and determining the new unified timezone.";
     } else if (personal > 20 && personal <= 50) {
       // Score 21% - 50%
       message =
-        "Your final result was too detached from the national average, as shown by your significantly low score. This contributed negatively to your nation's final position in the global rank. Even if somehow your country performed well overall, you failed to align yourself with the rest of your nation.";
+        "You resulted too detached from the national average, as shown by your significantly low score. This contributed negatively to your nation's final position in the global rank, potentially precluding the chance of winning and determining the new unified timezone. Even if somehow your country performed well overall, you still need to better align yourself with the rest of your nation.";
     } else if (personal > 50 && personal <= 80) {
       // Score 51% - 80%
       message =
-        "You showed an alignment above 50% with the measure you supplied, but this was still not enough for a significant contribution to the global rank. Your choice to misalign the measure of your day may have resulted in a great loss overall for your country.";
+        "You showed an alignment above 50%, which is still not enough for a significant contribution to the global rank. Choosing to misalign the measure of your day may result in a great loss overall and potentially precluding victory to your country. Your poor performance has probably cost you positions in the global ranking.";
     } else {
       // Score > 80%
       message =
-        "You did good, but not good enough: there was still a margin between your vote and the national average. Even the slightest disalignment could have caused your country to fall down in the ranking. Good performance overall, but it needed to be better.";
+        "You voted well, but not well enough, as shown by the margin that remains between your and your nation's measure. Keep in mind that even the slightest disalignment could cause your country to fall down in the ranking, meaning having to face the consequences of a time zone different from the one that best suits your nation's needs. Good performance overall, but still needs to be better next time.";
     }
 
     commentEl.innerHTML = `<p><span style="font-weight: 500; line-height: 1.4" class="hl-sweep">Personal statistic</span><br><br>${message}</p>`;
@@ -115,19 +115,19 @@
     if (country <= 20) {
       // Score <= 20%
       message =
-        "The final average of scores was too low, meaning an insignificant position in the ranking. Your nation showed lack of cohesion and failed to compete for the unified timezone.";
+        "The final national average is too low. The lack of alignment among the people of your country in what constitutes a good measure of a day shows that you should not have the right to impose your time as the new unified one.";
     } else if (country > 20 && country <= 50) {
       // Score 21% - 50%
       message =
-        "Your country did not perform well, showing great disalignment overall. The people of your nation showed significant differences in their measures and this impacted on the chance of winning the rank.";
+        "Your national average showed an overall disalignment. More than half of the measures were way below the optimal score, meaning that your country should not have the right to impose your time as the new unified one.";
     } else if (country > 50 && country <= 80) {
       // Score 51% - 80%
       message =
-        "More than half of your country supplied a vote that aligned over 50% to your national average. But the result overall showed that still there was a great amount of disalignment, and the final position in the rank suffered because of it.";
+        "Your nation final result shows a mediocre performance, that emphasize the need to a more unified internal measure of how you schedule your days. Still not a good enough result to determine the new universal timezone.";
     } else {
       // Score > 80%
       message =
-        "Your national alignment was promising, but a good result is still not perfect. Even the slightest misstep could have caused your country to fall behind in the final ranking.";
+        "Your final national alignment is promising, but a good result is still not perfect. Maybe a good enough result for the right to choose the new timezone but still showing that work needs to be done. An almost perfect measure is still not perfect.";
     }
 
     commentEl.innerHTML = `<p><span style="font-weight: 500; line-height: 1.4" class="hl-sweep">National statistic</span><br><br>${message}</p>`;
