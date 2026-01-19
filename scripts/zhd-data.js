@@ -2,6 +2,8 @@
  * ZHD-DATA.JS
  * Zero Hour Day - Data Integration for index.html
  * Integrates score.js and app.js logic
+ *
+ * NOTE: Comment sections are now handled by comments.js
  ***********************/
 
 /***********************
@@ -197,13 +199,13 @@ const BASE_RANKING = [
 window.ZHD = {
   currentRanking: [],
   italyData: { rank: 0, score: 0, citizens: 0 },
-  winnerTimezone: null, // NEW: timezone of the winning country
+  winnerTimezone: null, // timezone of the winning country
   personalScore: null, // null = no user data
   userTimeline: null,
   userId: null,
   isLoaded: false,
   hasUserData: false, // flag to indicate if user was found
-  onDataReady: [],
+  onDataReady: [], // callbacks to run when data is ready
 };
 
 /***********************
@@ -431,43 +433,10 @@ function zhdUpdateCountryScore() {
     );
   }
 
-  zhdUpdateCommentSection();
-
   // Trigger visual update if score-svg-display.js is loaded
   if (typeof updateCountryVisual === "function") {
     updateCountryVisual();
   }
-}
-
-function zhdUpdateCommentSection() {
-  const commentEl = document.querySelector(
-    ".comment-section-wrap .comment-content",
-  );
-  if (!commentEl) return;
-
-  // If no user data, show a different message
-  if (!window.ZHD.hasUserData || window.ZHD.personalScore === null) {
-    commentEl.textContent =
-      "No personal data available. Visit the installation to record your daily routine.";
-    return;
-  }
-
-  const personal = window.ZHD.personalScore;
-  const country = window.ZHD.italyData.score;
-  const diff = personal - country;
-
-  let message;
-  if (diff >= 0) {
-    message = `You are currently overperforming. You're ${Math.abs(
-      diff,
-    ).toFixed(0)}% above your country's average.`;
-  } else {
-    message = `You are currently underperforming. You're ${Math.abs(
-      diff,
-    ).toFixed(0)}% below your country's average.`;
-  }
-
-  commentEl.textContent = message;
 }
 
 function zhdUpdateUserId() {
@@ -607,7 +576,7 @@ async function zhdInit() {
     console.log("   Italy:", risultato.score.toFixed(1));
     console.log("   Italy Rank:", window.ZHD.italyData.rank);
 
-    // Update UI
+    // Update UI (scores only, comments handled by comments.js)
     zhdUpdatePersonalScore();
     zhdUpdateCountryScore();
 

@@ -330,22 +330,35 @@
       ".comment-section-wrap .comment-content",
     );
     if (!commentEl) return;
+
     if (personalScore === null || personalScore === undefined) {
       commentEl.textContent =
         "No personal data available. Visit the installation to record your daily routine.";
       return;
     }
-    const diff = personalScore - countryScore;
+
+    const diff = Math.abs(personalScore - countryScore)
+      .toFixed(2)
+      .replace(".", ",");
+
     let message;
-    if (diff >= 0) {
-      message = `You are currently overperforming. You're ${Math.abs(
-        diff,
-      ).toFixed(0)}% above your country's average.`;
+
+    if (personalScore <= 20) {
+      // Score <= 20%
+      message =
+        "With your measure, you appeared way too far from your national average, with almost your entire measure disaligned with everyone else's.";
+    } else if (personalScore > 20 && personalScore <= 50) {
+      // Score 21% - 50%
+      message =
+        "With your measure, you appeared way too far from your national average, with more than half of your measure disaligned with the rest of the nation.";
+    } else if (personalScore > 50 && personalScore <= 80) {
+      // Score 51% - 80%
+      message = `You are ${diff}% below the nation's average. This measure contributed in bringing down your nation's position in the final ranking.`;
     } else {
-      message = `You are currently underperforming. You're ${Math.abs(
-        diff,
-      ).toFixed(0)}% below your country's average.`;
+      // Score > 80%
+      message = `You missed perfect alignment with the national average, with a ${diff}% of difference.`;
     }
+
     commentEl.textContent = message;
   }
 
