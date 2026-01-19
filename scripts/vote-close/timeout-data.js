@@ -19,7 +19,7 @@
   const CONFIG = {
     SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
     APP_SCRIPT_ID:
-      "AKfycbzr8LnsA3ggkqV00PtW7tatUtqykH9pKZ4LpLx9GsqDMnN7XBd0lTRjxyx0rWklrDTj",
+      "AKfycbwTwB9AqmDNJhEK68L3lliDYPcKrl9x3rtoDUPdWbxF1HOFIQtZdz9E1o76YiwxL9Q5",
     SEGMENT_ID_PREFIX: "_x3C_Rettangolo",
     SEGMENT_ID_SUFFIX: "_x3E_",
     NUM_SEGMENTS: 24,
@@ -256,7 +256,7 @@
     for (let i = 0; i < CONFIG.NUM_SEGMENTS; i++) {
       const elementId = `${CONFIG.SEGMENT_ID_PREFIX}${String(i).padStart(
         2,
-        "0"
+        "0",
       )}${CONFIG.SEGMENT_ID_SUFFIX}`;
       const polygon = svgHolder.querySelector(`#${CSS.escape(elementId)}`);
       if (polygon) {
@@ -276,16 +276,16 @@
   function updatePersonalVisual(personalScore) {
     if (personalScore === null || personalScore === undefined) return;
     const activeSegments = Math.round(
-      (personalScore / 100) * CONFIG.NUM_SEGMENTS
+      (personalScore / 100) * CONFIG.NUM_SEGMENTS,
     );
     const mainContainer = document.querySelector(".internal-graphic");
     animateAlignSegments(mainContainer, activeSegments, true);
     const overlayContainer = document.querySelector(
-      "#align-personal-overlay .holder.int"
+      "#align-personal-overlay .holder.int",
     );
     animateAlignSegments(overlayContainer, activeSegments, false);
     const personalScoreEl = document.querySelector(
-      "#align-personal-overlay .view-score"
+      "#align-personal-overlay .view-score",
     );
     if (personalScoreEl)
       personalScoreEl.textContent = formatScoreItalian(personalScore);
@@ -294,16 +294,16 @@
   function updateCountryVisual(countryScore) {
     if (countryScore === null || countryScore === undefined) return;
     const activeSegments = Math.round(
-      (countryScore / 100) * CONFIG.NUM_SEGMENTS
+      (countryScore / 100) * CONFIG.NUM_SEGMENTS,
     );
     const mainContainer = document.querySelector(".external-graphic");
     animateAlignSegments(mainContainer, activeSegments, true);
     const overlayContainer = document.querySelector(
-      "#align-country-overlay .holder.ext"
+      "#align-country-overlay .holder.ext",
     );
     animateAlignSegments(overlayContainer, activeSegments, false);
     const countryScoreEl = document.querySelector(
-      "#align-country-overlay .view-score"
+      "#align-country-overlay .view-score",
     );
     if (countryScoreEl)
       countryScoreEl.textContent = formatScoreItalian(countryScore);
@@ -327,7 +327,7 @@
 
   function updateCommentSection(personalScore, countryScore) {
     const commentEl = document.querySelector(
-      ".comment-section-wrap .comment-content"
+      ".comment-section-wrap .comment-content",
     );
     if (!commentEl) return;
     if (personalScore === null || personalScore === undefined) {
@@ -339,11 +339,11 @@
     let message;
     if (diff >= 0) {
       message = `You are currently overperforming. You're ${Math.abs(
-        diff
+        diff,
       ).toFixed(0)}% above your country's average.`;
     } else {
       message = `You are currently underperforming. You're ${Math.abs(
-        diff
+        diff,
       ).toFixed(0)}% below your country's average.`;
     }
     commentEl.textContent = message;
@@ -372,7 +372,7 @@
         console.log(
           "[Timeout-Data] Fixed ranking loaded:",
           fixedRanking.length,
-          "countries"
+          "countries",
         );
       }
 
@@ -380,7 +380,7 @@
         fixedWinnerTimezone = winnerData.timezone;
         console.log(
           "[Timeout-Data] Fixed winner timezone:",
-          fixedWinnerTimezone
+          fixedWinnerTimezone,
         );
       }
 
@@ -438,7 +438,7 @@
         <div class="name-position">
           <div class="rank-position">#${String(index + 1).padStart(
             3,
-            "0"
+            "0",
           )}</div>
           <div class="country-name">${item.country}</div>
         </div>
@@ -464,7 +464,7 @@
         <div class="name-position">
           <div class="rank-position">#${String(index + 1).padStart(
             3,
-            "0"
+            "0",
           )}</div>
           <div class="country-name">${item.country}</div>
         </div>
@@ -477,7 +477,7 @@
     console.log(
       "[Timeout-Data] Complete list rendered:",
       ranking.length,
-      "countries"
+      "countries",
     );
   }
 
@@ -499,7 +499,7 @@
         shape.style.strokeMiterlimit = "10";
       });
       console.log(
-        `[Timeout-Data] Highlighted timezone ${timezone} (ID: ${groupId})`
+        `[Timeout-Data] Highlighted timezone ${timezone} (ID: ${groupId})`,
       );
     } else {
       console.warn(`[Timeout-Data] Timezone group ${groupId} not found`);
@@ -548,7 +548,7 @@
     container,
     timeline,
     useT0 = false,
-    useStagger = true
+    useStagger = true,
   ) {
     if (!container) return;
     const svgHolder = container.querySelector(".svg-holder");
@@ -559,7 +559,7 @@
     for (let hour = 0; hour < CONFIG.NUM_SEGMENTS; hour++) {
       const segmentId = `${CONFIG.SEGMENT_ID_PREFIX}${String(hour).padStart(
         2,
-        "0"
+        "0",
       )}${CONFIG.SEGMENT_ID_SUFFIX}`;
       const segment = svgHolder.querySelector(`#${CSS.escape(segmentId)}`);
 
@@ -638,7 +638,7 @@
     const scoreEl = document.getElementById("final-score");
     if (scoreEl) {
       scoreEl.innerHTML = `${formatScoreItalianNoPercent(
-        score
+        score,
       )}<span style="font-size: 3rem">%</span>`;
     }
   }
@@ -761,10 +761,13 @@
       colorRaggiera(container, userTimelineGlobal, false, true);
       personalAnimated = true;
     } else if (container?.id === "nation-measure-raggiera" && !nationAnimated) {
-      setTimeout(() => {
-        colorRaggiera(container, userTimelineGlobal, true, true);
-        nationAnimated = true;
-      }, CONFIG.NUM_SEGMENTS * CONFIG.STAGGER_DELAY + 100);
+      setTimeout(
+        () => {
+          colorRaggiera(container, userTimelineGlobal, true, true);
+          nationAnimated = true;
+        },
+        CONFIG.NUM_SEGMENTS * CONFIG.STAGGER_DELAY + 100,
+      );
     }
   }
 
@@ -772,7 +775,7 @@
     if (!userTimelineGlobal) return;
 
     const personalRaggiera = document.getElementById(
-      "personal-measure-raggiera"
+      "personal-measure-raggiera",
     );
     const nationRaggiera = document.getElementById("nation-measure-raggiera");
 

@@ -11,7 +11,7 @@
 const ZHD_CONFIG = {
   SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
   APP_SCRIPT_ID:
-    "AKfycbzr8LnsA3ggkqV00PtW7tatUtqykH9pKZ4LpLx9GsqDMnN7XBd0lTRjxyx0rWklrDTj",
+    "AKfycbwTwB9AqmDNJhEK68L3lliDYPcKrl9x3rtoDUPdWbxF1HOFIQtZdz9E1o76YiwxL9Q5",
   RANKING_REFRESH_INTERVAL: 30000,
   INITIAL_DELAY: 1000,
   EVENT_DEBOUNCE_MS: 100, // Debounce time for ranking update events
@@ -399,11 +399,11 @@ function zhdUpdatePersonalScore() {
   }
 
   const personalOverlay = document.querySelector(
-    "#align-personal-overlay .view-score"
+    "#align-personal-overlay .view-score",
   );
   if (personalOverlay) {
     personalOverlay.textContent = zhdFormatScoreItalian(
-      window.ZHD.personalScore
+      window.ZHD.personalScore,
     );
   }
 
@@ -423,11 +423,11 @@ function zhdUpdateCountryScore() {
   }
 
   const countryOverlay = document.querySelector(
-    "#align-country-overlay .view-score"
+    "#align-country-overlay .view-score",
   );
   if (countryOverlay) {
     countryOverlay.textContent = zhdFormatScoreItalian(
-      window.ZHD.italyData.score
+      window.ZHD.italyData.score,
     );
   }
 
@@ -441,7 +441,7 @@ function zhdUpdateCountryScore() {
 
 function zhdUpdateCommentSection() {
   const commentEl = document.querySelector(
-    ".comment-section-wrap .comment-content"
+    ".comment-section-wrap .comment-content",
   );
   if (!commentEl) return;
 
@@ -459,11 +459,11 @@ function zhdUpdateCommentSection() {
   let message;
   if (diff >= 0) {
     message = `You are currently overperforming. You're ${Math.abs(
-      diff
+      diff,
     ).toFixed(0)}% above your country's average.`;
   } else {
     message = `You are currently underperforming. You're ${Math.abs(
-      diff
+      diff,
     ).toFixed(0)}% below your country's average.`;
   }
 
@@ -550,7 +550,7 @@ async function zhdInit() {
     window.ZHD.currentRanking = zhdGenerateLocalRanking(risultato.score);
 
     const italyInRanking = window.ZHD.currentRanking.find(
-      (r) => r.country === "Italy"
+      (r) => r.country === "Italy",
     );
     window.ZHD.italyData = {
       rank: italyInRanking ? italyInRanking.rank : 0,
@@ -584,7 +584,7 @@ async function zhdInit() {
 
       window.ZHD.personalScore = calculateScoreVsTn(
         window.ZHD.userTimeline,
-        risultatoAltri.T_model
+        risultatoAltri.T_model,
       );
 
       console.log("✅ ZHD initialized with user data");
