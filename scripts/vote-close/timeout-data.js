@@ -10,6 +10,8 @@
  * - Updates WORLD section with fixed ranking
  * - Colors the recap raggiere based on activities
  * - Populates the comparison table
+ *
+ * NOTE: Comment sections are now handled by timeout-comments.js
  ***********************/
 
 (function () {
@@ -320,46 +322,14 @@
       const valueEl = countryBtn.querySelector(".value-percentage");
       if (valueEl) valueEl.textContent = formatScoreItalian(countryScore);
     }
-    updateCommentSection(personalScore, countryScore);
+
+    // Update comments via timeout-comments.js
+    if (window.TimeoutComments) {
+      window.TimeoutComments.setScores(personalScore, countryScore);
+    }
+
     updatePersonalVisual(personalScore);
     updateCountryVisual(countryScore);
-  }
-
-  function updateCommentSection(personalScore, countryScore) {
-    const commentEl = document.querySelector(
-      ".comment-section-wrap .comment-content",
-    );
-    if (!commentEl) return;
-
-    if (personalScore === null || personalScore === undefined) {
-      commentEl.textContent =
-        "No personal data available. Visit the installation to record your daily routine.";
-      return;
-    }
-
-    const diff = Math.abs(personalScore - countryScore)
-      .toFixed(2)
-      .replace(".", ",");
-
-    let message;
-
-    if (personalScore <= 20) {
-      // Score <= 20%
-      message =
-        "With your measure, you appeared way too far from your national average, with almost your entire measure disaligned with everyone else's.";
-    } else if (personalScore > 20 && personalScore <= 50) {
-      // Score 21% - 50%
-      message =
-        "With your measure, you appeared way too far from your national average, with more than half of your measure disaligned with the rest of the nation.";
-    } else if (personalScore > 50 && personalScore <= 80) {
-      // Score 51% - 80%
-      message = `You are ${diff}% below the nation's average. This measure contributed in bringing down your nation's position in the final ranking.`;
-    } else {
-      // Score > 80%
-      message = `You missed perfect alignment with the national average, with a ${diff}% of difference.`;
-    }
-
-    commentEl.textContent = message;
   }
 
   /***********************
