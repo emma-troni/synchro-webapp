@@ -1,136 +1,158 @@
 # Synchro Webapp
 
-Informazioni essenziali
+Una webapp front-end per la raccolta e visualizzazione di timeline e attività, con integrazione Google Sheets e Apps Script per la gestione dei dati.
 
-- Nome progetto: Synchro Webapp
-- Descrizione breve: Webapp front-end per la raccolta e visualizzazione di timeline/attività (integrazione con Google Sheets / Apps Script per dati).
-- Link al progetto su Figma: (da aggiungere)
+**URL di produzione:** [troni.it/zerohourday](https://troni.it/zerohourday/?id=00000001)
 
-Tecnologie usate
+---
 
-- JavaScript (vanilla / moduli)
-- HTML, CSS
-- Google Sheets + Google Apps Script (integrazione dati)
-- Hosting via FTP (FileZilla)
+## Tecnologie
 
-Setup locale
+| Area | Stack |
+|------|-------|
+| Frontend | HTML, CSS, JavaScript (vanilla/moduli) |
+| Backend | Google Sheets + Google Apps Script |
+| Deploy | FTP via FileZilla |
 
-Prerequisiti
+---
 
-- Node.js (consigliata LTS, es. Node 18.x)
+## Quickstart
+
+### Prerequisiti
+
+- Node.js 18.x LTS o superiore
 - npm (incluso con Node.js)
-- Accesso al Google Sheet e allo Script (per APP_SCRIPT_ID e SHEET_ID)
-- FTP credentials per deploy via FileZilla (se necessario)
+- Accesso al Google Sheet e allo Script di progetto
+- Credenziali FTP per il deploy
 
-Installazione
+### Installazione
 
-1. Clona il repository:
-   - git clone https://github.com/emma-troni/synchro-webapp.git
-2. Installa le dipendenze (se presenti):
-   - npm install
+```bash
+git clone https://github.com/emma-troni/synchro-webapp.git
+cd synchro-webapp
+npm install
+```
 
-Variabili d'ambiente
+### Configurazione
 
-- Le variabili principali utilizzate dall'app:
-  - APP_SCRIPT_ID (ID del Google Apps Script che espone l'API)
-  - SHEET_ID (ID del Google Sheet contenente i dati)
-  - NODE_ENV (opzionale)
-  - PORT (opzionale, se si usa server di sviluppo)
-- Esempio `.env.example` riportato più sotto.
+Crea un file `.env` nella root del progetto:
 
-Avvio in locale
+```env
+# ID del Google Apps Script che espone l'API
+APP_SCRIPT_ID=your_app_script_id_here
 
-- Avviare il server di sviluppo (se presente nel package.json):
-  - npm run dev
-- Se l'app è una semplice raccolta di file HTML/JS, aprire `index.html` in un server statico (es. `live-server`, `http-server`) per evitare problemi CORS.
+# ID del Google Sheet contenente i dati
+SHEET_ID=your_sheet_id_here
 
-Architettura
+# Opzionali
+NODE_ENV=development
+PORT=3000
+```
 
-Struttura delle directory principali (principale osservata nel repository)
+> **Nota:** Attualmente gli ID sono hardcoded in alcuni file. Vedi la sezione [Configurazione ID](#configurazione-id) per i dettagli.
 
-- scripts/ — script JavaScript (es. integrazione dati)
-  - scripts/zhd-data.js
-  - scripts/vote-close/timeout-data.js
-- index.html — pagina principale
-- timeout.html — pagina di chiusura/votazione (es.)
-- css/ o styles/ — fogli di stile CSS
-- assets/ — immagini e risorse statiche
+### Avvio
 
-Pattern architetturali usati
+```bash
+npm run dev
+```
 
-- Front-end statico basato su file HTML/CSS/JS.
-- Pattern modulare semplice lato JS (file separati per funzionalità).
-- Integrazione esterna tramite chiamate a Google Apps Script → Google Sheets (sostituisce un backend tradizionale).
+In alternativa, per progetti statici senza server di sviluppo:
 
-Integrazione con servizi esterni
+```bash
+npx live-server
+```
 
-- Google Sheets (come fonte dati)
-- Google Apps Script (API pubblica/exec dello script)
-- Hosting via FTP (FileZilla) per il deploy su server di produzione
+---
 
-Development
+## Struttura del progetto
 
-Test
+```
+synchro-webapp/
+├── index.html              # Pagina principale
+├── timeout.html            # Pagina di chiusura/votazione
+├── scripts/
+│   ├── zhd-data.js         # Integrazione dati principale
+│   └── vote-close/
+│       └── timeout-data.js # Gestione timeout votazioni
+├── css/                    # Fogli di stile
+└── assets/                 # Immagini e risorse statiche
+```
 
-- Non sono stati trovati test automatici nel repository. Se desideri, posso aiutare ad aggiungere test (es. Jest per funzioni JS).
+---
 
-Linting / formatting
+## Architettura
 
-- Non sono stati trovati file di configurazione per ESLint/Prettier. Consiglio di aggiungere:
-  - npm install --save-dev eslint prettier
-  - Configurare script in `package.json`: `lint`, `format`
+L'applicazione segue un pattern front-end statico con backend serverless:
 
-Deployment
+1. **Frontend** — File HTML/CSS/JS serviti staticamente
+2. **API Layer** — Google Apps Script espone endpoint REST-like
+3. **Database** — Google Sheets come fonte dati strutturata
 
-Dove è hostato
+```
+┌──────────┐     HTTP      ┌─────────────────┐     API      ┌──────────────┐
+│ Frontend │ ───────────▶  │ Apps Script     │ ──────────▶  │ Google Sheet │
+│ (HTML/JS)│               │ (Web App)       │              │ (Database)   │
+└──────────┘               └─────────────────┘              └──────────────┘
+```
 
-- Deploy via FileZilla (FTP) verso il server di produzione.
+---
 
-URL di produzione
+## Configurazione ID
 
-- https://troni.it/zerohourday/?id=00000001
+Gli ID di Google Apps Script e Google Sheet sono attualmente hardcoded nei seguenti file:
 
-CI/CD
+| File | Variabili |
+|------|-----------|
+| [`scripts/zhd-data.js`](https://github.com/emma-troni/synchro-webapp/blob/main/scripts/zhd-data.js) | `SHEET_ID`, `APP_SCRIPT_ID` |
+| [`scripts/vote-close/timeout-data.js`](https://github.com/emma-troni/synchro-webapp/blob/main/scripts/vote-close/timeout-data.js) | `SHEET_ID`, `APP_SCRIPT_ID` |
 
-- Non risultano workflow GitHub Actions nel repository. Se vuoi, posso aggiungere un workflow di deploy automatico (per esempio: build → upload via FTP o deploy su hosting statico).
+Per aggiornare, sostituisci i valori esistenti con i tuoi ID personali.
 
-Opzionale ma utile
+> **Ricerca nel codice:** [Trova tutte le occorrenze](https://github.com/emma-troni/synchro-webapp/search?q=APP_SCRIPT_ID+OR+SHEET_ID&type=code)
 
-API documentation
+---
 
-- Al momento non è fornita documentazione Swagger/Postman. La "API" esterna è l'Apps Script che riceve richieste: documentare endpoint, parametri e formato risposta è consigliato.
+## Deploy
 
-Troubleshooting comuni
+Il deploy avviene via FTP utilizzando FileZilla:
 
-- Problema: pagine non caricano dati → controllare che `APP_SCRIPT_ID` e `SHEET_ID` siano corretti e che lo script abbia permessi pubblici o accesso adeguato.
-- Problema: CORS o blocco richieste → verificare che lo script Google sia pubblicato come "esegui come me" / accessibile.
-- Problema: deploy non aggiornato → verificare che i file aggiornati siano stati correttamente caricati via FTP.
+1. Connettiti al server con le credenziali FTP
+2. Carica i file aggiornati nella directory di produzione
+3. Verifica che le modifiche siano visibili sul sito
 
-Come contribuire (se open source)
+---
 
-- Fork del repository → branch di feature → PR con descrizione chiara delle modifiche.
-- Aggiungere test e linting per uniformità.
-- Aggiornare la documentazione (README + .env.example).
+## Troubleshooting
 
-License
+| Problema | Soluzione |
+|----------|-----------|
+| I dati non si caricano | Verifica che `APP_SCRIPT_ID` e `SHEET_ID` siano corretti e che lo script abbia i permessi adeguati |
+| Errori CORS | Assicurati che lo script Google sia pubblicato come "Esegui come me" con accesso "Chiunque" |
+| Deploy non aggiornato | Controlla che tutti i file siano stati caricati correttamente via FTP e svuota la cache del browser |
 
-- Aggiungere file LICENSE nel repository (es. MIT) se vuoi rendere il progetto open source.
+---
 
-Aggiornare APP_SCRIPT_ID e SHEET_ID
+## Roadmap
 
-- I valori di `APP_SCRIPT_ID` e `SHEET_ID` sono hard-coded in alcuni file JS. Aggiornare gli ID in questi file:
-  - scripts/zhd-data.js
-    - Link: https://github.com/emma-troni/synchro-webapp/blob/main/scripts/zhd-data.js
-  - scripts/vote-close/timeout-data.js
-    - Link: https://github.com/emma-troni/synchro-webapp/blob/main/scripts/vote-close/timeout-data.js
+- [ ] Aggiungere gestione variabili d'ambiente con script di build
+- [ ] Configurare ESLint e Prettier per code quality
+- [ ] Implementare test automatici (Jest)
+- [ ] Setup CI/CD con GitHub Actions
+- [ ] Documentare API (Swagger/Postman)
 
-Esempio di sostituzione:
+---
 
-- Sostituire:
-  - SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk"
-  - APP_SCRIPT_ID: "AKfycbzr8LnsA3ggkqV00PtW7tatUtqykH9pKZ4LpLx9GsqDMnN7XBd0lTRjxyx0rWklrDTj"
-- Con i vostri ID (o gestirli tramite un file `.env` e un semplice script di build che li inietta).
+## Contributing
 
-Note sulla ricerca codice
+1. Fai un fork del repository
+2. Crea un branch per la tua feature (`git checkout -b feature/nome-feature`)
+3. Committa le modifiche (`git commit -m 'Aggiunge nuova feature'`)
+4. Pusha il branch (`git push origin feature/nome-feature`)
+5. Apri una Pull Request
 
-- Ho cercato nel repository per trovare le occorrenze di `APP_SCRIPT_ID` e `SHEET_ID` e ho trovato almeno i file elencati sopra. I risultati della ricerca possono essere incompleti; per vedere più risultati usa la ricerca codice di GitHub: https://github.com/emma-troni/synchro-webapp/search?q=APP_SCRIPT_ID+OR+SHEET_ID&type=code
+---
+
+## License
+
+Questo progetto è distribuito sotto licenza MIT. Vedi il file [LICENSE](LICENSE) per i dettagli.
