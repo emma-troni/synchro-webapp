@@ -32,10 +32,10 @@
 
 .name-tag {
   text-transform: uppercase;
-  font-family: "helvetica-neue-lt-pro-cond", sans-serif;
-  font-size: 1rem;
+  font-family: "helvetica-neue-lt-pro", sans-serif;
+  font-size: 0.8rem;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: -2%;
   display: flex;
   flex-direction: row;

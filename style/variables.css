@@ -16,7 +16,7 @@ textarea {
   --secondary-color: #1a1a1a;
   --secondary-color-opacity: rgba(26, 26, 26, 0.3);
 
-  --border: 1.5px solid var(--secondary-color);
+  --border: 1.5px solid var(--secondary-color-opacity);
   --width: calc(100% - 40px);
   --width-small: calc(100% - 20px);
   --vh: 100vh;

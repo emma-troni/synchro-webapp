@@ -157,7 +157,9 @@
 footer {
   width: 100%;
   height: 8%;
-  border-top: var(--border);
+  /*
+  border-top: var(--border);*/
+  border: none;
   display: flex;
   flex-direction: row;
   align-items: center;

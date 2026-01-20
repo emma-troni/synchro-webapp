@@ -51,27 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ===================== POSIZIONE TIMER ====================== */
 
-  function updateTimerPosition() {
-    const activeView = document.querySelector(".view.active");
-
-    if (!activeView) return;
-
-    if (activeView.id === "recap-lock") {
-      // Mostra il timer nel recap
-      recapTimerContent.appendChild(timer);
-      if (headerTimerText) headerTimerText.style.display = "none";
-    } else if (activeView.id === "recap-unlock") {
-      // Rimuovi il timer dal DOM
-      if (timer.parentNode) timer.parentNode.removeChild(timer);
-    } else if (activeView.id === "final-vote-overlay") {
-      // Rimuovi il timer dal DOM
-      if (timer.parentNode) timer.parentNode.removeChild(timer);
-    } else {
-      // Timer normale in header
-      headerTimerSpace.appendChild(timer);
-      if (headerTimerText) headerTimerText.style.display = "";
-    }
-  }
 
   /* ===================== NAVIGAZIONE ====================== */
 
