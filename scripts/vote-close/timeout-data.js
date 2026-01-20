@@ -11,7 +11,7 @@
  * - Colors the recap raggiere based on activities
  * - Populates the comparison table
  *
- * NOTE: Comment sections are now handled by timeout-comments.js
+ * NOTE: Comment sections are handled by timeout-comments.js
  ***********************/
 
 (function () {
@@ -300,10 +300,13 @@
     );
     const mainContainer = document.querySelector(".external-graphic");
     animateAlignSegments(mainContainer, activeSegments, true);
-    const overlayContainer = document.querySelector(
+
+    // Update BOTH ext raggiera in country overlay
+    const overlayContainerExt = document.querySelector(
       "#align-country-overlay .holder.ext",
     );
-    animateAlignSegments(overlayContainer, activeSegments, false);
+    animateAlignSegments(overlayContainerExt, activeSegments, false);
+
     const countryScoreEl = document.querySelector(
       "#align-country-overlay .view-score",
     );
@@ -323,9 +326,19 @@
       if (valueEl) valueEl.textContent = formatScoreItalian(countryScore);
     }
 
-    // Update comments via timeout-comments.js
-    if (window.TimeoutComments) {
+    // Update ALL comments via timeout-comments.js
+    if (
+      window.TimeoutComments &&
+      typeof window.TimeoutComments.setScores === "function"
+    ) {
       window.TimeoutComments.setScores(personalScore, countryScore);
+      console.log(
+        "[Timeout-Data] Comments updated via TimeoutComments.setScores()",
+      );
+    } else {
+      console.warn(
+        "[Timeout-Data] TimeoutComments not available - make sure timeout-comments.js is loaded BEFORE timeout-data.js",
+      );
     }
 
     updatePersonalVisual(personalScore);
