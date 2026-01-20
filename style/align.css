@@ -11,6 +11,10 @@
 
 /*==============================================*/
 
+#alignment .content {
+  justify-content: center;
+}
+
 .content .alignment-content {
   width: 100%;
   height: 80%;
@@ -58,7 +62,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-
 }
 
 .align-values .value {
@@ -72,7 +75,6 @@
   align-items: start;
   gap: 8px;
   border: none;
-
 }
 
 .value-name {
@@ -111,10 +113,8 @@
   width: calc(100% - 40px);
   height: fit-content;
   /*border-top: var(--border);*/
-  
 }
 .comment-section-wrap .comment-content {
-  
   width: calc(100% - 40px);
   /* height: calc(100%);*/
   display: flex;
@@ -128,7 +128,8 @@
   letter-spacing: -0%;
   line-height: 1;
   overflow: hidden;
-  border: 1px solid black;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 /*
@@ -210,7 +211,6 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
     justify-content: center;
     align-items: start;
     gap: 8px;
-
   }
 
   .value-name {
