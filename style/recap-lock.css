@@ -9,7 +9,7 @@
 
 .content .recap-lock-content {
   width: 100%;
-  height: calc(100% - 10vh);
+  height: 100%;
 }
 
 .content .recap-lock-content .recap-graphic {
@@ -77,7 +77,7 @@
 
 .specifics-recap {
   font-size: 0.9rem;
-  text-align: justify;
+  text-align: left;
 }
 
 /*==============================================*/
@@ -103,7 +103,7 @@
   font-size: 1rem;
   letter-spacing: -3%;
   line-height: 1;
-  text-align: center;
+  text-align: left;
 }
 
 .timer-section-wrap #timer {
@@ -184,7 +184,7 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
 
 .content .recap-lock-content .recap-text {
   width: 90%;
-  text-align: center;
+  text-align: left;
   font-weight: 400;
   letter-spacing: -3%;
   font-size: 1.4rem;
@@ -202,7 +202,7 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
 
 .specifics-recap {
   font-size: 0.8rem;
-  text-align: justify;
+  text-align: left;
 }
 
 /*==============================================*/
@@ -228,7 +228,7 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
   font-size: 0.9rem;
   letter-spacing: -3%;
   line-height: 1;
-  text-align: center;
+  text-align: left;
 }
 
 .timer-section-wrap #timer {
