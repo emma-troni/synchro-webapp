@@ -82,7 +82,6 @@
 
 #world .rank-content .line-ranking {
   width: 100%;
-  margin-top: 8px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -103,21 +102,24 @@
   font-size: 0.8rem;
   letter-spacing: -3%;
   font-weight: 500;
+  line-height: 1.2;
 }
 
 #world .name-position .country-name {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   letter-spacing: -3%;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 #world .country-rank-score {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   letter-spacing: -3%;
   font-weight: 500;
+  line-height: 1.2;
 }
 
 /*==============================================*/
