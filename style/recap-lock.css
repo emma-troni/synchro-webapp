@@ -69,6 +69,9 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.3);
+  border-top: 1px solid rgba(26, 26, 26, 0.3);
+  padding: 20px 0;
 }
 .content .recap-lock-content .recap-text p {
   padding: 0;
@@ -119,10 +122,6 @@
   opacity: 0.4;
 }
 
-
-
-
-
 /*
 =================================
 =================================
@@ -135,112 +134,112 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
 
 @media screen and (max-width: 380px) {
   .content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-/*==============================================*/
+  /*==============================================*/
 
-.content .recap-lock-content {
-  width: 100%;
-  height: calc(100% - 10vh);
-}
+  .content .recap-lock-content {
+    width: 100%;
+    height: calc(100% - 10vh);
+  }
 
-.content .recap-lock-content .recap-graphic {
-  width: var(--width);
-  padding: var(--padding);
-  height: calc(100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  position: relative;
-}
+  .content .recap-lock-content .recap-graphic {
+    width: var(--width);
+    padding: var(--padding);
+    height: calc(100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    position: relative;
+  }
 
-.content .recap-lock-content .recap-graphic .lock {
-  height: 3.4rem;
-  width: 3.4rem;
-  position: absolute;
-}
+  .content .recap-lock-content .recap-graphic .lock {
+    height: 3.4rem;
+    width: 3.4rem;
+    position: absolute;
+  }
 
-.content .recap-lock-content .recap-graphic .lock svg {
-  height: 100%;
-  width: 100%;
-}
+  .content .recap-lock-content .recap-graphic .lock svg {
+    height: 100%;
+    width: 100%;
+  }
 
-.content .recap-lock-content .recap-graphic .wait {
-  height: 10rem;
-  width: 10rem;
-  position: absolute;
-}
+  .content .recap-lock-content .recap-graphic .wait {
+    height: 10rem;
+    width: 10rem;
+    position: absolute;
+  }
 
-.content .recap-lock-content .recap-graphic .wait svg {
-  height: 100%;
-  width: 100%;
-}
+  .content .recap-lock-content .recap-graphic .wait svg {
+    height: 100%;
+    width: 100%;
+  }
 
-.content .recap-lock-content .recap-text {
-  width: 90%;
-  text-align: left;
-  font-weight: 400;
-  letter-spacing: -3%;
-  font-size: 1.4rem;
-  line-height: 1;
-  position: absolute;
-  bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.content .recap-lock-content .recap-text p {
-  padding: 0;
-  margin: 0;
-}
+  .content .recap-lock-content .recap-text {
+    width: 90%;
+    text-align: left;
+    font-weight: 400;
+    letter-spacing: -3%;
+    font-size: 1.4rem;
+    line-height: 1;
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .content .recap-lock-content .recap-text p {
+    padding: 0;
+    margin: 0;
+  }
 
-.specifics-recap {
-  font-size: 0.8rem;
-  text-align: left;
-}
+  .specifics-recap {
+    font-size: 0.8rem;
+    text-align: left;
+  }
 
-/*==============================================*/
-.content .timer-section-wrap {
-  width: 100%;
-  height: 10vh;
-  border-top: var(--border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.timer-section-wrap .timer-content {
-  width: calc(100% - 40px);
-  height: calc(100% - 20px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--padding);
-  font-style: normal;
-  font-weight: 400;
-  font-size: 0.9rem;
-  letter-spacing: -3%;
-  line-height: 1;
-  text-align: left;
-}
+  /*==============================================*/
+  .content .timer-section-wrap {
+    width: 100%;
+    height: 10vh;
+    border-top: var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .timer-section-wrap .timer-content {
+    width: calc(100% - 40px);
+    height: calc(100% - 20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.9rem;
+    letter-spacing: -3%;
+    line-height: 1;
+    text-align: left;
+  }
 
-.timer-section-wrap #timer {
-  font-size: 2.8rem;
-  font-weight: bold;
-  padding: 0;
-  margin: 0;
-}
+  .timer-section-wrap #timer {
+    font-size: 2.8rem;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+  }
 
-/*==============================================*/
+  /*==============================================*/
 
-#recap-lock button a {
-  opacity: 0.4;
-}
+  #recap-lock button a {
+    opacity: 0.4;
+  }
 }
