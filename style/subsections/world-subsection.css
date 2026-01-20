@@ -3,7 +3,7 @@
 /*==============================================*/
 
 /*============== personal overlay =====================*/
-#world-rank-overlay .upper-content-wrap {
+#world .upper-content-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,7 +15,7 @@
 
 /*==============================================*/
 
-#world-rank-overlay .upper-content-wrap .rank-header-content {
+#world .upper-content-wrap .rank-header-content {
   padding: var(--padding-vertical);
   width: var(--width);
   display: flex;
@@ -25,7 +25,7 @@
   justify-content: flex-start;
 }
 
-#world-rank-overlay .upper-content-wrap button {
+#world .upper-content-wrap button {
   width: 44px;
   aspect-ratio: 1/1;
   border-radius: 0;
@@ -35,7 +35,7 @@
   position: relative;
 }
 
-#world-rank-overlay .upper-content-wrap .header-text {
+#world .upper-content-wrap .header-text {
   font-style: normal;
   font-weight: 500;
   font-size: 140%;
@@ -45,7 +45,7 @@
 }
 
 /*==============================================*/
-#world-rank-overlay .rank-section-wrap {
+#world .rank-section-wrap {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -55,7 +55,7 @@
   border-top: var(--border);
 }
 
-#world-rank-overlay .rank-section-wrap .rank-content {
+#world .rank-section-wrap .rank-content {
   flex: 1; /* occupa tutto lo spazio disponibile */
   display: flex;
   flex-direction: column;
@@ -76,11 +76,11 @@
   -ms-overflow-style: none; /* IE / Edge legacy */
 }
 
-#world-rank-overlay .rank-content::-webkit-scrollbar {
+#world .rank-content::-webkit-scrollbar {
   display: none;
 }
 
-#world-rank-overlay .rank-content .line-ranking {
+#world .rank-content .line-ranking {
   width: 100%;
   margin-top: 8px;
   display: flex;
@@ -90,7 +90,7 @@
   height: fit-content;
 }
 
-#world-rank-overlay .line-ranking .name-position {
+#world .line-ranking .name-position {
   display: flex;
   flex-direction: row;
   align-items: baseline;
@@ -99,13 +99,13 @@
   height: fit-content;
 }
 
-#world-rank-overlay .name-position .rank-position {
+#world .name-position .rank-position {
   font-size: 0.8rem;
   letter-spacing: -3%;
   font-weight: 500;
 }
 
-#world-rank-overlay .name-position .country-name {
+#world .name-position .country-name {
   font-size: 1.8rem;
   letter-spacing: -3%;
   font-weight: 500;
@@ -114,14 +114,14 @@
   text-overflow: ellipsis;
 }
 
-#world-rank-overlay .country-rank-score {
+#world .country-rank-score {
   font-size: 1.8rem;
   letter-spacing: -3%;
   font-weight: 500;
 }
 
 /*==============================================*/
-#world-rank-overlay .upper-content-wrap .search-wrap {
+#world .upper-content-wrap .search-wrap {
   height: 15%;
   padding: var(--padding);
   width: var(--width);
@@ -131,7 +131,7 @@
   align-items: center;
   justify-content: space-between;
 }
-#world-rank-overlay .upper-content-wrap .search-wrap input {
+#world .upper-content-wrap .search-wrap input {
   border: var(--border);
   border-radius: 0;
   width: 80%;
@@ -139,11 +139,11 @@
   color: var(--secondary-color);
 }
 
-#world-rank-overlay .upper-content-wrap .search-wrap input::placeholder {
+#world .upper-content-wrap .search-wrap input::placeholder {
   text-indent: 4px;
 }
 
-#world-rank-overlay .upper-content-wrap .search-wrap button {
+#world .upper-content-wrap .search-wrap button {
   height: 44px;
   aspect-ratio: 1;
   border: var(--border);
@@ -152,7 +152,7 @@
 
 /*===========================================*/
 
-.searched {
+ .searched {
  background: rgba(0, 0, 0, 0.3);
   transition: background-color 0.3s ease;
 }
