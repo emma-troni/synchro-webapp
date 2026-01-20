@@ -1,3 +1,11 @@
+/***********************
+ * TIMER.JS
+ * Updates the timer
+ * that indicates the ending of
+ * Zero hour day election
+ * TIMER FORMAT --> hh:mm:ss
+ ***********************/
+
 document.addEventListener("DOMContentLoaded", () => {
   /* ===================== ELEMENTI DOM ====================== */
 
