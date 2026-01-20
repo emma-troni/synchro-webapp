@@ -52,7 +52,7 @@
   height: calc(
     100%
   ); /* lascia un margine per header, se vuoi usa auto */
-  border-top: var(--border);
+  
 }
 
 #world .rank-section-wrap .rank-content {
@@ -121,7 +121,7 @@
 }
 
 /*==============================================*/
-#world .upper-content-wrap .search-wrap {
+#world .search-wrap {
   height: 15%;
   padding: var(--padding);
   width: var(--width);
@@ -131,19 +131,19 @@
   align-items: center;
   justify-content: space-between;
 }
-#world .upper-content-wrap .search-wrap input {
+#world .search-wrap input {
   border: var(--border);
   border-radius: 0;
-  width: 80%;
+  width: 100%;
   height: 44px;
   color: var(--secondary-color);
 }
 
-#world .upper-content-wrap .search-wrap input::placeholder {
+#world .search-wrap input::placeholder {
   text-indent: 4px;
 }
 
-#world .upper-content-wrap .search-wrap button {
+#world .search-wrap button {
   height: 44px;
   aspect-ratio: 1;
   border: var(--border);
