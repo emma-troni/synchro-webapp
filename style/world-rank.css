@@ -12,7 +12,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  height: 84%;
+
   overflow: hidden; /* blocca scroll */
 }
 
@@ -20,11 +20,12 @@
 
 .content .visual-map-content {
   width: 100%;
-  height: 80%;
+  height: 50vh;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   position: relative;
   overflow: hidden;
 }
@@ -37,7 +38,7 @@
 }
 
 .content .visual-map-content span svg {
-  width: 100%;
+  width: 100vw;
   height: 100%;
   object-fit: contain;
 }
@@ -57,7 +58,7 @@
 
 .rank-section-wrap .rank-content {
   flex: 1 1 auto;
-  min-height: 0;       /* fondamentale per scroll */
+  min-height: 0; /* fondamentale per scroll */
   width: calc(100% - 48px);
   padding: var(--padding);
   padding-bottom: 64px; /* evita taglio ultimo elemento */
@@ -146,13 +147,12 @@
 
 #world footer {
   overflow: hidden; /* impedisce scroll footer */
-  flex-shrink: 0;   /* evita che venga compresso */
+  flex-shrink: 0; /* evita che venga compresso */
 }
 
 /* ===========================
    FOOTER
 =========================== */
-
 
 footer {
   width: 100%;
