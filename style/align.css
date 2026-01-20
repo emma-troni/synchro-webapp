@@ -89,6 +89,7 @@
   flex-direction: row;
   gap: 8px;
   width: fit-content;
+  width: 100%;
 }
 
 .value-percentage {
