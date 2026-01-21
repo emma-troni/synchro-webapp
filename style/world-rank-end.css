@@ -49,8 +49,10 @@
   min-height: 0; /* importante */
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   border-top: var(--border);
   overflow: hidden;
+  height: 40vh;
 }
 
 /*=============== RANK CONTENT ===============*/
@@ -75,6 +77,7 @@
 
   scrollbar-width: none;
   -ms-overflow-style: none;
+
 }
 
 .rank-content::-webkit-scrollbar {
