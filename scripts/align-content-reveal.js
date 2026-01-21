@@ -7,6 +7,8 @@
   const COMMENT_DELAY = 1000; // dopo raggiera esterna prima di comment (ms)
   const REVEAL_DURATION = 600; // durata delle animazioni (ms)
   const SEGMENT_TRANSITION_DURATION = 800; // DURATA ill-opacity svgs (ms)
+  const SCROLL_BANNER_DELAY = 500; // delay dopo comment prima del banner scroll (ms)
+  const SCROLL_BANNER_DURATION = 2000; // durata visibilità del banner scroll (ms)
 
   let hasRevealed = false; // ensures animation only runs once
 
@@ -15,7 +17,7 @@
   const personalValueBtn = document.getElementById("personal-value-btn");
   const countryValueBtn = document.getElementById("country-value-btn");
   const commentContent = document.querySelector(
-    ".comment-section-wrap .comment-content"
+    ".comment-section-wrap .comment-content",
   );
 
   // Hide graphics initially
@@ -44,6 +46,51 @@
   if (commentContent) {
     commentContent.style.opacity = "0";
     commentContent.style.transition = `opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+  }
+
+  // Create and show scroll banner
+  function showScrollBanner() {
+    const alignmentSection = document.getElementById("alignment");
+    if (!alignmentSection) return;
+
+    // Create banner element
+    const scrollBanner = document.createElement("div");
+    scrollBanner.className = "scroll-banner";
+    scrollBanner.textContent = "scroll ↓";
+    scrollBanner.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: #f0f0f0;
+      padding: 12px 24px;
+      font-family: "helvetica-neue-lt-pro", sans-serif;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0;
+      transition: opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+      pointer-events: none;
+    `;
+
+    alignmentSection.appendChild(scrollBanner);
+
+    // Fade in
+    requestAnimationFrame(() => {
+      scrollBanner.style.opacity = "1";
+    });
+
+    // Fade out and remove after duration
+    setTimeout(() => {
+      scrollBanner.style.opacity = "0";
+      setTimeout(() => {
+        if (scrollBanner.parentNode) {
+          scrollBanner.parentNode.removeChild(scrollBanner);
+        }
+      }, REVEAL_DURATION);
+    }, SCROLL_BANNER_DURATION);
   }
 
   // Setup SVG segment transitions
@@ -87,6 +134,11 @@
           if (commentContent) {
             commentContent.style.opacity = "1";
           }
+
+          // Show scroll banner after comment content appears
+          setTimeout(() => {
+            showScrollBanner();
+          }, SCROLL_BANNER_DELAY);
         }, COMMENT_DELAY);
       }, EXTERNAL_DELAY);
     }, INTERNAL_DELAY);
