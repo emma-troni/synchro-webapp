@@ -52,7 +52,7 @@
   height: calc(
     100%
   ); /* lascia un margine per header, se vuoi usa auto */
-  border-top: var(--border);
+  
 }
 
 #world .rank-section-wrap .rank-content {
@@ -62,7 +62,7 @@
   overflow-y: auto; /* scroll verticale */
   padding: var(--padding);
   width: calc(100% - 40px);
-  height: calc(100%);
+  height: 50vh;
   align-items: left;
   justify-content: start;
   padding: var(--padding);
@@ -82,7 +82,6 @@
 
 #world .rank-content .line-ranking {
   width: 100%;
-  margin-top: 8px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -103,25 +102,28 @@
   font-size: 0.8rem;
   letter-spacing: -3%;
   font-weight: 500;
+  line-height: 1.2;
 }
 
 #world .name-position .country-name {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   letter-spacing: -3%;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 #world .country-rank-score {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   letter-spacing: -3%;
   font-weight: 500;
+  line-height: 1.2;
 }
 
 /*==============================================*/
-#world .upper-content-wrap .search-wrap {
+#world .search-wrap {
   height: 15%;
   padding: var(--padding);
   width: var(--width);
@@ -131,19 +133,19 @@
   align-items: center;
   justify-content: space-between;
 }
-#world .upper-content-wrap .search-wrap input {
+#world .search-wrap input {
   border: var(--border);
   border-radius: 0;
-  width: 80%;
+  width: 100%;
   height: 44px;
   color: var(--secondary-color);
 }
 
-#world .upper-content-wrap .search-wrap input::placeholder {
+#world .search-wrap input::placeholder {
   text-indent: 4px;
 }
 
-#world .upper-content-wrap .search-wrap button {
+#world .search-wrap button {
   height: 44px;
   aspect-ratio: 1;
   border: var(--border);
