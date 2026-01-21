@@ -61,7 +61,7 @@
   padding: var(--padding);
   font-style: normal;
   font-weight: 500;
-  font-size: 1.7rem;
+  font-size: 1rem;
   letter-spacing: -3%;
   line-height: 1;
   overflow: auto; /* o scroll */
