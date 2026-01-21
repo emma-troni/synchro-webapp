@@ -14,7 +14,6 @@
   justify-content: space-between;
   height: 84%;
   overflow: hidden; /* blocca scroll */
-  
 }
 
 /*==============================================*/
@@ -41,7 +40,6 @@
   height: 100%;
   width: 100%;
 }
-
 
 /*=============== RANK CONTENT ===============*/
 
@@ -134,7 +132,6 @@
   justify-content: flex-start;
   border-top: var(--border);
   border-bottom: var(--border);
-
 }
 
 .rank-section-wrap button {
@@ -165,7 +162,6 @@
    FOOTER
 =========================== */
 
-
 footer {
   width: 100%;
   height: 8%;
@@ -174,18 +170,6 @@ footer {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-}
-
-footer button {
-  background: none;
-  border: none;
-  text-decoration: none;
-  padding: var(--padding-vertical);
-  color: var(--secondary-color);
-  -webkit-tap-highlight-color: transparent; /* iOS / Safari */
-  -webkit-touch-callout: none; /* menu copia/incolla */
-  user-select: none; /* niente selezione testo */
-  touch-action: manipulation;
 }
 
 /*=============== MARQUEE ===============*/

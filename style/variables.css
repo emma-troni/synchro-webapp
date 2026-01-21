@@ -45,10 +45,6 @@ button:active {
   background: none;
 }
 
-
-
-
-
 /* ================================
    TOOLTIP – fixed (no flow)
 ================================ */
@@ -81,4 +77,16 @@ button:active {
 .app-tooltip.is-visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+#overlay-open-btn {
+  background: none;
+  border: none;
+  text-decoration: none;
+  padding: var(--padding-vertical);
+  color: var(--secondary-color);
+  -webkit-tap-highlight-color: transparent; /* iOS / Safari */
+  -webkit-touch-callout: none; /* menu copia/incolla */
+  user-select: none; /* niente selezione testo */
+  touch-action: manipulation;
 }
