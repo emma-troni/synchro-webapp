@@ -17,13 +17,14 @@
 
 .content .alignment-content {
   width: 100%;
-  height: 80%;
+  flex-shrink: 0;
 }
 
 .content .alignment-content .align-graphic {
   width: var(--width);
   padding: var(--padding);
-  height: calc(100% - 24%);
+  height: 45vh;
+  min-height: 280px;
   position: relative;
 }
 .external-graphic,
@@ -57,7 +58,8 @@
 .content .alignment-content .align-values {
   width: var(--width);
   padding: var(--padding);
-  height: 24%;
+  height: auto;
+  min-height: 100px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -89,6 +91,7 @@
   flex-direction: row;
   gap: 8px;
   width: fit-content;
+  width: 100%;
 }
 
 .value-percentage {
@@ -128,8 +131,8 @@
   letter-spacing: -0%;
   line-height: 1;
   overflow: hidden;
-  border-top: 1px solid rgba(26, 26, 26, 0.3);
-  border-bottom: 1px solid rgba(26, 26, 26, 0.3);
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 /*
@@ -140,7 +143,7 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
 =================================
 =================================
 =================================
-*/
+
 
 @media screen and (max-width: 400px) {
   .content {
@@ -150,7 +153,7 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
     justify-content: space-between;
   }
 
-  /*==============================================*/
+
 
   .content .alignment-content {
     width: 100%;
@@ -189,7 +192,7 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
     width: 54%;
     height: 54%;
   }
-  /*==============================================*/
+
   .content .alignment-content .align-values {
     width: var(--width-small);
     padding: var(--padding-small);
@@ -244,7 +247,7 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
     background: var(--secondary-color);
   }
 
-  /*==============================================*/
+
   .content .comment-section-wrap {
     width: 100%;
     height: 20%;
@@ -265,4 +268,45 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
     line-height: 1;
     overflow: hidden;
   }
+}
+
+*/
+
+/*==============================================*/
+/*===============MORE ABOUT INLINE==============*/
+/*==============================================*/
+
+.more-about-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.more-about-label {
+  display: block;
+  text-align: center;
+  padding: 12px 0;
+  color: var(--secondary-color);
+  font-family: "helvetica-neue-lt-pro", sans-serif;
+}
+
+.more-about-section .comment-overlay-section-wrap {
+  width: calc(100% - 40px);
+  padding: 0 20px;
+}
+
+.more-about-section .comment-content {
+  width: 100%;
+  padding: 20px 0;
+  font-family: "helvetica-neue-lt-pro", sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.more-about-section .comment-content i {
+  font-style: italic;
+  display: block;
+  margin-bottom: 12px;
 }
