@@ -4,23 +4,49 @@
  ***********************/
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Select input from #world section (not the commented overlay)
   const searchInput = document.querySelector(
-    '#world-rank-overlay input[type="search"]'
+    '#world .search-wrap input[type="search"]',
   );
-  const searchBtn = document.getElementById("search-btn");
   const completeList = document.getElementById("complete-list");
 
-  if (!searchInput || !searchBtn || !completeList) return;
+  if (!searchInput || !completeList) {
+    console.warn("Search: missing searchInput or completeList");
+    return;
+  }
+
+  // Add styles for highlight animation
+  const style = document.createElement("style");
+  style.textContent = `
+    .line-ranking .name-position.flash {
+      animation: flashHighlight 2s ease-out;
+    }
+    .line-ranking.search-highlight {
+      background-color: rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+    }
+    @keyframes flashHighlight {
+      0% { background-color: rgba(33, 33, 33, 0.4); }
+      100% { background-color: transparent; }
+    }
+  `;
+  document.head.appendChild(style);
 
   function clearPreviousFlash() {
     completeList.querySelectorAll(".name-position.flash").forEach((el) => {
       el.classList.remove("flash");
     });
+    completeList.querySelectorAll(".search-highlight").forEach((el) => {
+      el.classList.remove("search-highlight");
+    });
   }
 
   function performSearch() {
     const query = searchInput.value.trim().toLowerCase();
-    if (!query) return;
+    if (!query) {
+      clearPreviousFlash();
+      return;
+    }
 
     clearPreviousFlash();
 
@@ -42,22 +68,47 @@ document.addEventListener("DOMContentLoaded", () => {
         countryNameEl.textContent.toLowerCase().includes(query)
       ) {
         namePositionEl.classList.add("flash");
+        item.classList.add("search-highlight");
         item.scrollIntoView({ behavior: "smooth", block: "center" });
         found = true;
         break;
       }
     }
 
-    if (!found) {
-      alert("No results found");
+    if (!found && query.length > 2) {
+      console.log("🔍 No results found for:", query);
     }
   }
 
-  searchInput.addEventListener("input", clearPreviousFlash);
-  searchBtn.addEventListener("click", performSearch);
+  // Search as you type (debounced)
+  let searchTimeout = null;
+  searchInput.addEventListener("input", () => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(performSearch, 300);
+  });
+
+  // Immediate search on Enter
   searchInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
+      if (searchTimeout) clearTimeout(searchTimeout);
       performSearch();
     }
   });
+
+  // Clear on Escape
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      searchInput.value = "";
+      clearPreviousFlash();
+    }
+  });
+
+  // Clear when search input is cleared (X button)
+  searchInput.addEventListener("search", () => {
+    if (searchInput.value === "") {
+      clearPreviousFlash();
+    }
+  });
+
+  console.log("🔍 Search-country.js initialized");
 });
