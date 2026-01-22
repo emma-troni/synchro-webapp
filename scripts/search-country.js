@@ -4,7 +4,7 @@
  ***********************/
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Select input from #world section (not the commented overlay)
+  // input from #world section
   const searchInput = document.querySelector(
     '#world .search-wrap input[type="search"]',
   );
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Add styles for highlight animation
+  // highlight animation
   const style = document.createElement("style");
   style.textContent = `
     .line-ranking .name-position.flash {
@@ -110,5 +110,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  console.log("🔍 Search-country.js initialized");
+  console.log("Search-country.js initialized");
 });
