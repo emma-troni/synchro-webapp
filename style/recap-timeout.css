@@ -33,6 +33,10 @@
   flex-direction: column;
 }
 
+.last-wrap {
+  border-bottom: var(--border);
+}
+
 .name-tag {
   text-transform: uppercase;
   font-family: "helvetica-neue-lt-pro", sans-serif;
@@ -69,7 +73,6 @@
 .content .final-score-wrap {
   width: 100%;
   height: fit-content;
-  border-top: var(--border);
 }
 .final-score-wrap .final-score-content {
   width: calc(100% - 40px);
@@ -137,7 +140,9 @@
 
 /*==============================================*/
 
-/*============== overlay =====================
+/*============== overlay =====================*/
+
+/*
 #recap .upper-content-wrap {
   display: flex;
   flex-direction: column;
