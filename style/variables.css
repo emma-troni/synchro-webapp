@@ -90,3 +90,19 @@ button:active {
   user-select: none; /* niente selezione testo */
   touch-action: manipulation;
 }
+
+
+/*===========================================*/
+/*=============    tipografia    ============*/
+/*===========================================*/
+
+.subtitle-class {
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.body-text {
+  line-height: 1.2;
+}
