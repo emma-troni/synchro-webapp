@@ -3,7 +3,7 @@
    - Metti .hl-sweep sugli span
    - Il contenitore diventa "open" quando ha .active (default)
 ================================ */
-
+/*
 (function () {
   // 1) Contenitori che, quando diventano "attivi", devono triggerare l'animazione
   //    Nel tuo progetto: .view è perfetto
@@ -59,7 +59,7 @@
   }
 
   document.querySelectorAll(CONTAINER_SELECTOR).forEach(initContainer);
-})();
+})();*/
 
 /* ================================
    WAITING SVG – step reveal all, then step hide all (infinite)
