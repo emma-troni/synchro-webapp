@@ -95,7 +95,7 @@
     <main>
       <!--
       =======================
-      ALIGN - MAIN SECTION
+      ALIGN - MAIN SECTION1
       =======================
       -->
       <section id="alignment" class="view">
@@ -152,7 +152,7 @@
 
       <!--
       =======================
-      WORLD - MAIN SECTION
+      WORLD - MAIN SECTION2
       =======================
       -->
       <section id="world" class="view">
@@ -183,11 +183,12 @@
 
       <!--
       =======================
-      RECAP - MAIN SECTION
+      RECAP - MAIN SECTION3
       =======================
       -->
       <section id="recap" class="view active">
         <div class="content">
+          <!--top half with previous and new time-->
           <div class="recap-unlock-content">
             <div class="time-change-wrap">
               <div class="number-wrap">
@@ -200,16 +201,17 @@
               </div>
             </div>
           </div>
+          <!--bottom half with final score and measure comparison-->
           <div class="final-score-wrap">
             <div class="final-score-content">
-              <div class="number-wrap final-score-half">
+              <div class="number-wrap part-up">
                 <div class="name-tag">your final score</div>
                 <div class="number-big" id="final-score">
                   00,0<span style="font-size: 3rem">%</span>
                 </div>
               </div>
 
-              <div class="graphics-wrap final-score-half">
+              <div class="graphics-wrap part-down grid-layout">
                 <button
                   class="graphics-inner-wrap"
                   id="personal-measure-raggiera"
@@ -236,17 +238,6 @@
             </div>
           </div>
         </div>
-
-        <!--
-        <footer>
-          <button
-            class="overlay-button-align"
-            id="your-vote-btn"
-            data-view="final-vote-overlay"
-          >
-            see full comparison ❯
-          </button>
-        </footer>-->
       </section>
 
       <!--

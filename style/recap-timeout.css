@@ -73,13 +73,12 @@
 }
 .final-score-wrap .final-score-content {
   width: calc(100% - 40px);
-  height: calc(100% - 40px);
+  height: fit-content;
   padding: var(--padding-vertical);
   display: flex;
   flex-direction: column;
   align-items: left;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: start;
 
   font-style: normal;
   font-weight: 500;
@@ -89,10 +88,16 @@
   margin-bottom: 2rem;
 }
 
-.final-score-content .final-score-half {
-  height: 48%;
+
+.final-score-content .part-up {
+  height: fit-content;
+  background: pink;
 }
 
+.final-score-content .part-down {
+  height: fit-content;
+  background: orange;
+}
 /*==============================================*/
 
 .graphics-wrap {
@@ -103,6 +108,7 @@
   gap: 6rem;
 
   margin-top: 2rem;
+  border: 1px solid red;
 }
 
 .graphics-wrap .space {
