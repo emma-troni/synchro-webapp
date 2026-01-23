@@ -70,7 +70,6 @@
   width: 100%;
   height: fit-content;
   border-top: var(--border);
-
 }
 .final-score-wrap .final-score-content {
   width: calc(100% - 40px);
@@ -87,6 +86,7 @@
   font-size: 1rem;
   letter-spacing: -3%;
   line-height: 1;
+  margin-bottom: 2rem;
 }
 
 .final-score-content .final-score-half {
@@ -99,9 +99,16 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 6rem;
 
   margin-top: 2rem;
+}
+
+.graphics-wrap .space {
+  width: 20%;
+  height: 1rem;
+  background: pink;
 }
 
 .graphics-inner-wrap {
@@ -116,8 +123,7 @@
   border: none;
   width: fit-content;
   padding: 0;
-
-
+  width: 40%;
 }
 
 .graphics-inner-wrap svg {
@@ -186,20 +192,17 @@
   letter-spacing: -3%;
   font-weight: 300;
   white-space: nowrap;
-  width: 40%;
+  width: 8rem;
+  text-align: center;
 }
-
+/*
 #recap .activity-chosen:first-of-type {
   text-align: left;
 }
 
 #recap .activity-chosen:last-of-type {
-  text-align:right;
-}
-
-
-
-
+  text-align: right;
+}*/
 
 /*==============================================*/
 

@@ -82,7 +82,7 @@
 .value-name {
   text-transform: uppercase;
   font-family: "helvetica-neue-lt-pro", sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-align: left;
   font-style: normal;
   font-weight: 400;
@@ -92,6 +92,14 @@
   gap: 8px;
   width: fit-content;
   width: 100%;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+button .subtitle {
+  font-size: 0.75rem; margin: 0; padding: 0; opacity: 1; line-height: 1;
+  transform: translateY(-0.3rem);
 }
 
 .value-percentage {

@@ -56,6 +56,16 @@
   overflow: hidden;
 }
 
+.rank-section-wrap .subtitle {
+  font-size: 0.75rem;
+  margin: 0;
+  padding: 0;
+  opacity: 1;
+  line-height: 1;
+  transform: translateY(-0.3rem);
+  text-decoration: underline;
+}
+
 .rank-section-wrap .rank-content {
   flex: 1 1 auto;
   min-height: 0; /* fondamentale per scroll */
