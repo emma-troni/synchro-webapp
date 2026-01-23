@@ -106,3 +106,7 @@ button:active {
 .body-text {
   line-height: 1.2;
 }
+
+.margin-top {
+  margin-top: 1.4rem;
+}

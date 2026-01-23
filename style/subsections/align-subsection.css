@@ -150,27 +150,7 @@
   justify-content: start;
   font-style: normal;
   font-weight: 400;
-  font-size: 1.2rem;
+  font-size: 1rem;
   letter-spacing: -3%;
   line-height: 1;
-}
-
-#align-personal-overlay .subtitle-class {
-  text-transform: uppercase;
-  font-weight: 500;
-  font-size: 1.4rem;
-  margin: 0;
-}
-
-/*
-=================================
-=================================
-=================================
-predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
-=================================
-=================================
-=================================
-*/
-
-@media screen and (max-width: 400px) {
 }
