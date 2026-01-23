@@ -64,7 +64,6 @@
   flex-direction: row;
   gap: 8px;
   position: relative;
-
 }
 
 .align-subsection .upper-content-wrap .recap-lock-content .view-graphic {
@@ -74,8 +73,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-
 }
 
 .align-subsection
@@ -145,7 +142,6 @@
 }
 
 .comment-overlay-section-wrap .comment-content {
-
   height: calc(100% - 40px);
   margin-top: 20px;
   display: flex;
@@ -159,8 +155,7 @@
   line-height: 1;
 }
 
-
-.comment-overlay-section-wrap .comment-content span {
+#align-personal-overlay .subtitle-class {
   text-transform: uppercase;
   font-weight: 500;
   font-size: 1.4rem;
@@ -178,4 +173,4 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
 */
 
 @media screen and (max-width: 400px) {
- }
+}
