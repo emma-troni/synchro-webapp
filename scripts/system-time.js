@@ -1,6 +1,6 @@
 /***********************
  * SYSTEM-TIME.JS
- * Shows system time and winner's timezone time
+ * Shows previous time (fixed UTC+1) and current time (winner timezone from URL)
  *
  * On timeout.html: reads ?tz=XX from URL to show
  * the time of the winning country's timezone
@@ -26,7 +26,10 @@ const PREVIOUS_TIME_OFFSET = 1;
 function getTimezoneFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const tz = params.get("tz");
-  return tz ? parseInt(tz, 10) : null;
+  if (tz === null) return null;
+
+  const parsed = parseInt(tz, 10);
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
 // Convert timezone ID to UTC offset
@@ -55,34 +58,33 @@ function formatTimeFull(date) {
   return `${hours}:${minutes}:${seconds}`;
 }
 
-// Format time as HH:MM
+// Optional: Format time as HH:MM (kept for reuse if needed elsewhere)
 function formatTimeShort(date) {
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${hours}:${minutes}`;
 }
 
+// Cache DOM nodes (avoid querying every second)
+const systemTimeEl = document.getElementById("system-time");
+const newTimeEl = document.getElementById("new-time");
+
 // Update time display
 function updateSystemTime() {
   // --- Previous time: always UTC+1 (Italy) ---
-  const systemTimeEl = document.getElementById("system-time");
+  // FIX: show seconds as well (HH:MM:SS) in #system-time
   if (systemTimeEl) {
     const italyTime = getTimeWithOffset(PREVIOUS_TIME_OFFSET);
-    systemTimeEl.textContent = formatTimeShort(italyTime);
+    systemTimeEl.textContent = formatTimeFull(italyTime);
   }
 
   // --- Current time: winner's timezone ---
-  const newTimeEl = document.getElementById("new-time");
   if (newTimeEl) {
-    if (WINNER_UTC_OFFSET !== null) {
-      // Use winner's timezone (from URL parameter, fixed at load)
-      const winnerTime = getTimeWithOffset(WINNER_UTC_OFFSET);
-      newTimeEl.textContent = formatTimeFull(winnerTime);
-    } else {
-      // Fallback: UTC+1 (Italy)
-      const italyTime = getTimeWithOffset(PREVIOUS_TIME_OFFSET);
-      newTimeEl.textContent = formatTimeFull(italyTime);
-    }
+    const offsetToUse =
+      WINNER_UTC_OFFSET !== null ? WINNER_UTC_OFFSET : PREVIOUS_TIME_OFFSET;
+
+    const timeToShow = getTimeWithOffset(offsetToUse);
+    newTimeEl.textContent = formatTimeFull(timeToShow);
   }
 }
 
@@ -91,10 +93,10 @@ if (WINNER_TIMEZONE_ID !== null) {
   console.log(
     `[System-Time] Winner timezone: ${WINNER_TIMEZONE_ID} (UTC${
       WINNER_UTC_OFFSET >= 0 ? "+" : ""
-    }${WINNER_UTC_OFFSET})`
+    }${WINNER_UTC_OFFSET})`,
   );
   console.log(
-    `[System-Time] Previous time: UTC+${PREVIOUS_TIME_OFFSET} (Italy)`
+    `[System-Time] Previous time: UTC+${PREVIOUS_TIME_OFFSET} (Italy)`,
   );
 } else {
   console.log("[System-Time] No timezone in URL, using UTC+1 (Italy) for both");

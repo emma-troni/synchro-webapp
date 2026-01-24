@@ -140,8 +140,9 @@ button .subtitle {
   letter-spacing: -0%;
   line-height: 1;
   overflow: hidden;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+  border-top: var(--border);
+  border-bottom: var(--border);
+  
 }
 
 /*
