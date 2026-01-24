@@ -201,20 +201,30 @@
             <span class="svg-holder"></span>
           </div>
           <div class="rank-section-wrap">
-            <div class="subtitle">About ranking</div>
+            <!--
+            <div class="subtitle-container">
+              <button
+                class="overlay-open-btn subtitle"
+                data-view="more-about-world"
+              >
+                <span style="text-decoration: underline">more about</span
+                ><span>&nbsp;❯</span>
+              </button>
+            </div>-->
             <div class="search-wrap">
               <input type="search" placeholder="Search for country..." />
-              <!--  <button id="search-btn" data-svg="./public/icons/search.svg">
-                <div class="svg-holder"></div>
-              </button>  -->
+              <button
+                class="subtitle"
+                data-view="more-about-world"
+                style="border: none"
+              >
+                <span style="text-decoration: underline">more about</span
+                ><span>&nbsp;❯</span>
+              </button>
             </div>
+
             <div class="rank-content" id="complete-list"></div>
           </div>
-          <footer>
-            <button class="overlay-open-btn" data-view="more-about-world">
-              more about ▴
-            </button>
-          </footer>
         </div>
       </section>
       <!--
@@ -297,7 +307,7 @@
         </div>
       </section>
 
-      <!-- seubsection ALIGNMENT : nation -->
+      <!-- subsection ALIGNMENT : nation -->
       <section
         id="align-country-overlay"
         class="subsection view move-in-side align-subsection"
@@ -346,7 +356,7 @@
       </section>
 
       <!--more about / world page -->
-      <section id="more-about-world" class="more-about view align-subsection">
+      <section id="more-about-world" class="move-in-side more-about view align-subsection">
         <div class="upper-content-wrap">
           <div class="comment-overlay-section-wrap">
             <div class="comment-content">
@@ -436,10 +446,5 @@
 
     <!--tooltip-->
     <script src="./scripts/tooltip.js"></script>
-
-
-
-
-    
   </body>
 </html>

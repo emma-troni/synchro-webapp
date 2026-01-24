@@ -56,14 +56,42 @@
   overflow: hidden;
 }
 
+.rank-section-wrap .subtitle-container {
+  height: fit-content;
+  width: var(--width);
+  padding: var(--padding);
+}
+
 .rank-section-wrap .subtitle {
   font-size: 0.75rem;
   margin: 0;
   padding: 0;
   opacity: 1;
   line-height: 1;
-  transform: translateY(-0.3rem);
-  text-decoration: underline;
+  text-transform: uppercase;
+
+  height: 44px;
+}
+
+.rank-section-wrap .search-wrap .subtitle-container {
+  height: fit-content;
+  width: fit-content;
+}
+
+.rank-section-wrap .search-wrap .subtitle-container button {
+  width: fit-content;
+}
+
+.rank-section-wrap .subtitle {
+  font-size: 0.75rem;
+  margin: 0;
+  padding: 0;
+  opacity: 1;
+  line-height: 1;
+  text-transform: uppercase;
+  width: fit-content;
+
+  height: 44px;
 }
 
 .rank-section-wrap .rank-content {
@@ -186,4 +214,198 @@ footer button {
   -webkit-touch-callout: none; /* menu copia/incolla */
   user-select: none; /* niente selezione testo */
   touch-action: manipulation;
+}
+
+/*==============================================*/
+/*=================== OVERLAY PAGINA WORLD ===========================*/
+/*==============================================*/
+
+#world .upper-content-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/*==============================================*/
+
+#world .upper-content-wrap .rank-header-content {
+  padding: var(--padding-vertical);
+  width: var(--width);
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#world .upper-content-wrap button {
+  width: 44px;
+  aspect-ratio: 1/1;
+  border-radius: 0;
+  color: var(--secondary-color);
+  background: none;
+  border: none;
+  position: relative;
+}
+
+#world .upper-content-wrap .header-text {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 140%;
+  letter-spacing: -3%;
+  line-height: 1;
+  position: relative;
+}
+
+/*==============================================*/
+#world .rank-section-wrap {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: calc(100%); /* lascia un margine per header, se vuoi usa auto */
+}
+
+#world .rank-section-wrap .rank-content {
+  flex: 1; /* occupa tutto lo spazio disponibile */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* scroll verticale */
+  padding: var(--padding);
+  width: calc(100% - 40px);
+  /*
+  height: 50vh;*/
+  align-items: left;
+  justify-content: start;
+  padding: var(--padding);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.7rem;
+  letter-spacing: -3%;
+  line-height: 1;
+  overflow: auto; /* o scroll */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge legacy */
+}
+
+#world .rank-content::-webkit-scrollbar {
+  display: none;
+}
+
+#world .rank-content .line-ranking {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: fit-content;
+}
+
+#world .line-ranking .name-position {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 12px;
+  width: 74%;
+  height: fit-content;
+}
+
+#world .name-position .rank-position {
+  font-size: 0.8rem;
+  letter-spacing: -3%;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+#world .name-position .country-name {
+  font-size: 1.4rem;
+  letter-spacing: -3%;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+#world .country-rank-score {
+  font-size: 1.4rem;
+  letter-spacing: -3%;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/*==============================================*/
+#world .search-wrap {
+  height: 15%;
+  padding: var(--padding);
+  width: var(--width);
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+
+}
+#world .search-wrap input {
+  border: var(--border);
+  border-radius: 0;
+  flex: 1;
+  height: 44px;
+  color: var(--secondary-color);
+}
+
+#world .search-wrap input::placeholder {
+  text-indent: 4px;
+}
+
+#world .search-wrap button {
+  height: 44px;
+  aspect-ratio: 1;
+  border: var(--border);
+  color: var(--secondary-color);
+}
+
+/*===========================================*/
+
+.searched {
+  background: rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+/* Stato base */
+.name-position {
+  background-color: transparent; /* stato iniziale */
+  transition: background-color 0.5s ease; /* fallback transizione */
+}
+
+/* Animazione flash */
+@keyframes highlightFlash {
+  0% {
+    background-color: grey;
+  }
+  70% {
+    background-color: grey;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.name-position.flash {
+  animation: highlightFlash 2s ease forwards;
+}
+
+#world-rank-overlay .svg-holder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#world-rank-overlay svg {
+  height: 50%;
+  width: 50%;
 }
