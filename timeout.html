@@ -123,7 +123,8 @@
                 data-view="align-personal-overlay"
               >
                 <div class="value-name">
-                  <span style="text-decoration: underline">final alignment </span
+                  <span style="text-decoration: underline"
+                    >final alignment </span
                   ><span>❯</span>
                 </div>
                 <div class="subtitle">Internal circle</div>
@@ -153,7 +154,7 @@
           </div>
         </div>
 
-                <div class="more-about-section">
+        <div class="more-about-section">
           <div class="comment-overlay-section-wrap">
             <div class="comment-content">
               <div>
@@ -171,8 +172,9 @@
                   shows your percentage of alignment at this moment, based on
                   all the current votes of your country.
                   <br />
-                  <br />Your personal score will keep on being updated based on all the
-                  new measures registered with CHRONODEX till polls are closed.
+                  <br />Your personal score will keep on being updated based on
+                  all the new measures registered with CHRONODEX till polls are
+                  closed.
                   <br />
                   <br />Once the voting is closed, the algorithm will define
                   your final score of alignment and contribution to the global
@@ -233,7 +235,15 @@
             </div>
 
             <div class="search-wrap">
-              <input type="search" placeholder="Search for nation..." />
+              <input type="search" placeholder="Search for country..." />
+              <button
+                class="subtitle"
+                data-view="more-about-world"
+                style="border: none"
+              >
+                <span style="text-decoration: underline">more about</span
+                ><span>&nbsp;❯</span>
+              </button>
             </div>
             <div class="rank-content" id="complete-list"></div>
           </div>
@@ -254,7 +264,7 @@
                 <div class="name-tag">previous time</div>
                 <div class="number-small" id="system-time">00:00:00</div>
               </div>
-              <div class="number-wrap last-wrap" style="padding-bottom: 20px;">
+              <div class="number-wrap last-wrap" style="padding-bottom: 20px">
                 <div class="name-tag">current time</div>
                 <div class="number-big" id="new-time">00:00:00</div>
               </div>
@@ -362,29 +372,48 @@
         </div>
       </section>
 
-      <!-- overlay pagina wolrd : ranking complete-->
+      <!-- MORE-ABOUT: WORLD -->
       <section
-        id="world-rank-overlay"
-        class="subsection view world-subsection move-in-side"
+        id="more-about-world"
+        class="move-in-side more-about view align-subsection"
       >
+        <div class="btn-wrap">
+          <button
+            class="overlay-button-align subtitle"
+            id="your-vote-btn"
+            data-view="world"
+          >
+            <span>❮&ensp; </span
+            ><span style="text-decoration: underline">close</span>
+          </button>
+        </div>
         <div class="upper-content-wrap">
-          <div class="rank-header-content">
-            <button id="close-align-recap-btn" data-view="world">❮</button>
-            <div class="header-text">full rank</div>
-          </div>
-          <div class="rank-section-wrap">
-            <div class="search-wrap">
-              <input type="search" placeholder="Cerca qui..." />
-              <button id="search-btn" data-svg="./public/icons/search.svg">
-                <div class="svg-holder"></div>
-              </button>
+          <div class="comment-overlay-section-wrap">
+            <div class="comment-content">
+              <p class="section-heading subtitle-class">Live ranking</p>
+              <p style="font-weight: 300; text-align: justify">
+                <br />
+                Keep track of voting and the general trend across the globe.
+                <span style="font-weight: 800">globally</span>
+                <br />
+                <br />With new votes cast every second, ranking will continue on
+                updating till polls close: in that moment the system will
+                generate the definitive result.
+                <br />
+                <br />Measuring how every nation spens their time is fundamental
+                for defining who will get the right to determine our new
+                collective time.
+                <br />
+                <br />The country to which you contributed to with your vote is
+                going to be highlighted, making it easier to spot.
+              </p>
             </div>
-            <div class="rank-content" id="complete-list"></div>
           </div>
         </div>
       </section>
 
       <!-- RECAP | SUBSECTION | COMPARISON -->
+      <!--
       <section id="final-vote-overlay" class="subsection view move-in-side">
         <div class="upper-content-wrap">
           <div class="rank-header-content">
@@ -395,104 +424,8 @@
             <div class="rank-content"></div>
           </div>
         </div>
-      </section>
-
-      <!--more about / align page -->
-      <section
-        id="more-about-personal"
-        class="more-about view align-subsection"
-      >
-        <div class="upper-content-wrap">
-          <div class="recap-lock-content">
-            <div class="view-graphic">
-              <div class="graphic-wrap">
-                <div class="holder ext" data-svg="./public/icons/raggiera.svg">
-                  <span class="svg-holder"></span>
-                </div>
-                <div class="holder int" data-svg="./public/icons/raggiera.svg">
-                  <span class="svg-holder"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="comment-overlay-section-wrap">
-            <div class="comment-content">
-              <i>What is the alignment?</i>
-              <p style="font-weight: 300; text-align: justify">
-                The
-                <span style="font-weight: 800" class="hl-sweep"
-                  >external circle</span
-                >
-                shows the average of alignment of your country, based on all the
-                current votes. This gives an idea of percentage of citizen who
-                have already registered their measure is aligned with everyone
-                else's.
-                <br />
-                <br />The
-                <span style="font-weight: 800" class="hl-sweep"
-                  >internal circle</span
-                >
-                shows your percentage of alignment at this moment, based on all
-                the current votes of your country.
-                <br />
-                <br />Your personal score will keep on updating based on
-                everyone's measure till polls are closed. <br />The value shown
-                will be your final score and contribution to the definition of
-                the global rank.
-              </p>
-            </div>
-          </div>
-        </div>
-        <footer>
-          <button
-            class="overlay-button-align"
-            id="your-vote-btn"
-            data-view="alignment"
-          >
-            close ▾
-          </button>
-        </footer>
-      </section>
-
-      <!--more about / align page -->
-      <section id="more-about-world" class="more-about view align-subsection">
-        <div class="upper-content-wrap">
-          <div class="comment-overlay-section-wrap">
-            <div class="comment-content">
-              <i>more about world</i>
-              <br />
-              This section helps you with keeping track of how voting is going
-              globally.
-              <br />
-              <br />The map highlights which timezone is currently winning and
-              more likely to become the official one at the end of voting.
-              <br />
-              <br />You can see the top 10 countries in the rank at each moment.
-              By clicking on full rank you can see every country is doing and
-              their respective position.
-              <br />
-              <br />The country to which you contributed to with your vote is
-              going to be highlighted, making it easier to spot.
-            </div>
-          </div>
-        </div>
-        <footer>
-          <button
-            class="overlay-button-align"
-            id="your-vote-btn"
-            data-view="world"
-          >
-            close ▾
-          </button>
-        </footer>
-      </section>
+      </section>-->
     </main>
-
-    <!--
-        =============== OVERLAY ===============
-    -->
-
-    <div id="feedback">copied to clipboard</div>
 
     <!--
     =============== SCRIPTS ===============
