@@ -622,17 +622,26 @@ footer button {
 .track {
   display: flex;
   white-space: nowrap;
-  position: absolute;
+    position: relative;
+  width: 100%;
+  height: auto;
   will-change: transform;
+  width: 100vw;
 }
 
 .track span {
-  padding-right: 3rem; /* distanza tra i testi duplicati */
+  padding-right: 3rem;
   font-size: 1rem;
-  font-weight: bold;
   letter-spacing: -3%;
   font-weight: 300;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(0, -50%); /* base: X=0, Y centrata */
+  white-space: nowrap;
+  will-change: transform;
 }
+
 
 .rank-section-wrap .winner-wrap {
   width: var(--width);
