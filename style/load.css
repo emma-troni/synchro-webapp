@@ -1,3 +1,9 @@
+/*
+=======================
+LOADER
+=======================
+*/
+
 #load-page {
   position: fixed;
   top: 0;
@@ -15,14 +21,11 @@
 
 #load-page .load-wrap {
   height: calc(100% - 40px);
-  width: calc(100%);
-
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-
   justify-content: space-between;
-
   position: relative;
   padding: 20px 0;
 }
@@ -33,8 +36,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
+
+/*
+=======================
+CENTRAL BLOCK
+=======================
+*/
 
 #load-page .load-wrap .logo-wrap .central-block {
   width: 90%;
@@ -56,9 +64,32 @@
   position: relative;
 }
 
-#load-page .svg-holder svg {
-  width: 30vh;
+/*
+=======================
+GENERIC SVG HOLDER
+=======================
+*/
+
+#load-page .svg-holder {
+  /* importante: non forzare vh qui, altrimenti rompi il "contain" del contenitore */
+  width: 100%;
+  height: 100%;
 }
+
+/* Se vuoi una dimensione "di default" per gli svg nel loader (non dentro zhd-logo) */
+#load-page .svg-holder svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/*
+=======================
+LEFT / RIGHT HOLDERS (central block)
+=======================
+*/
 
 #load-page .svg-holder.left {
   display: flex;
@@ -68,12 +99,20 @@
   height: 70%;
   padding: 0;
   margin: 0;
-}
-#load-page .svg-holder .left svg {
-  display: block;
+  align-items: center;
+  justify-content: center;
 }
 
-#load-page .right {
+/* (c'era un selettore sbagliato: .svg-holder .left -> dovrebbe essere .svg-holder.left) */
+#load-page .svg-holder.left svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#load-page .svg-holder.right {
   width: 100%;
   height: 70%;
   display: flex;
@@ -81,11 +120,14 @@
   align-items: center;
   padding: 0;
   margin: 0;
-  border-left: var(--border);
 }
 
-#load-page .right svg {
-  height: 44%;
+#load-page .svg-holder.right svg {
+  display: block;
+  width: 100%;
+  height: 32%;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 #load-page .divider {
@@ -106,4 +148,92 @@
   justify-content: center;
   align-items: center;
   letter-spacing: -2%;
+}
+
+/*
+=======================
+ZHD LOGO (IMPORTANT PART)
+=======================
+*/
+
+.zhd-logo {
+  height: 20vh;
+  width: 20vh;
+  position: absolute;
+  /* background: pink;  <-- se era solo debug, meglio toglierlo */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  /* utile per contenere tutto perfettamente */
+  overflow: hidden;
+
+
+}
+
+/* questo è il pezzo chiave: esattamente 100% del contenitore */
+.zhd-logo .svg-holder {
+  position: absolute;
+  inset: 0;              /* top:0 right:0 bottom:0 left:0 */
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* svg perfettamente contenuto dentro svg-holder */
+.zhd-logo .svg-holder svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+
+  /* quando supportato, aiuta a comportarsi come un'immagine */
+  object-fit: contain;
+  object-position: center;
+
+  /* sicurezza extra */
+  overflow: hidden;
+}
+
+
+
+/* =======================
+   LOADER ANIMATION HELPERS (FIX)
+   ======================= */
+
+/* La linea centrale deve esistere */
+#load-page .divider#central-line {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* Evita overflow visibile durante gli slide */
+#load-page .load-wrap .logo-wrap .central-block .logo {
+  overflow: hidden;
+}
+
+/* Evita overflow anche nei holder */
+#load-page .svg-holder.left,
+#load-page .svg-holder.right,
+.zhd-logo .svg-holder {
+  overflow: hidden;
+}
+
+/* --- FIX: niente elementi visibili da subito (anti-flash) --- */
+/* Nasconde gli SVG finché lo script non li anima (solo nel loader) */
+#load-page #logo-sx svg,
+#load-page #logo-dx svg,
+#load-page #zhd-logo svg {
+  opacity: 0;
+  transform: translate3d(0, 0, 0); /* neutro di default, lo script imposta l’offset */
 }

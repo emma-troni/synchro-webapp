@@ -40,19 +40,24 @@
     LOADER
     ======================= 
     -->
-    <section id="load-page" class="view active">
+    <section id="load-page" >
       <div class="load-wrap">
         <div class="logo-wrap">
-          <div class="central-block">
-            <div class="logo" data-svg="./public/icons/logo-un.svg">
-              <div class="svg-holder left"></div>
+          <div class="zhd-logo" >
+            <div class="logo" data-svg="./public/icons/SVG/logo-zhd-correct.svg">
+              <div class="svg-holder" id="zhd-logo"></div>
             </div>
-            <div class="divider"></div>
+          </div>
+          <div class="central-block" >
+            <div class="logo" data-svg="./public/icons/SVG/un-correct.svg">
+              <div class="svg-holder left" id="logo-sx"></div>
+            </div>
+            <div class="divider" id="central-line"></div>
             <div
               class="logo"
-              data-svg="./public/icons/SVG/logo-zhd-correct.svg"
+              data-svg="./public/icons/SVG/program-correct.svg"
             >
-              <div class="svg-holder right"></div>
+              <div class="svg-holder right" id="logo-dx"></div>
             </div>
           </div>
         </div>
@@ -103,7 +108,7 @@
     ======================= 
     -->
     <main>
-      <section id="alignment" class="view">
+      <section id="alignment" class="view active">
         <div class="content">
           <div class="alignment-content">
             <div class="align-graphic">
@@ -463,8 +468,8 @@
     <!--ricerca-->
     <script src="./scripts/search-country.js"></script>
 
-    <!--loader - slide animation
-    <script src="./scripts/load-page-fadeout-dissolve.js"></script>-->
+    <!--loader - animation-->
+    <script src="./scripts/load-page-fadeout-dissolve.js"></script>
 
     <!--animazione loop pagina recap-->
     <script src="./scripts/animation.js"></script>
