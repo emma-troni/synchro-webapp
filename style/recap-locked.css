@@ -68,6 +68,19 @@
   width: 100%;
 }
 
+.content .recap-lock-content .recap-graphic a {
+  height: 16rem;
+  width: 16rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  border: none;
+  z-index: 10000;
+}
+
+
 
 .content .recap-text {
     flex: 0 0 auto;

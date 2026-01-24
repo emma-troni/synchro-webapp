@@ -242,6 +242,7 @@
               <div class="wait" data-svg="./public/icons/raggiera.svg">
                 <span class="svg-holder" id="waiting"></span>
               </div>
+              <a href="./timeout.html"></a>
             </div>
           </div>
           <div class="recap-text">
@@ -281,7 +282,10 @@
         class="subsection view move-in-side align-subsection"
       >
         <div class="upper-content-wrap">
-          <button class="close-subsection" data-view="alignment">❮ back</button>
+          <button class="close-subsection subtitle" data-view="alignment">
+            <span>❮&ensp; </span
+            ><span style="text-decoration: underline">close</span>
+          </button>
           <div class="recap-lock-content">
             <div class="view-graphic">
               <div class="graphic-wrap">
@@ -313,7 +317,10 @@
         class="subsection view move-in-side align-subsection"
       >
         <div class="upper-content-wrap">
-          <button class="close-subsection" data-view="alignment">❮ back</button>
+          <button class="close-subsection subtitle" data-view="alignment">
+            <span>❮&ensp; </span
+            ><span style="text-decoration: underline">close</span>
+          </button>
           <div class="recap-lock-content">
             <div class="view-graphic">
               <div class="graphic-wrap">
@@ -340,30 +347,28 @@
         </div>
       </section>
 
-      <!-- overlay pagina recap unlocked : comparison votes -->
-      <section id="final-vote-overlay" class="subsection view move-in-side">
-        <div class="upper-content-wrap">
-          <div class="rank-header-content">
-            <button id="close-vote-recap-btn" data-view="recap-unlock">
-              ❮
-            </button>
-            compared measures
-          </div>
-          <div class="rank-section-wrap">
-            <div class="rank-content" id="measure-compare"></div>
-          </div>
+      <!-- MORE-ABOUT: WORLD -->
+      <section
+        id="more-about-world"
+        class="move-in-side more-about view align-subsection"
+      >
+        <div class="btn-wrap">
+          <button
+            class="overlay-button-align subtitle"
+            id="your-vote-btn"
+            data-view="world"
+          >
+            <span>❮&ensp; </span
+            ><span style="text-decoration: underline">close</span>
+          </button>
         </div>
-      </section>
-
-      <!--more about / world page -->
-      <section id="more-about-world" class="move-in-side more-about view align-subsection">
         <div class="upper-content-wrap">
           <div class="comment-overlay-section-wrap">
             <div class="comment-content">
-              <i>more about world</i>
+              <p class="section-heading subtitle-class">Live ranking</p>
               <p style="font-weight: 300; text-align: justify">
                 <br />
-                keep track of how every nation is doing
+                Keep track of voting and the general trend across the globe.
                 <span style="font-weight: 800">globally</span>
                 <br />
                 <br />With new votes cast every second, ranking will continue on
@@ -380,15 +385,21 @@
             </div>
           </div>
         </div>
-        <footer>
-          <button
-            class="overlay-button-align"
-            id="your-vote-btn"
-            data-view="world"
-          >
-            close ▾
-          </button>
-        </footer>
+      </section>
+
+      <!-- overlay pagina recap unlocked : comparison votes -->
+      <section id="final-vote-overlay" class="subsection view move-in-side">
+        <div class="upper-content-wrap">
+          <div class="rank-header-content">
+            <button id="close-vote-recap-btn" data-view="recap-unlock">
+              ❮
+            </button>
+            compared measures
+          </div>
+          <div class="rank-section-wrap">
+            <div class="rank-content" id="measure-compare"></div>
+          </div>
+        </div>
       </section>
     </main>
 
@@ -444,7 +455,7 @@
     <!--animazione loop pagina recap-->
     <script src="./scripts/animation.js"></script>
 
-    <!--tooltip-->
-    <script src="./scripts/tooltip.js"></script>
+    <!--tooltip
+    <script src="./scripts/tooltip.js"></script>-->
   </body>
 </html>

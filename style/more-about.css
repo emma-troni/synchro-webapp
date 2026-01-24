@@ -16,6 +16,28 @@
 
 /*==============================================*/
 
+#more-about-world .btn-wrap {
+  width: 100%;
+  height: 44px;
+  margin-top: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+}
+
+#more-about-world .btn-wrap button {
+  border: none;
+  height: 100%;
+  background: none;
+  text-align: left;
+  width: var(--width);
+  padding: var(--padding);
+}
+
+/*==============================================*/
+
 .more-about .upper-content-wrap .recap-lock-content {
   padding: var(--padding-vertical);
   width: var(--width);
