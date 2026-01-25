@@ -1,4 +1,4 @@
-// marquee.js (o inline) — usa lo span #text generato da altri script
+// marquee.js — usa lo span #text (generato da altri script) e rimuove eventuali #text duplicati fuori dal marquee
 document.addEventListener("DOMContentLoaded", () => {
   const track = document.getElementById("track");
   if (!track) return;
@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const clearClones = () => {
-    // lascia SOLO il baseSpan originale (se esiste)
     spans.forEach((s) => {
       if (s !== baseSpan) s.remove();
     });
@@ -26,7 +25,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const setSpanX = (span, x) => {
     span.dataset.x = String(x);
-    span.style.transform = `translateX(${x}px)`;
+    // mantieni anche la Y del CSS (top:50% + translateY(-50%))
+    span.style.transform = `translate(${x}px, -50%)`;
+  };
+
+  const removeOtherTextNodes = () => {
+    // se esistono altri #text fuori dal track, eliminali
+    const all = document.querySelectorAll("#text");
+    all.forEach((el) => {
+      if (el !== baseSpan) el.remove();
+    });
   };
 
   const ensureFilled = () => {
@@ -34,15 +42,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const trackRect = track.getBoundingClientRect();
 
-    // crea cloni finché l’ultimo non supera il bordo destro del contenitore
     while (true) {
       const last = spans[spans.length - 1];
       const lastRect = last.getBoundingClientRect();
       if (lastRect.right > trackRect.right) break;
 
       const clone = baseSpan.cloneNode(true);
-      clone.removeAttribute("id"); // niente duplicati
-      clone.setAttribute("aria-hidden", "true"); // accessibilità
+      clone.removeAttribute("id"); // niente id duplicati
+      clone.setAttribute("aria-hidden", "true");
       track.appendChild(clone);
 
       const lastX = Number(last.dataset.x || "0");
@@ -56,16 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const animate = () => {
     const trackRect = track.getBoundingClientRect();
 
-    // muovi tutto a sinistra
     for (const span of spans) {
       const x = Number(span.dataset.x || "0") - SPEED;
       setSpanX(span, x);
     }
 
-    // se serve, aggiungi cloni per riempire
     ensureFilled();
 
-    // rimuovi quelli completamente usciti a sinistra (in modo sicuro)
+    // rimuovi quelli usciti a sinistra (tranne baseSpan)
     spans = spans.filter((span) => {
       const rect = span.getBoundingClientRect();
       const keep = rect.right >= trackRect.left;
@@ -78,22 +83,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const startMarqueeWithBase = (span) => {
     stop();
+
+    // se il base non sta dentro il track, spostalo dentro (così non rimane “sopra”)
+    if (span.parentElement !== track) {
+      track.appendChild(span);
+    }
+
     baseSpan = span;
 
-    // prepara base
+    // prepara base (coerente con il CSS .track span)
     baseSpan.style.position = "absolute";
-    baseSpan.style.left = "0px";
+    baseSpan.style.top = "50%";
+    baseSpan.style.left = "0";
     baseSpan.style.whiteSpace = "nowrap";
 
     setSpanX(baseSpan, 0);
     clearClones();
+
+    // elimina eventuali #text “orfani” fuori dal marquee
+    removeOtherTextNodes();
+
     ensureFilled();
     animate();
   };
 
-  // ---------- wait for #text ----------
+  // ---------- init: trova #text ovunque, poi lo usa come base ----------
   const tryInit = () => {
-    const found = track.querySelector("#text");
+    // prima prova dentro il track (caso ideale)
+    let found = track.querySelector("#text");
+
+    // se non c’è, prova a prenderlo dalla pagina (può essere creato fuori e poi lasciato lì)
+    if (!found) found = document.querySelector("#text");
+
     if (found) startMarqueeWithBase(found);
     return Boolean(found);
   };
@@ -105,33 +126,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const mo = new MutationObserver(() => {
     if (tryInit()) mo.disconnect();
   });
+  mo.observe(document.body, { childList: true, subtree: true });
 
-  mo.observe(track, { childList: true, subtree: true });
-
-  // ---------- se cambia il testo di #text, ricrea cloni ----------
+  // ---------- se cambia il contenuto del baseSpan, reset (larghezza diversa) ----------
   const textObserver = new MutationObserver(() => {
-    // se baseSpan esiste e cambia contenuto, reset (larghezza diversa)
     if (baseSpan) startMarqueeWithBase(baseSpan);
   });
 
-  // appena troviamo baseSpan, attacchiamo anche questo observer
   const hookTextObserver = () => {
-    const found = track.querySelector("#text");
-    if (!found) return;
-    textObserver.observe(found, {
+    if (!baseSpan) return;
+    textObserver.disconnect();
+    textObserver.observe(baseSpan, {
       characterData: true,
       subtree: true,
       childList: true,
     });
   };
 
-  // prova ora e poi quando appare
-  hookTextObserver();
-  mo.observe(track, { childList: true, subtree: true });
-
-  // ---------- se resize (rotazione / viewport), ricalcola ----------
+  // aggancia l’observer appena parte
   const ro = new ResizeObserver(() => {
     if (baseSpan) startMarqueeWithBase(baseSpan);
   });
   ro.observe(container);
+
+  // piccolo hook: quando baseSpan viene settato, attacca observer testo
+  const baseHook = new MutationObserver(() => {
+    if (baseSpan) {
+      hookTextObserver();
+      baseHook.disconnect();
+    }
+  });
+  baseHook.observe(document.body, { childList: true, subtree: true });
 });
