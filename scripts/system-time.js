@@ -22,7 +22,6 @@
   // Previous time is always UTC+1 (Italy/Central Europe)
   const PREVIOUS_TIME_OFFSET = 1;
 
-  const tz = params.get("tz");
   // Winner timezone (will be set when timeout-data.js loads it)
   let winnerTimezoneId = null;
   let winnerUtcOffset = null;
