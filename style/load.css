@@ -62,7 +62,6 @@ CENTRAL BLOCK
   justify-content: center;
   align-items: center;
   position: relative;
-
 }
 
 /*
@@ -109,7 +108,6 @@ LEFT / RIGHT HOLDERS (central block)
   display: block;
   width: 100%;
   height: 100%;
-  
 }
 
 #load-page .svg-holder.right {
@@ -133,9 +131,6 @@ LEFT / RIGHT HOLDERS (central block)
   max-width: none;
   max-height: none;
 }
-
-
-
 
 #load-page .divider {
   width: 1.5px;
@@ -179,7 +174,7 @@ ZHD LOGO (IMPORTANT PART)
 /* questo è il pezzo chiave: esattamente 100% del contenitore */
 .zhd-logo .svg-holder {
   position: absolute;
-  inset: 0;              /* top:0 right:0 bottom:0 left:0 */
+  inset: 0; /* top:0 right:0 bottom:0 left:0 */
   width: 100%;
   height: 100%;
   margin: 0;
@@ -206,8 +201,6 @@ ZHD LOGO (IMPORTANT PART)
   /* sicurezza extra */
   overflow: hidden;
 }
-
-
 
 /* =======================
    LOADER ANIMATION HELPERS (FIX)
@@ -241,7 +234,11 @@ ZHD LOGO (IMPORTANT PART)
 #load-page #zhd-logo svg {
   opacity: 0;
   /*opacity: 1;*/
-  transform: translate3d(0, 0, 0); /* neutro di default, lo script imposta l’offset */
+  transform: translate3d(
+    0,
+    0,
+    0
+  ); /* neutro di default, lo script imposta l’offset */
 }
 
 /* Anti-flash per powered-by (stesso approccio di zhd) */
@@ -249,4 +246,65 @@ ZHD LOGO (IMPORTANT PART)
 #load-page .powered-by {
   opacity: 0;
   transform: translate3d(0, 0, 0); /* neutro: lo script imposta l’offset */
+}
+
+/**********************************************************************/
+/**********************************************************************/
+/* PAGINA ALIGN: SCROLL */
+/**********************************************************************/
+/**********************************************************************/
+
+#alignment .scroll-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#alignment .scroll-container .scroll-wrap {
+  width: var(--width);
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+
+  border-top: var(--border);
+}
+
+#alignment .scroll-container p {
+  text-transform: uppercase;
+  font-family: "helvetica-neue-lt-pro", sans-serif;
+  font-size: 0.75rem;
+  text-align: left;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -4%;
+  color: var(--secondary-color-opacity);
+}
+
+#alignment .arrow-scroll{
+  position: relative;
+  overflow: hidden;              /* nasconde lo span quando esce */
+  height: 0.9rem;                /* finestra di visibilità (regola a gusto) */
+  line-height: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+#alignment .arrow-scroll span{
+  display: inline-block;
+  will-change: transform;
+  animation: arrowScrollLoop 1.2s linear infinite;
+}
+
+/* entra dall’alto -> passa al centro -> esce sotto */
+@keyframes arrowScrollLoop{
+  0%   { transform: translateY(-110%); opacity: 0; }
+  15%  { opacity: 1; }
+  50%  { transform: translateY(0%);   opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(110%); opacity: 0; }
 }

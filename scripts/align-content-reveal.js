@@ -49,6 +49,7 @@
   }
 
   // Create and show scroll banner
+  /*
   function showScrollBanner() {
     const alignmentSection = document.getElementById("alignment");
     if (!alignmentSection) return;
@@ -92,7 +93,7 @@
       }, REVEAL_DURATION);
     }, SCROLL_BANNER_DURATION);
   }
-
+*/
   // Setup SVG segment transitions
   function setupSegmentTransitions() {
     const containers = [internalGraphic, externalGraphic].filter(Boolean);

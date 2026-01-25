@@ -66,7 +66,7 @@
 
     // If no user data, show a different message
     if (!window.ZHD?.hasUserData || window.ZHD?.personalScore === null) {
-      commentEl.innerHTML = `<p><span style="font-weight: 500; line-height: 1.4" class="hl-sweep">Personal statistic</span><br><br>No personal data available. Visit the installation to record your daily routine.</p>`;
+      commentEl.innerHTML = `<p>No personal data available. Visit the installation to record your daily routine.</p>`;
       return;
     }
 
@@ -91,7 +91,7 @@
         "You did good, but not good enough: there is still a margin between your vote and the national average. Keep in mind that even the slightest disalignment could cause your country to fall down in the ranking, meaning having to face the consequences of a time zone different from the one that best suits your nation's needs. Good performance overall, but still needs to be better next time.";
     }
 
-    commentEl.innerHTML = `<p><span style="font-weight: 500; line-height: 1.4" class="hl-sweep">Personal statistic</span><br><br>${message}</p>`;
+    commentEl.innerHTML = `<p>${message}</p>`;
   }
 
   /***********************
@@ -125,7 +125,7 @@
         "Your national alignment is promising, but a good result is still not perfect. We need to remind you of the stakes of this vote, and even the slightest misstep could cause your country to fall behind.";
     }
 
-    commentEl.innerHTML = `<p><span style="font-weight: 500; line-height: 1.4" class="hl-sweep">National statistic</span><br><br>${message}</p>`;
+    commentEl.innerHTML = `<p>${message}</p>`;
   }
 
   /***********************
