@@ -92,9 +92,9 @@
    * TIMEZONE MAP HIGHLIGHT STYLING
    ***********************/
   const TZ_HIGHLIGHT = {
-    FILL: "rgba(255, 204, 0, 0.4)",
-    STROKE: "#cc9900",
-    STROKE_WIDTH: "1.5px",
+    FILL: "#1a1a1a2f",
+    STROKE: "#1a1a1a",
+    STROKE_WIDTH: "1px",
   };
 
   /***********************

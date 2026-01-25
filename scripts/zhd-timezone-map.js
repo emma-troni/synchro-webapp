@@ -12,10 +12,10 @@
  ***********************/
 
 (function () {
-  // Highlight styling - more visible!
-  const HIGHLIGHT_FILL = "#c2c2c2"; // Semi-transparent gold/yellow
-  const HIGHLIGHT_STROKE = "#1a1a1a"; // Darker gold for stroke
-  const HIGHLIGHT_STROKE_WIDTH = "1.5px";
+  // Highlight styling
+  const HIGHLIGHT_FILL = "#1a1a1a2f"; // Semi-transparent
+  const HIGHLIGHT_STROKE = "#1a1a1a"; // Darker stroke
+  const HIGHLIGHT_STROKE_WIDTH = "1px";
 
   // Original styling (from SVG)
   const DEFAULT_FILL = "none";
@@ -41,7 +41,7 @@
   function getSvgDocument() {
     // First try: SVG inside active view's .visual-map-content
     const activeViewSvg = document.querySelector(
-      ".view.active .visual-map-content .svg-holder svg"
+      ".view.active .visual-map-content .svg-holder svg",
     );
     if (activeViewSvg) return activeViewSvg;
 
@@ -51,7 +51,7 @@
 
     // Third try: any .visual-map-content
     const mapContainer = document.querySelector(
-      ".visual-map-content .svg-holder svg"
+      ".visual-map-content .svg-holder svg",
     );
     if (mapContainer) return mapContainer;
 
@@ -157,18 +157,18 @@
     if (group) {
       const shapes = group.querySelectorAll("polygon, rect, path");
       console.log(
-        `[ZHD-Timezone] Found ${shapes.length} shapes in group ${groupId}`
+        `[ZHD-Timezone] Found ${shapes.length} shapes in group ${groupId}`,
       );
 
       shapes.forEach(highlightShapeStyle);
 
       currentTimezone = timezone;
       console.log(
-        `[ZHD-Timezone] Highlighted timezone ${timezone} (ID: ${groupId}) with fill: ${HIGHLIGHT_FILL}`
+        `[ZHD-Timezone] Highlighted timezone ${timezone} (ID: ${groupId}) with fill: ${HIGHLIGHT_FILL}`,
       );
     } else {
       console.warn(
-        `[ZHD-Timezone] Group with id="${groupId}" not found in SVG`
+        `[ZHD-Timezone] Group with id="${groupId}" not found in SVG`,
       );
     }
   }
@@ -183,7 +183,7 @@
     if (timezone !== undefined && timezone !== null) {
       console.log(
         "[ZHD-Timezone] Received timezone from ranking event:",
-        timezone
+        timezone,
       );
       highlightTimezone(timezone, true); // Force refresh SVG reference
     }
@@ -237,7 +237,7 @@
       if (pendingTimezone !== null) {
         console.log(
           "[ZHD-Timezone] Applying pending timezone:",
-          pendingTimezone
+          pendingTimezone,
         );
         highlightTimezone(pendingTimezone);
         pendingTimezone = null;

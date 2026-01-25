@@ -7,7 +7,7 @@
 ================================ */
 
 (function () {
-  // ✅ CONFIG: aggiungi qui tutte le sezioni che vuoi
+  // CONFIG: aggiungi qui tutte le sezioni che vuoi
   const TOOLTIP_CONFIG = [
     { id: "more-about-personal", message: "scroll to continue reading" },
     { id: "more-about-world", message: "scroll" },
