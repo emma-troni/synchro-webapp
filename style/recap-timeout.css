@@ -77,6 +77,7 @@
   width: 100%;
   height: fit-content;
 }
+
 .final-score-wrap .final-score-content {
   width: calc(100% - 40px);
   height: fit-content;
@@ -92,6 +93,8 @@
   letter-spacing: -3%;
   line-height: 1;
   margin-bottom: 2rem;
+
+  
 }
 
 .final-score-content .part-up {
@@ -104,23 +107,19 @@
 /*==============================================*/
 
 .graphics-wrap {
-  /*display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 6rem;
-*/
   margin-top: 2.4rem;
-
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 0;
+  height: fit-content;
 
   margin-bottom: 1.4rem;
+
 }
 
 .graphics-wrap button {
   grid-column: span 2;
+  height: 100%;
 }
 
 .graphics-inner-wrap {
@@ -140,6 +139,47 @@
 .graphics-inner-wrap svg {
   width: 8rem;
 }
+
+
+@media screen and (max-width: 400px) {
+  /* il contenitore NON deve avere height fissa */
+  .graphics-wrap {
+    margin-top: 1rem;
+    height: auto;                 /* <-- fondamentale */
+    min-height: 7.5rem;           /* mantiene presenza */
+    margin-bottom: 1.2rem;
+  }
+
+  /* i bottoni NON devono dipendere da height:100% */
+  .graphics-wrap button {
+    height: auto;                 /* <-- invece di 100% */
+  }
+
+  /* dai una forma stabile al blocco (compatibile con grid) */
+  .graphics-inner-wrap {
+    aspect-ratio: 1 / 1;          /* quadrato */
+    min-height: 7.5rem;           /* o 7rem */
+    justify-content: flex-end;    /* label in basso */
+    gap: 6px;
+    padding-bottom: 4px;
+  }
+
+  /* SVG: dimensioni prevedibili (no sorprese da viewBox) */
+  .graphics-inner-wrap svg {
+    width: 6rem;
+    height: 6rem;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+
+  /* testo più piccolo */
+  .graphics-inner-wrap .name-tag {
+    font-size: 0.65rem;
+  }
+}
+
+
 
 /*==============================================*/
 
@@ -221,6 +261,7 @@
 
 /*==============================================*/
 
+
 /*
 =================================
 =================================
@@ -231,119 +272,8 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
 =================================
 */
 
-@media screen and (max-width: 380px) {
-  .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  /*==============================================*/
-
-  .content .recap-unlock-content {
-    width: 100%;
-    height: 44%;
-  }
-
-  .content .recap-unlock-content .time-change-wrap {
-    width: var(--width);
-    padding: var(--padding-vertical);
-    height: calc(100% - 40px);
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    justify-content: space-evenly;
-    gap: 24px;
-    position: relative;
-  }
-
-  .number-wrap {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .name-tag {
-    text-transform: uppercase;
-    font-family: "helvetica-neue-lt-pro-cond", sans-serif;
-    font-size: 0.8rem;
-    font-style: normal;
-    font-weight: 700;
-    letter-spacing: -2%;
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-  }
-
-  .number-small {
-    text-transform: uppercase;
-    font-family: "helvetica-neue-lt-pro", sans-serif;
-    font-style: normal;
-    font-weight: 700;
-    letter-spacing: -2%;
-    line-height: 0.84;
-    font-size: 2rem;
-  }
-
-  .number-big {
-    text-transform: uppercase;
-    font-family: "helvetica-neue-lt-pro", sans-serif;
-    font-style: normal;
-    font-weight: 700;
-    letter-spacing: -2%;
-    line-height: 0.84;
-    font-size: 4.8rem;
-  }
-
-  /*==============================================*/
-  .content .final-score-wrap {
-    width: 100%;
-    height: calc(100% - 44%);
-    border-top: var(--border);
-  }
-  .final-score-wrap .final-score-content {
-    width: calc(100% - 40px);
-    height: calc(100% - 40px);
-    padding: var(--padding-vertical);
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    justify-content: space-between;
-    gap: 8px;
-
-    font-style: normal;
-    font-weight: 500;
-    font-size: 1rem;
-    letter-spacing: -3%;
-    line-height: 1;
-  }
-
-  .final-score-content .final-score-half {
-    height: 48%;
-  }
-
-  /*==============================================*/
-
-  .graphics-wrap {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .graphics-inner-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 100%;
-    border-radius: none;
-    background: none;
-    border: none;
-  }
-
-  .graphics-inner-wrap svg {
-    width: 54%;
-  }
+@media screen and (max-width: 400px) {
+  .number-big { font-size: 4.6rem; }
+  .graphics-inner-wrap svg { width: 6.8rem; }
+  .final-score-wrap .final-score-content { margin-bottom: 1.2rem; }
 }
