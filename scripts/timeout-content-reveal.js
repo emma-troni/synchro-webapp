@@ -1,7 +1,8 @@
 // timeout-content-reveal.js
-// SOLO primo load: Header slide-down -> fade-in #recap .content
-// NON tocca SPA, NON osserva .active, NON anima altre view
-// IMPORTANT: sul recap non forza "visibility" e ripulisce gli inline styles dopo il fade.
+// Primo load: Header slide-down -> fade-in #recap .content
+// In contemporanea al fade: step-reveal dei due SVG in
+// #personal-measure-raggiera e #nation-measure-raggiera
+// NON tocca SPA, NON osserva .active, NON anima altre view.
 
 (function () {
   /* ======================
@@ -15,7 +16,12 @@
   const RECAP_FADE_DURATION = 600; // fade recap content
   const RECAP_FADE_DELAY_MIN = 0; // minimo (in più al delay calcolato)
 
+  // SVG step-reveal (come align-content-reveal.js)
+  const SEGMENT_STEP = 50;
+  const SEGMENT_FADE = 80;
+
   let hasRevealed = false;
+  let svgGuardObserver = null;
 
   /* ======================
      ELEMENTS
@@ -23,6 +29,9 @@
   const html = document.documentElement;
   const header = document.querySelector("header");
   const recapContent = document.querySelector("#recap .content");
+
+  const personalWrap = document.getElementById("personal-measure-raggiera");
+  const nationWrap = document.getElementById("nation-measure-raggiera");
 
   /* ======================
      HELPERS
@@ -33,7 +42,6 @@
 
   /* ======================
      HEADER SLIDE DOWN (anti-scatti)
-     - header può usare visibility perché deve rimanere sempre visibile dopo
   ====================== */
   function prepHeaderHidden(el) {
     if (!el) return;
@@ -86,7 +94,6 @@
     if (!el) return;
 
     const cleanup = () => {
-      // Ripulisce inline styles: dopo il primo reveal, la SPA torna a comandare tutto
       el.style.removeProperty("transition");
       el.style.removeProperty("opacity");
       el.style.removeProperty("will-change");
@@ -99,14 +106,11 @@
       return;
     }
 
-    // stato iniziale
     el.style.transition = "none";
     el.style.opacity = "0";
 
-    // anima al frame successivo
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        // ascolta la fine della transizione per pulire (una sola volta)
         const onEnd = (e) => {
           if (e.propertyName === "opacity") cleanup();
           el.removeEventListener("transitionend", onEnd);
@@ -117,6 +121,116 @@
         el.style.opacity = "1";
       });
     });
+  }
+
+  /* ======================
+     SVG STEP-REVEAL (come align-content-reveal)
+  ====================== */
+  const PARTS_SELECTOR = "path, line, polyline, polygon, circle, rect, ellipse";
+
+  function getVisibleParts(svg) {
+    if (!svg) return [];
+    return Array.from(svg.querySelectorAll(PARTS_SELECTOR)).filter((el) => {
+      const style = getComputedStyle(el);
+      const visibleByFill =
+        style.fill && style.fill !== "none" && style.fill !== "transparent";
+      const visibleByStroke =
+        style.stroke &&
+        style.stroke !== "none" &&
+        style.stroke !== "transparent";
+      return visibleByFill || visibleByStroke;
+    });
+  }
+
+  function preparePartsOnce(parts) {
+    parts.forEach((el) => {
+      if (el._stepTimerIds) el._stepTimerIds.forEach((id) => clearTimeout(id));
+      el._stepTimerIds = [];
+
+      el.style.opacity = "0";
+      el.style.transition = `opacity ${SEGMENT_FADE}ms linear`;
+      el.style.willChange = "opacity";
+      el.setAttribute("data-step-part", "1");
+    });
+  }
+
+  // ritorna durata stimata (ms)
+  function revealSvgPartsOnce(container) {
+    if (!container) return 0;
+    const svg = container.querySelector("svg");
+    if (!svg) return 0;
+
+    const parts = getVisibleParts(svg);
+    if (!parts.length) return 0;
+
+    if (reducedMotion()) {
+      parts.forEach((el) => (el.style.opacity = "1"));
+      return 0;
+    }
+
+    preparePartsOnce(parts);
+
+    parts.forEach((el, i) => {
+      const t = i * SEGMENT_STEP;
+      const id = setTimeout(() => {
+        el.style.opacity = "1";
+      }, t);
+      el._stepTimerIds.push(id);
+    });
+
+    return (parts.length - 1) * SEGMENT_STEP + SEGMENT_FADE;
+  }
+
+  // Prep immediato: se SVG già presente, spegne i tracciati (anti flash locale)
+  function forceSvgPartsHiddenNow(container) {
+    if (!container) return;
+    const svg = container.querySelector("svg");
+    if (!svg) return;
+    svg.querySelectorAll(PARTS_SELECTOR).forEach((p) => {
+      p.style.opacity = "0";
+      p.style.transition = `opacity ${SEGMENT_FADE}ms linear`;
+    });
+  }
+
+  // Guard: se gli SVG vengono iniettati dopo (svg-import async), mettili subito a opacity 0
+  function startSvgGuardsForRecap() {
+    if (svgGuardObserver) return;
+
+    svgGuardObserver = new MutationObserver((muts) => {
+      if (hasRevealed) return;
+
+      for (const m of muts) {
+        for (const n of m.addedNodes || []) {
+          if (!(n instanceof Element)) continue;
+
+          const svgs = [];
+          if (n.matches?.("svg")) svgs.push(n);
+          n.querySelectorAll?.("svg").forEach((s) => svgs.push(s));
+
+          for (const svg of svgs) {
+            const inPersonal = personalWrap && personalWrap.contains(svg);
+            const inNation = nationWrap && nationWrap.contains(svg);
+            if (!inPersonal && !inNation) continue;
+
+            svg.querySelectorAll(PARTS_SELECTOR).forEach((p) => {
+              p.style.opacity = "0";
+              p.style.transition = `opacity ${SEGMENT_FADE}ms linear`;
+            });
+          }
+        }
+      }
+    });
+
+    svgGuardObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  function stopSvgGuardsForRecap() {
+    if (!svgGuardObserver) return;
+    svgGuardObserver.disconnect();
+    svgGuardObserver = null;
   }
 
   /* ======================
@@ -140,21 +254,35 @@
       );
 
       setTimeout(() => {
+        // Fade del contenuto recap
         showFade(recapContent, RECAP_FADE_DURATION);
+
+        // Step-reveal SVG (in contemporanea al fade)
+        // (partono entrambi nello stesso momento)
+        revealSvgPartsOnce(personalWrap);
+        revealSvgPartsOnce(nationWrap);
+
+        // Ora che la sequenza è partita, possiamo fermare i guard
+        stopSvgGuardsForRecap();
       }, delayToRecap);
     }, HEADER_DELAY);
   }
 
   /* ======================
      INIT
-     - prepara solo ciò che ci serve (header + recap content)
+     - prepara solo ciò che ci serve
      - espone window.revealGraphics per il loader
   ====================== */
   function init() {
-    // NON aggiungere reveal-ready qui.
-    // Rimane nascosto finché il loader non chiama revealGraphics().
     prepHeaderHidden(header);
     prepFadeHidden(recapContent);
+
+    // anti-flash locale per i due SVG del recap (se già importati)
+    forceSvgPartsHiddenNow(personalWrap);
+    forceSvgPartsHiddenNow(nationWrap);
+
+    // se arrivano dopo, li spegniamo subito
+    startSvgGuardsForRecap();
 
     // il loader chiamerà questa
     window.revealGraphics = revealFirstLoad;
