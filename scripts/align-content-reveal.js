@@ -6,21 +6,24 @@
   /* ======================
      GLOBAL TIMINGS
   ====================== */
-  const HEADER_DELAY = 0;
+  const HEADER_DELAY = 10;
 
-  const INTERNAL_DELAY = 350;
-  const EXTERNAL_DELAY_MIN = 900;
+  const INTERNAL_DELAY = 500;
+  const EXTERNAL_DELAY_MIN = 1000;
   const COMMENT_DELAY_MIN = 650;
 
   const REVEAL_DURATION = 600;
 
   // SVG step-reveal (più veloce)
-  const SEGMENT_STEP = 70;
+  const SEGMENT_STEP = 40;
   const SEGMENT_FADE = 80;
   const SEGMENT_PADDING = 220;
 
   let hasRevealed = false;
   let guardObserver = null;
+
+  const GAP_AFTER_INTERNAL = 300; // ms extra prima di mostrare EXTERNAL
+  const GAP_AFTER_EXTERNAL = 500; // ms extra prima di mostrare COMMENT/SCROLL
 
   /* ======================
      ELEMENTS
@@ -58,23 +61,35 @@
     el.style.opacity = "1";
   }
 
-  function hideSlideDown(el) {
-    if (!el) return;
-    el.style.opacity = "0";
-    el.style.visibility = "hidden";
-    el.style.transform = "translateY(-30px)";
-    el.style.transition = `
-      opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1),
-      transform ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)
-    `;
-  }
+function hideSlideDown(el) {
+  if (!el) return;
 
-  function showSlideDown(el) {
-    if (!el) return;
-    el.style.visibility = "visible";
-    el.style.opacity = "1";
+  // Imposta lo stato "nascosto" SENZA transizione (così non anima in uscita)
+  el.style.transition = "none";
+  el.style.transform = "translateY(-30px)";
+  el.style.visibility = "hidden";
+  el.style.pointerEvents = "none";
+  el.style.willChange = "transform";
+}
+
+function showSlideDown(el) {
+  if (!el) return;
+
+  // 1) rendilo visibile ma ancora nella posizione iniziale
+  el.style.visibility = "visible";
+  el.style.pointerEvents = "auto";
+
+  // Assicurati che sia ancora "su" e senza transition in questo frame
+  el.style.transition = "none";
+  el.style.transform = "translateY(-30px)";
+
+  // 2) nel frame successivo attiva la transizione e scendi
+  requestAnimationFrame(() => {
+    el.style.transition = `transform ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
     el.style.transform = "translateY(0)";
-  }
+  });
+}
+
 
   // Internal/External: niente dissolvenza del blocco
   function hideInstant(el) {
@@ -259,7 +274,7 @@
 
         const delayToExternal = Math.max(
           EXTERNAL_DELAY_MIN,
-          internalSvgDuration + SEGMENT_PADDING,
+          internalSvgDuration + SEGMENT_PADDING + GAP_AFTER_INTERNAL,
         );
 
         // 3) EXTERNAL + COUNTRY (@50% svg)
@@ -274,7 +289,7 @@
 
           const delayToComment = Math.max(
             COMMENT_DELAY_MIN,
-            externalSvgDuration + SEGMENT_PADDING,
+            externalSvgDuration + SEGMENT_PADDING + GAP_AFTER_EXTERNAL,
           );
 
           // 4) COMMENT + SCROLL
