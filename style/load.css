@@ -46,12 +46,14 @@ CENTRAL BLOCK
 
 #load-page .load-wrap .logo-wrap .central-block {
   width: 90%;
-  height: 80%;
+  height: fit-content;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 24px;
+
+  overflow: hidden;
 
 }
 
@@ -100,12 +102,102 @@ GENERIC SVG HOLDER
 }
 
 
-/* Assicura che "Powered by" sia visibile sopra tutto */
-#load-page .powered-by,
-#load-page #power-by {
-  opacity: 1 !important;
-  transform: none !important;
-  color: var(--secondary-color) !important; /* oppure #fff se preferisci */
+/* Powered-by sopra tutto, ma animabile */
+#load-page .powered-by {
+  color: var(--secondary-color);
   z-index: 10;
   pointer-events: none;
+}
+
+
+
+
+/* =======================
+   LOADER INTRO ANIMATIONS
+   ======================= */
+
+/* serve per "tagliare" lo slide-up dentro al box */
+#load-page .load-wrap .logo-wrap .central-block {
+  overflow: hidden;
+}
+
+/* ulteriore sicurezza: clippa anche il contenuto della logo */
+#load-page .load-wrap .logo-wrap .logo {
+  overflow: hidden;
+}
+
+/* stato iniziale: SVG (dentro svg-holder) parte dal basso */
+#load-page .load-wrap .logo-wrap .logo .svg-holder {
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 500ms ease;
+  will-change: transform, opacity;
+}
+
+/* stato iniziale: powered-by parte dal basso */
+#load-page .powered-by {
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 450ms ease;
+  will-change: transform, opacity;
+}
+
+/* trigger 1: entra il logo */
+#load-page.is-logo-in .load-wrap .logo-wrap .logo .svg-holder {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* trigger 2: entra powered-by */
+#load-page.is-powered-in .powered-by {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+
+
+
+
+
+/* =======================
+   ANTI-FLASH + TIMELINE
+   ======================= */
+
+/* clippa lo slide dentro il box */
+#load-page .load-wrap .logo-wrap .central-block,
+#load-page .load-wrap .logo-wrap .logo {
+  overflow: hidden;
+}
+
+/* Stato iniziale: SEMPRE nascosti, SENZA transition (anti flash) */
+#load-page .load-wrap .logo-wrap .logo .svg-holder,
+#load-page .powered-by {
+  opacity: 0;
+  transform: translateY(110%);
+  transition: none; /* <- anti flash */
+  will-change: transform, opacity;
+}
+
+/* Quando JS dichiara "ready", abilitiamo le transition */
+#load-page.is-ready .load-wrap .logo-wrap .logo .svg-holder {
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 500ms ease;
+}
+
+#load-page.is-ready .powered-by {
+  transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 450ms ease;
+}
+
+/* Trigger animazioni */
+#load-page.is-logo-in .load-wrap .logo-wrap .logo .svg-holder {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+#load-page.is-powered-in .powered-by {
+  transform: translateY(0);
+  opacity: 1;
 }
