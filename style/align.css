@@ -189,3 +189,65 @@ button .subtitle {
   display: block;
   margin-bottom: 12px;
 }
+
+
+/**********************************************************************/
+/**********************************************************************/
+/* PAGINA ALIGN: SCROLL */
+/**********************************************************************/
+/**********************************************************************/
+
+#alignment .scroll-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#alignment .scroll-container .scroll-wrap {
+  width: var(--width);
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+
+  border-top: var(--border);
+}
+
+#alignment .scroll-container p {
+  text-transform: uppercase;
+  font-family: "helvetica-neue-lt-pro", sans-serif;
+  font-size: 0.75rem;
+  text-align: left;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -4%;
+  color: var(--secondary-color-opacity);
+}
+
+#alignment .arrow-scroll{
+  position: relative;
+  overflow: hidden;              /* nasconde lo span quando esce */
+  height: 0.9rem;                /* finestra di visibilità (regola a gusto) */
+  line-height: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+#alignment .arrow-scroll span{
+  display: inline-block;
+  will-change: transform;
+  animation: arrowScrollLoop 1.2s linear infinite;
+}
+
+/* entra dall’alto -> passa al centro -> esce sotto */
+@keyframes arrowScrollLoop{
+  0%   { transform: translateY(-110%); opacity: 0; }
+  15%  { opacity: 1; }
+  50%  { transform: translateY(0%);   opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(110%); opacity: 0; }
+}
