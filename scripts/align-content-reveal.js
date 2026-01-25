@@ -1,18 +1,31 @@
-// Staged reveal animations for internal-graphic and external-graphic
-// Triggers when #more-about-personal loses "active" class for the first time
+// align-content-reveal.js
+// Header -> Internal(svg step reveal) + personal @50% -> External(svg step reveal) + country @50% -> Comment + Scroll
+// Fix FLASH: NON aggiunge reveal-ready finché non parte la sequenza + observer per SVG import async
 
 (function () {
+  /* ======================
+     GLOBAL TIMINGS
+  ====================== */
   const HEADER_DELAY = 0;
-  const INTERNAL_DELAY = 400;
-  const EXTERNAL_DELAY = 1400;
-  const COMMENT_DELAY = 1000;
+
+  const INTERNAL_DELAY = 350;
+  const EXTERNAL_DELAY_MIN = 900;
+  const COMMENT_DELAY_MIN = 650;
 
   const REVEAL_DURATION = 600;
-  const SEGMENT_TRANSITION_DURATION = 800;
+
+  // SVG step-reveal (più veloce)
+  const SEGMENT_STEP = 70;
+  const SEGMENT_FADE = 80;
+  const SEGMENT_PADDING = 220;
 
   let hasRevealed = false;
+  let guardObserver = null;
 
-  const header = document.querySelector("header"); // ✅ HEADER
+  /* ======================
+     ELEMENTS
+  ====================== */
+  const header = document.querySelector("header");
 
   const internalGraphic = document.querySelector(".internal-graphic");
   const externalGraphic = document.querySelector(".external-graphic");
@@ -21,115 +34,262 @@
   const countryValueBtn = document.getElementById("country-value-btn");
 
   const scrollContainer = document.getElementById("scroll-container");
-
   const commentContent = document.querySelector(
     ".comment-section-wrap .comment-content",
   );
 
-  /* --------------------------
-     INIT VISIBILITY
-  -------------------------- */
+  /* ======================
+     HELPERS
+  ====================== */
+  function reducedMotion() {
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  }
 
   function hideFade(el) {
     if (!el) return;
-
     el.style.opacity = "0";
+    el.style.visibility = "hidden";
     el.style.transition = `opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+  }
+
+  function showFade(el) {
+    if (!el) return;
+    el.style.visibility = "visible";
+    el.style.opacity = "1";
   }
 
   function hideSlideDown(el) {
     if (!el) return;
-
     el.style.opacity = "0";
+    el.style.visibility = "hidden";
     el.style.transform = "translateY(-30px)";
-
     el.style.transition = `
       opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1),
       transform ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)
     `;
   }
 
-  /* Nascondi inizialmente */
+  function showSlideDown(el) {
+    if (!el) return;
+    el.style.visibility = "visible";
+    el.style.opacity = "1";
+    el.style.transform = "translateY(0)";
+  }
 
-  hideSlideDown(header); // ✅ slide dall’alto
+  // Internal/External: niente dissolvenza del blocco
+  function hideInstant(el) {
+    if (!el) return;
+    el.style.transition = "none";
+    el.style.opacity = "0";
+    el.style.visibility = "hidden";
+  }
 
-  hideFade(internalGraphic);
-  hideFade(externalGraphic);
+  function showInstant(el) {
+    if (!el) return;
+    el.style.transition = "none";
+    el.style.visibility = "visible";
+    el.style.opacity = "1";
+  }
 
-  hideFade(personalValueBtn);
-  hideFade(countryValueBtn);
+  /* ======================
+     SVG STEP-REVEAL (ONCE)
+  ====================== */
+  const PARTS_SELECTOR = "path, line, polyline, polygon, circle, rect, ellipse";
 
-  hideFade(scrollContainer);
-  hideFade(commentContent);
+  function getVisibleParts(svg) {
+    if (!svg) return [];
+    return Array.from(svg.querySelectorAll(PARTS_SELECTOR)).filter((el) => {
+      const style = getComputedStyle(el);
+      const visibleByFill =
+        style.fill && style.fill !== "none" && style.fill !== "transparent";
+      const visibleByStroke =
+        style.stroke &&
+        style.stroke !== "none" &&
+        style.stroke !== "transparent";
+      return visibleByFill || visibleByStroke;
+    });
+  }
 
-  /* --------------------------
-     SVG SEGMENTS
-  -------------------------- */
+  function preparePartsOnce(parts) {
+    parts.forEach((el) => {
+      if (el._stepTimerIds) el._stepTimerIds.forEach((id) => clearTimeout(id));
+      el._stepTimerIds = [];
 
-  function setupSegmentTransitions() {
-    const containers = [internalGraphic, externalGraphic].filter(Boolean);
+      el.style.opacity = "0";
+      el.style.transition = `opacity ${SEGMENT_FADE}ms linear`;
+      el.style.willChange = "opacity";
+      el.setAttribute("data-step-part", "1");
+    });
+  }
 
-    containers.forEach((container) => {
-      const segments = container.querySelectorAll("polygon, rect, path");
+  // durata stimata (ms)
+  function revealSvgPartsOnce(container) {
+    if (!container) return 0;
+    const svg = container.querySelector("svg");
+    if (!svg) return 0;
 
-      segments.forEach((segment) => {
-        segment.style.fillOpacity = "0.1";
-        segment.style.transition = `fill-opacity ${SEGMENT_TRANSITION_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+    const parts = getVisibleParts(svg);
+    if (!parts.length) return 0;
+
+    if (reducedMotion()) {
+      parts.forEach((el) => (el.style.opacity = "1"));
+      return 0;
+    }
+
+    preparePartsOnce(parts);
+
+    parts.forEach((el, i) => {
+      const t = i * SEGMENT_STEP;
+      const id = setTimeout(() => {
+        el.style.opacity = "1";
+      }, t);
+      el._stepTimerIds.push(id);
+    });
+
+    return (parts.length - 1) * SEGMENT_STEP + SEGMENT_FADE;
+  }
+
+  /* ======================
+     HARD HIDE while waiting (anti-flash)
+     - Questo lavora PRIMA che venga aggiunto reveal-ready
+     - e si riapplica quando arrivano SVG async
+  ====================== */
+  function hardHideEverything() {
+    // NON aggiungere reveal-ready qui: deve restare tutto “bloccato” dal CSS fino al trigger
+    hideSlideDown(header);
+
+    hideInstant(internalGraphic);
+    hideInstant(externalGraphic);
+
+    hideFade(personalValueBtn);
+    hideFade(countryValueBtn);
+
+    hideFade(commentContent);
+    hideFade(scrollContainer);
+
+    // Se gli SVG sono già stati importati, spegni i tracciati subito
+    [internalGraphic, externalGraphic].forEach((wrap) => {
+      const svg = wrap?.querySelector?.("svg");
+      if (!svg) return;
+      const parts = Array.from(svg.querySelectorAll(PARTS_SELECTOR));
+      parts.forEach((p) => {
+        p.style.opacity = "0";
+        p.style.transition = `opacity ${SEGMENT_FADE}ms linear`;
       });
     });
   }
 
-  /* --------------------------
-     REVEAL SEQUENCE
-  -------------------------- */
+  // Observer che intercetta SVG importati/iniettati dopo e li rimette a opacity:0 immediatamente
+  function startSvgGuards() {
+    if (guardObserver) return;
 
+    guardObserver = new MutationObserver((muts) => {
+      if (hasRevealed) return;
+
+      for (const m of muts) {
+        // intercetta nodi aggiunti (SVG import async)
+        for (const n of m.addedNodes || []) {
+          if (!(n instanceof Element)) continue;
+
+          // Se è un SVG o contiene SVG dentro internal/external: spegni tutto
+          const candidates = [];
+
+          if (n.matches?.("svg")) candidates.push(n);
+          n.querySelectorAll?.("svg").forEach((s) => candidates.push(s));
+
+          candidates.forEach((svg) => {
+            // Solo se appartiene a internal/external
+            const inInternal = internalGraphic && internalGraphic.contains(svg);
+            const inExternal = externalGraphic && externalGraphic.contains(svg);
+            if (!inInternal && !inExternal) return;
+
+            svg.querySelectorAll(PARTS_SELECTOR).forEach((p) => {
+              p.style.opacity = "0";
+              p.style.transition = `opacity ${SEGMENT_FADE}ms linear`;
+            });
+          });
+
+          // In più: se qualcuno “tocca” gli wrapper, rimetti hidden
+          if (internalGraphic && internalGraphic.contains(n))
+            hideInstant(internalGraphic);
+          if (externalGraphic && externalGraphic.contains(n))
+            hideInstant(externalGraphic);
+        }
+      }
+    });
+
+    guardObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  function stopSvgGuards() {
+    if (!guardObserver) return;
+    guardObserver.disconnect();
+    guardObserver = null;
+  }
+
+  /* ======================
+     REVEAL SEQUENCE
+  ====================== */
   function revealGraphics() {
     if (hasRevealed) return;
     hasRevealed = true;
 
-    /* ======================
-       STEP 0 — HEADER
-    ====================== */
+    // Sblocca il gate CSS SOLO ORA (così niente flash quando sparisce il loader)
+    document.documentElement.classList.add("reveal-ready");
 
+    // Ora che siamo in animazione, possiamo fermare i guard
+    stopSvgGuards();
+
+    // 1) HEADER
     setTimeout(() => {
-      if (header) {
-        header.style.opacity = "1";
-        header.style.transform = "translateY(0)";
-      }
+      showSlideDown(header);
 
-      /* ======================
-         STEP 1 — Internal + Personal
-      ====================== */
-
+      // 2) INTERNAL + PERSONAL (@50% svg)
       setTimeout(() => {
-        if (internalGraphic) internalGraphic.style.opacity = "1";
-        if (personalValueBtn) personalValueBtn.style.opacity = "1";
+        showInstant(internalGraphic);
 
-        /* ======================
-           STEP 2 — External + Country
-        ====================== */
+        const internalSvgDuration = revealSvgPartsOnce(internalGraphic);
+        const internalHalf =
+          internalSvgDuration > 0 ? Math.round(internalSvgDuration * 0.5) : 0;
 
+        setTimeout(() => showFade(personalValueBtn), internalHalf);
+
+        const delayToExternal = Math.max(
+          EXTERNAL_DELAY_MIN,
+          internalSvgDuration + SEGMENT_PADDING,
+        );
+
+        // 3) EXTERNAL + COUNTRY (@50% svg)
         setTimeout(() => {
-          if (externalGraphic) externalGraphic.style.opacity = "1";
-          if (countryValueBtn) countryValueBtn.style.opacity = "1";
+          showInstant(externalGraphic);
 
-          /* ======================
-             STEP 3 — Comment + Scroll
-          ====================== */
+          const externalSvgDuration = revealSvgPartsOnce(externalGraphic);
+          const externalHalf =
+            externalSvgDuration > 0 ? Math.round(externalSvgDuration * 0.5) : 0;
 
+          setTimeout(() => showFade(countryValueBtn), externalHalf);
+
+          const delayToComment = Math.max(
+            COMMENT_DELAY_MIN,
+            externalSvgDuration + SEGMENT_PADDING,
+          );
+
+          // 4) COMMENT + SCROLL
           setTimeout(() => {
-            if (commentContent) commentContent.style.opacity = "1";
-            if (scrollContainer) scrollContainer.style.opacity = "1";
-          }, COMMENT_DELAY);
-        }, EXTERNAL_DELAY);
+            showFade(commentContent);
+            showFade(scrollContainer);
+          }, delayToComment);
+        }, delayToExternal);
       }, INTERNAL_DELAY);
     }, HEADER_DELAY);
   }
 
-  /* --------------------------
-     OBSERVER
-  -------------------------- */
-
+  /* ======================
+     OBSERVER TRIGGER
+  ====================== */
   function setupMoreAboutObserver() {
     const moreAboutSection = document.getElementById("more-about-personal");
 
@@ -140,6 +300,7 @@
 
     const wasActive = moreAboutSection.classList.contains("active");
 
+    // se non è attivo, puoi chiamare revealGraphics manualmente
     if (!wasActive) {
       window.revealGraphics = revealGraphics;
       return;
@@ -152,7 +313,6 @@
           mutation.attributeName === "class"
         ) {
           const isNowActive = moreAboutSection.classList.contains("active");
-
           if (!isNowActive && !hasRevealed) {
             revealGraphics();
             observer.disconnect();
@@ -172,12 +332,14 @@
     };
   }
 
-  /* --------------------------
+  /* ======================
      INIT
-  -------------------------- */
-
+  ====================== */
   function init() {
-    setupSegmentTransitions();
+    // IMPORTANT: NON aggiungere reveal-ready qui.
+    // Resta tutto nascosto finché non parte revealGraphics().
+    hardHideEverything();
+    startSvgGuards();
     setupMoreAboutObserver();
   }
 
@@ -186,8 +348,4 @@
   } else {
     init();
   }
-
-  window.GRAPHIC_REVEAL_CONFIG = {
-    SEGMENT_TRANSITION_DURATION,
-  };
 })();
