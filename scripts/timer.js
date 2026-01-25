@@ -28,7 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ===================== COUNTDOWN ====================== */
 
-  const endTime = new Date("2026-02-03T23:00:00").getTime();
+  const endTime = new Date("2026-02-03T23:59:59").getTime();
+  // const endTime = new Date("2026-01-25T18:19:10").getTime();
   let timerInterval = null;
 
   function updateTimer() {
@@ -38,6 +39,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (remaining <= 0) {
       remaining = 0;
       clearInterval(timerInterval);
+
+      // Redirect to timeout.html preserving URL parameters (e.g., id)
+      const currentParams = window.location.search;
+      window.location.href = "/timeout.html" + currentParams;
+      return;
     }
 
     const hours = Math.floor(remaining / (1000 * 60 * 60));

@@ -1,10 +1,9 @@
 /***********************
  * SYSTEM-TIME.JS
- * Shows previous time (fixed UTC+1) and current time (winner timezone from URL)
+ * Shows previous time (fixed UTC+1) and current time (winner timezone)
  *
- * On timeout.html: reads ?tz=XX from URL to show
- * the time of the winning country's timezone
- * (fixed at page load, doesn't update with ranking)
+ * On timeout.html: gets winner timezone from timeout-data.js
+ * via window.TimeoutData.getFixedTimezone()
  *
  * TIMEZONE MAPPING: UTC offset = timezone_id - 12
  * Examples:
@@ -16,94 +15,97 @@
  *   tz=24 → UTC+12
  *
  * PREVIOUS TIME: always UTC+1 (Central Europe / Italy)
- * CURRENT TIME: winner's timezone from URL parameter
+ * CURRENT TIME: winner's timezone from timeout-data.js API
  ***********************/
 
-// Previous time is always UTC+1 (Italy/Central Europe)
-const PREVIOUS_TIME_OFFSET = 1;
+(function () {
+  // Previous time is always UTC+1 (Italy/Central Europe)
+  const PREVIOUS_TIME_OFFSET = 1;
 
-// Get timezone from URL parameter (set at page load, never changes)
-function getTimezoneFromUrl() {
-  const params = new URLSearchParams(window.location.search);
   const tz = params.get("tz");
-  if (tz === null) return null;
+  // Winner timezone (will be set when timeout-data.js loads it)
+  let winnerTimezoneId = null;
+  let winnerUtcOffset = null;
 
-  const parsed = parseInt(tz, 10);
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
-// Convert timezone ID to UTC offset
-// Formula: offset = timezone_id - 12
-function timezoneToOffset(timezoneId) {
-  if (timezoneId === null || timezoneId === undefined) return null;
-  return timezoneId - 12;
-}
-
-// Store timezone at load time (doesn't change)
-const WINNER_TIMEZONE_ID = getTimezoneFromUrl();
-const WINNER_UTC_OFFSET = timezoneToOffset(WINNER_TIMEZONE_ID);
-
-// Calculate time with a specific UTC offset
-function getTimeWithOffset(utcOffset) {
-  const now = new Date();
-  const utcTime = now.getTime() + now.getTimezoneOffset() * 60000;
-  return new Date(utcTime + utcOffset * 3600000);
-}
-
-// Format time as HH:MM:SS
-function formatTimeFull(date) {
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  const seconds = String(date.getSeconds()).padStart(2, "0");
-  return `${hours}:${minutes}:${seconds}`;
-}
-
-// Optional: Format time as HH:MM (kept for reuse if needed elsewhere)
-function formatTimeShort(date) {
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${hours}:${minutes}`;
-}
-
-// Cache DOM nodes (avoid querying every second)
-const systemTimeEl = document.getElementById("system-time");
-const newTimeEl = document.getElementById("new-time");
-
-// Update time display
-function updateSystemTime() {
-  // --- Previous time: always UTC+1 (Italy) ---
-  // FIX: show seconds as well (HH:MM:SS) in #system-time
-  if (systemTimeEl) {
-    const italyTime = getTimeWithOffset(PREVIOUS_TIME_OFFSET);
-    systemTimeEl.textContent = formatTimeFull(italyTime);
+  // Convert timezone ID to UTC offset
+  // Formula: offset = timezone_id - 12
+  function timezoneToOffset(timezoneId) {
+    if (timezoneId === null || timezoneId === undefined) return null;
+    return timezoneId - 12;
   }
 
-  // --- Current time: winner's timezone ---
-  if (newTimeEl) {
-    const offsetToUse =
-      WINNER_UTC_OFFSET !== null ? WINNER_UTC_OFFSET : PREVIOUS_TIME_OFFSET;
-
-    const timeToShow = getTimeWithOffset(offsetToUse);
-    newTimeEl.textContent = formatTimeFull(timeToShow);
+  // Calculate time with a specific UTC offset
+  function getTimeWithOffset(utcOffset) {
+    const now = new Date();
+    const utcTime = now.getTime() + now.getTimezoneOffset() * 60000;
+    return new Date(utcTime + utcOffset * 3600000);
   }
-}
 
-// Log timezone info at startup
-if (WINNER_TIMEZONE_ID !== null) {
-  console.log(
-    `[System-Time] Winner timezone: ${WINNER_TIMEZONE_ID} (UTC${
-      WINNER_UTC_OFFSET >= 0 ? "+" : ""
-    }${WINNER_UTC_OFFSET})`,
-  );
+  // Format time as HH:MM:SS
+  function formatTimeFull(date) {
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
+  // Cache DOM nodes (avoid querying every second)
+  const systemTimeEl = document.getElementById("system-time");
+  const newTimeEl = document.getElementById("new-time");
+
+  // Try to get winner timezone from timeout-data.js
+  function updateWinnerTimezone() {
+    if (
+      window.TimeoutData &&
+      typeof window.TimeoutData.getFixedTimezone === "function"
+    ) {
+      const tz = window.TimeoutData.getFixedTimezone();
+      if (tz !== null && tz !== winnerTimezoneId) {
+        winnerTimezoneId = tz;
+        winnerUtcOffset = timezoneToOffset(tz);
+        console.log(
+          `[System-Time] Winner timezone loaded: ${winnerTimezoneId} (UTC${
+            winnerUtcOffset >= 0 ? "+" : ""
+          }${winnerUtcOffset})`,
+        );
+      }
+    }
+  }
+
+  // Update time display
+  function updateSystemTime() {
+    // Try to get winner timezone if not yet loaded
+    if (winnerTimezoneId === null) {
+      updateWinnerTimezone();
+    }
+
+    // --- Previous time: always UTC+1 (Italy) ---
+    if (systemTimeEl) {
+      const italyTime = getTimeWithOffset(PREVIOUS_TIME_OFFSET);
+      systemTimeEl.textContent = formatTimeFull(italyTime);
+    }
+
+    // --- Current time: winner's timezone ---
+    if (newTimeEl) {
+      const offsetToUse =
+        winnerUtcOffset !== null ? winnerUtcOffset : PREVIOUS_TIME_OFFSET;
+
+      const timeToShow = getTimeWithOffset(offsetToUse);
+      newTimeEl.textContent = formatTimeFull(timeToShow);
+    }
+  }
+
+  // Log initial state
   console.log(
     `[System-Time] Previous time: UTC+${PREVIOUS_TIME_OFFSET} (Italy)`,
   );
-} else {
-  console.log("[System-Time] No timezone in URL, using UTC+1 (Italy) for both");
-}
+  console.log(
+    "[System-Time] Waiting for winner timezone from timeout-data.js...",
+  );
 
-// Start immediately
-updateSystemTime();
+  // Start immediately
+  updateSystemTime();
 
-// Update every second
-setInterval(updateSystemTime, 1000);
+  // Update every second
+  setInterval(updateSystemTime, 1000);
+})();
