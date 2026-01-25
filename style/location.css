@@ -1,0 +1,17 @@
+#location-poll {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#location-poll .wrap {
+    width: var(--width);
+    border: 1px solid red;
+    height: 100%;
+}
+
+#location-poll .wrap .title {
+    text-transform: uppercase;
+}
