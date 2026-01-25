@@ -137,7 +137,7 @@ button .subtitle {
   font-style: normal;
   font-weight: 300;
   font-size: 1rem;
-  letter-spacing: -0%;
+  letter-spacing: 2%;
   line-height: 1;
   overflow: hidden;
   border-top: var(--border);

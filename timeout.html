@@ -36,23 +36,23 @@
   </head>
 
   <body>
-    <section id="load-page" >
+    <section id="load-page">
       <div class="load-wrap">
         <div class="logo-wrap">
-          <div class="zhd-logo" >
-            <div class="logo" data-svg="./public/icons/SVG/logo-zhd-correct.svg">
+          <div class="zhd-logo">
+            <div
+              class="logo"
+              data-svg="./public/icons/SVG/logo-zhd-correct.svg"
+            >
               <div class="svg-holder" id="zhd-logo"></div>
             </div>
           </div>
-          <div class="central-block" >
+          <div class="central-block">
             <div class="logo" data-svg="./public/icons/SVG/un-correct.svg">
               <div class="svg-holder left" id="logo-sx"></div>
             </div>
             <div class="divider" id="central-line"></div>
-            <div
-              class="logo"
-              data-svg="./public/icons/SVG/program-correct.svg"
-            >
+            <div class="logo" data-svg="./public/icons/SVG/program-correct.svg">
               <div class="svg-holder right" id="logo-dx"></div>
             </div>
           </div>
@@ -154,6 +154,12 @@
               </button>
             </div>
           </div>
+          <div class="scroll-container" id="scroll-container">
+            <div class="scroll-wrap">
+              <p class="subtitle">scroll for more</p>
+              <div class="arrow-scroll"><span>↓</span></div>
+            </div>
+          </div>
           <div class="comment-section-wrap">
             <div class="comment-content">
               Your measure was too far from the rest of your country, scoring
@@ -236,8 +242,7 @@
             <div class="winner-wrap">
               <div class="winner-tag">winning nation</div>
               <div class="marquee">
-                <div class="track" id="track">
-                </div>
+                <div class="track" id="track"></div>
               </div>
             </div>
 
@@ -481,5 +486,8 @@
 
     <!--dati utente, score finale e raggiere colorate-->
     <script src="./scripts/vote-close/timeout-data.js"></script>
+
+    <!--gestione scroll indicator-->
+    <script src="./scripts/scroll-indicator.js"></script>
   </body>
 </html>
