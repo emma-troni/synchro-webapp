@@ -10,6 +10,43 @@
 
     <title>zero hour day</title>
 
+        <script>
+      document.documentElement.classList.add("reveal-prep");
+    </script>
+
+    <style>
+      /* NIENTE flash: finché JS non dichiara "reveal-ready", nascondi tutto quello che animerai */
+      html:not(.reveal-ready) header,
+      html:not(.reveal-ready) .internal-graphic,
+      html:not(.reveal-ready) .external-graphic,
+      html:not(.reveal-ready) #personal-value-btn,
+      html:not(.reveal-ready) #country-value-btn,
+      html:not(.reveal-ready) #scroll-container,
+      html:not(.reveal-ready) .comment-section-wrap .comment-content {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateY(0) !important;
+      }
+
+      /* SVG: finché non siamo ready, spegni tutti i tracciati (super importante per i flash) */
+      html:not(.reveal-ready) .internal-graphic svg path,
+      html:not(.reveal-ready) .internal-graphic svg line,
+      html:not(.reveal-ready) .internal-graphic svg polyline,
+      html:not(.reveal-ready) .internal-graphic svg polygon,
+      html:not(.reveal-ready) .internal-graphic svg circle,
+      html:not(.reveal-ready) .internal-graphic svg rect,
+      html:not(.reveal-ready) .internal-graphic svg ellipse,
+      html:not(.reveal-ready) .external-graphic svg path,
+      html:not(.reveal-ready) .external-graphic svg line,
+      html:not(.reveal-ready) .external-graphic svg polyline,
+      html:not(.reveal-ready) .external-graphic svg polygon,
+      html:not(.reveal-ready) .external-graphic svg circle,
+      html:not(.reveal-ready) .external-graphic svg rect,
+      html:not(.reveal-ready) .external-graphic svg ellipse {
+        opacity: 0 !important;
+      }
+    </style>
+
     <link rel="stylesheet" href="./style/variables.css" />
     <link rel="stylesheet" href="./index.css" />
     <link rel="stylesheet" href="./style/load.css" />
@@ -39,6 +76,7 @@
     <section id="load-page">
       <div class="load-wrap">
         <div class="logo-wrap">
+          <!--
           <div class="zhd-logo">
             <div
               class="logo"
@@ -46,8 +84,10 @@
             >
               <div class="svg-holder" id="zhd-logo"></div>
             </div>
-          </div>
+          </div>-->
+
           <div class="central-block">
+            <!--
             <div class="logo" data-svg="./public/icons/SVG/un-correct.svg">
               <div class="svg-holder left" id="logo-sx"></div>
             </div>
@@ -55,6 +95,9 @@
             <div class="logo" data-svg="./public/icons/SVG/program-correct.svg">
               <div class="svg-holder right" id="logo-dx"></div>
             </div>
+          </div>-->
+          <div class="logo" data-svg="./public/icons/SVG/definitive_1.svg">
+            <div class="svg-holder"></div>
           </div>
         </div>
         <div class="powered-by" id="power-by">
@@ -462,6 +505,9 @@
     <!--script marquee-->
     <script src="./scripts/vote-close/marquee.js"></script>
 
+      <!--gestione comparsa elementi-->
+    <script src="./scripts/timeout-content-reveal.js"></script>
+
     <!--loader - slide animation-->
     <script src="./scripts/load-page-fadeout-dissolve.js"></script>
 
@@ -476,5 +522,8 @@
 
     <!--gestione scroll indicator-->
     <script src="./scripts/scroll-indicator.js"></script>
+
+  
+
   </body>
 </html>
