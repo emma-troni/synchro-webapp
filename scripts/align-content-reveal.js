@@ -2,19 +2,26 @@
 // Triggers when #more-about-personal loses "active" class for the first time
 
 (function () {
+  const HEADER_DELAY = 0;
   const INTERNAL_DELAY = 400;
   const EXTERNAL_DELAY = 1400;
   const COMMENT_DELAY = 1000;
+
   const REVEAL_DURATION = 600;
   const SEGMENT_TRANSITION_DURATION = 800;
 
   let hasRevealed = false;
 
+  const header = document.querySelector("header"); // ✅ HEADER
+
   const internalGraphic = document.querySelector(".internal-graphic");
   const externalGraphic = document.querySelector(".external-graphic");
+
   const personalValueBtn = document.getElementById("personal-value-btn");
   const countryValueBtn = document.getElementById("country-value-btn");
-  const scrollContainer = document.getElementById("scroll-container"); // ✅
+
+  const scrollContainer = document.getElementById("scroll-container");
+
   const commentContent = document.querySelector(
     ".comment-section-wrap .comment-content",
   );
@@ -23,18 +30,37 @@
      INIT VISIBILITY
   -------------------------- */
 
-  function hideElement(el) {
+  function hideFade(el) {
     if (!el) return;
+
     el.style.opacity = "0";
     el.style.transition = `opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
   }
 
-  hideElement(internalGraphic);
-  hideElement(externalGraphic);
-  hideElement(personalValueBtn);
-  hideElement(countryValueBtn);
-  hideElement(scrollContainer); // ✅ nascosto all’inizio
-  hideElement(commentContent);
+  function hideSlideDown(el) {
+    if (!el) return;
+
+    el.style.opacity = "0";
+    el.style.transform = "translateY(-30px)";
+
+    el.style.transition = `
+      opacity ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1),
+      transform ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)
+    `;
+  }
+
+  /* Nascondi inizialmente */
+
+  hideSlideDown(header); // ✅ slide dall’alto
+
+  hideFade(internalGraphic);
+  hideFade(externalGraphic);
+
+  hideFade(personalValueBtn);
+  hideFade(countryValueBtn);
+
+  hideFade(scrollContainer);
+  hideFade(commentContent);
 
   /* --------------------------
      SVG SEGMENTS
@@ -61,23 +87,43 @@
     if (hasRevealed) return;
     hasRevealed = true;
 
-    /* Internal + personal */
+    /* ======================
+       STEP 0 — HEADER
+    ====================== */
+
     setTimeout(() => {
-      if (internalGraphic) internalGraphic.style.opacity = "1";
-      if (personalValueBtn) personalValueBtn.style.opacity = "1";
+      if (header) {
+        header.style.opacity = "1";
+        header.style.transform = "translateY(0)";
+      }
 
-      /* External + country */
+      /* ======================
+         STEP 1 — Internal + Personal
+      ====================== */
+
       setTimeout(() => {
-        if (externalGraphic) externalGraphic.style.opacity = "1";
-        if (countryValueBtn) countryValueBtn.style.opacity = "1";
+        if (internalGraphic) internalGraphic.style.opacity = "1";
+        if (personalValueBtn) personalValueBtn.style.opacity = "1";
 
-        /* Comment + scroll-container (insieme) ✅ */
+        /* ======================
+           STEP 2 — External + Country
+        ====================== */
+
         setTimeout(() => {
-          if (commentContent) commentContent.style.opacity = "1";
-          if (scrollContainer) scrollContainer.style.opacity = "1"; // ✅ spostato qui
-        }, COMMENT_DELAY);
-      }, EXTERNAL_DELAY);
-    }, INTERNAL_DELAY);
+          if (externalGraphic) externalGraphic.style.opacity = "1";
+          if (countryValueBtn) countryValueBtn.style.opacity = "1";
+
+          /* ======================
+             STEP 3 — Comment + Scroll
+          ====================== */
+
+          setTimeout(() => {
+            if (commentContent) commentContent.style.opacity = "1";
+            if (scrollContainer) scrollContainer.style.opacity = "1";
+          }, COMMENT_DELAY);
+        }, EXTERNAL_DELAY);
+      }, INTERNAL_DELAY);
+    }, HEADER_DELAY);
   }
 
   /* --------------------------
