@@ -41,6 +41,9 @@
     ".comment-section-wrap .comment-content",
   );
 
+  // ✅ ADD 1/3: prendi SOLO la more-about inline dentro #alignment
+  const moreAboutInline = document.querySelector("#alignment .more-about");
+
   /* ======================
      HELPERS
   ====================== */
@@ -61,35 +64,34 @@
     el.style.opacity = "1";
   }
 
-function hideSlideDown(el) {
-  if (!el) return;
+  function hideSlideDown(el) {
+    if (!el) return;
 
-  // Imposta lo stato "nascosto" SENZA transizione (così non anima in uscita)
-  el.style.transition = "none";
-  el.style.transform = "translateY(-30px)";
-  el.style.visibility = "hidden";
-  el.style.pointerEvents = "none";
-  el.style.willChange = "transform";
-}
+    // Imposta lo stato "nascosto" SENZA transizione (così non anima in uscita)
+    el.style.transition = "none";
+    el.style.transform = "translateY(-30px)";
+    el.style.visibility = "hidden";
+    el.style.pointerEvents = "none";
+    el.style.willChange = "transform";
+  }
 
-function showSlideDown(el) {
-  if (!el) return;
+  function showSlideDown(el) {
+    if (!el) return;
 
-  // 1) rendilo visibile ma ancora nella posizione iniziale
-  el.style.visibility = "visible";
-  el.style.pointerEvents = "auto";
+    // 1) rendilo visibile ma ancora nella posizione iniziale
+    el.style.visibility = "visible";
+    el.style.pointerEvents = "auto";
 
-  // Assicurati che sia ancora "su" e senza transition in questo frame
-  el.style.transition = "none";
-  el.style.transform = "translateY(-30px)";
+    // Assicurati che sia ancora "su" e senza transition in questo frame
+    el.style.transition = "none";
+    el.style.transform = "translateY(-30px)";
 
-  // 2) nel frame successivo attiva la transizione e scendi
-  requestAnimationFrame(() => {
-    el.style.transition = `transform ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-    el.style.transform = "translateY(0)";
-  });
-}
-
+    // 2) nel frame successivo attiva la transizione e scendi
+    requestAnimationFrame(() => {
+      el.style.transition = `transform ${REVEAL_DURATION}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+      el.style.transform = "translateY(0)";
+    });
+  }
 
   // Internal/External: niente dissolvenza del blocco
   function hideInstant(el) {
@@ -181,6 +183,9 @@ function showSlideDown(el) {
 
     hideFade(commentContent);
     hideFade(scrollContainer);
+
+    // ✅ ADD 2/3: nascondi anche la more-about inline
+    hideFade(moreAboutInline);
 
     // Se gli SVG sono già stati importati, spegni i tracciati subito
     [internalGraphic, externalGraphic].forEach((wrap) => {
@@ -292,10 +297,13 @@ function showSlideDown(el) {
             externalSvgDuration + SEGMENT_PADDING + GAP_AFTER_EXTERNAL,
           );
 
-          // 4) COMMENT + SCROLL
+          // 4) COMMENT + SCROLL (+ MORE-ABOUT INLINE)
           setTimeout(() => {
             showFade(commentContent);
             showFade(scrollContainer);
+
+            // ✅ ADD 3/3: compari ESATTAMENTE con la comment-section
+            showFade(moreAboutInline);
           }, delayToComment);
         }, delayToExternal);
       }, INTERNAL_DELAY);
