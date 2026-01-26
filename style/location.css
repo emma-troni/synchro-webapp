@@ -72,17 +72,14 @@ margin-top: 1rem;
     height: 60%;
 }
 
-
-
 #location-poll .line-wrap {
-  height: calc(52px - 16px);
+  height: fit-content;
   padding: 8px;
   width: calc(100% - 16px);
   border-bottom: var(--border);
   position: relative;
   display: flex;
   flex-direction: row;
-  gap: 1rem;
   align-items: center;
   justify-content: space-between;
   text-decoration: none;
@@ -130,13 +127,16 @@ margin-top: 1rem;
 
 #location-poll .results-wrap {
     width: 100%;
-    height: fit-content;
+    height: 60vh;
+
     margin-top: 1rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     gap: 1.4rem;
+
+    overflow: scroll;
 }
 
 #location-poll .results-wrap .result-line {
@@ -154,3 +154,5 @@ margin-top: 1rem;
 .indirizzo {
   font-size: 0.7rem;
 }
+
+
