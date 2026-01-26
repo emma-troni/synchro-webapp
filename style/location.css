@@ -1,7 +1,7 @@
 #location-poll {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
 }
 
@@ -9,20 +9,34 @@
 #location-poll .wrap {
     width: var(--width);
     padding: var(--padding-vertical);
-    height: var(--width);
+
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: center;
-}
 
-#location-poll .wrap .section-heading {
-margin-top: 1rem;
+    
+}
+#location-poll .close-subsection {
+  width: 100%;
+  border-radius: none;
+  border: none;
+  background: none;
+  height: 44px;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  margin-bottom: 2rem;
+
 }
 
 #location-poll p {
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
+
 
 #location-poll .search-wrap {
   height: 15%;
@@ -156,3 +170,6 @@ margin-top: 1rem;
 }
 
 
+.location-suggestion {
+background: var(--secondary-color) !important; 
+}

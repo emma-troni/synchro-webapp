@@ -484,6 +484,7 @@
     items.forEach((it) => {
       const btn = document.createElement("button");
       btn.type = "button";
+      btn.className = "location-suggestion"
       btn.innerHTML = escapeHtml(it.display);
 
       btn.style.width = "100%";
