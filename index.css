@@ -9,6 +9,9 @@ body {
   padding: 0;
   background: var(--primary-color);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .divide {
@@ -124,8 +127,10 @@ main {
 }
 
 #alignment .content {
-  min-height: 100%;
   height: auto;
+  min-height: auto;
+  overflow: visible;
+  flex-shrink: 0;
 }
 
 .view.active {
@@ -149,7 +154,6 @@ nav button.active {
 #recap-lock.view.active .content {
   height: 100% !important;
 }
-
 
 footer {
   width: 100%;

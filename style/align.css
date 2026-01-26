@@ -14,6 +14,11 @@
 #alignment .content {
   justify-content: center;
 }
+/* Override per #alignment: .content non ha scroll interno */
+#alignment.active .content {
+  height: auto;
+  overflow: visible;
+}
 
 .content .alignment-content {
   width: 100%;
@@ -157,8 +162,10 @@ button .subtitle {
 /*==============================================*/
 /*===============MORE ABOUT INLINE==============*/
 /*==============================================*/
-
-.more-about-section {
+.more-about {
+  padding-bottom: 100px;
+}
+.more-about .more-about-section {
   width: 100%;
   display: flex;
   flex-direction: column;
