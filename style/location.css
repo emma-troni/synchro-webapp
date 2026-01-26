@@ -8,10 +8,149 @@
 
 #location-poll .wrap {
     width: var(--width);
-    border: 1px solid red;
-    height: 100%;
+    padding: var(--padding-vertical);
+    height: var(--width);
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
 }
 
-#location-poll .wrap .title {
-    text-transform: uppercase;
+#location-poll .wrap .section-heading {
+margin-top: 1rem;
+}
+
+#location-poll p {
+  width: 100%;
+}
+
+#location-poll .search-wrap {
+  height: 15%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+#location-poll .search-wrap input {
+  border: var(--border);
+  border-radius: 0;
+  flex: 1;
+  height: 44px;
+  color: var(--secondary-color);
+}
+
+#location-poll .search-wrap input::placeholder {
+  text-indent: 4px;
+}
+
+#location-poll .search-wrap button {
+  height: 44px;
+  width: 44px;          /* stessa misura dell’altezza */
+  aspect-ratio: 1 / 1;  /* forza il quadrato */
+  border: var(--border) !important;
+  color: var(--secondary-color);
+  background: none !important;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#location-poll .search-wrap button .svg-holder {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: none;
+}
+#location-poll .search-wrap button svg {
+    height: 60%;
+}
+
+
+
+#location-poll .line-wrap {
+  height: calc(52px - 16px);
+  padding: 8px;
+  width: calc(100% - 16px);
+  border-bottom: var(--border);
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+}
+#location-poll .line-wrap input {
+  border: var(--border);
+  border-radius: 0;
+  flex: 1;
+  height: 44px;
+  color: var(--secondary-color);
+}
+
+#location-poll .line-wrap input::placeholder {
+  text-indent: 4px;
+}
+
+#location-poll .line-wrap button {
+  height: 44px;
+  width: 44px;          /* stessa misura dell’altezza */
+  aspect-ratio: 1 / 1;  /* forza il quadrato */
+  border: none;
+  background: none;
+  color: var(--secondary-color);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#location-poll .line-wrap button .svg-holder {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#location-poll .line-wrap button svg {
+    height: 60%;
+}
+
+#location-poll .line-wrap button a {
+  text-decoration: none;
+}
+
+#location-poll .results-wrap {
+    width: 100%;
+    height: fit-content;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.4rem;
+}
+
+#location-poll .results-wrap .result-line {
+    border: var(--border);
+    width: 100%;
+    border-bottom: var(--border);
+}
+
+.location-info {
+  text-transform: uppercase;
+  font-weight: 300;
+  font-size: 1rem;
+}
+
+.indirizzo {
+  font-size: 0.7rem;
 }
