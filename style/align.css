@@ -99,11 +99,17 @@
 }
 
 @media screen and (max-width: 400px) {
-  .value-name {font-size: 0.7rem;}
+  .value-name {
+    font-size: 0.7rem;
+  }
 }
 
 button .subtitle {
-  font-size: 0.75rem; margin: 0; padding: 0; opacity: 1; line-height: 1;
+  font-size: 0.75rem;
+  margin: 0;
+  padding: 0;
+  opacity: 1;
+  line-height: 1;
   transform: translateY(-0.3rem);
 }
 
@@ -124,12 +130,12 @@ button .subtitle {
   background: var(--secondary-color);
 }
 
-
-
 /*==============================================*/
 .content .comment-section-wrap {
   width: calc(100% - 40px);
   height: fit-content;
+  border-top: var(--border);
+  border-bottom: var(--border);
   /*border-top: var(--border);*/
 }
 .comment-section-wrap .comment-content {
@@ -139,16 +145,13 @@ button .subtitle {
   flex-direction: column;
   align-items: left;
   justify-content: center;
-  padding: var(--padding-vertical);
+  padding: 20px 0;
   font-style: normal;
   font-weight: 300;
   font-size: 1rem;
   letter-spacing: 2%;
   line-height: 1;
   overflow: hidden;
-  border-top: var(--border);
-  border-bottom: var(--border);
-  
 }
 
 /*==============================================*/
@@ -175,6 +178,9 @@ button .subtitle {
   width: calc(100% - 40px);
   padding: 0 20px;
 }
+.more-about-section .comment-overlay-section-wrap .comment-content {
+  margin: 0;
+}
 
 .more-about-section .comment-content {
   width: 100%;
@@ -189,7 +195,6 @@ button .subtitle {
   display: block;
   margin-bottom: 12px;
 }
-
 
 /**********************************************************************/
 /**********************************************************************/
@@ -228,31 +233,42 @@ button .subtitle {
   color: var(--secondary-color-opacity);
 }
 
-#alignment .arrow-scroll{
+#alignment .arrow-scroll {
   position: relative;
-  overflow: hidden;              /* nasconde lo span quando esce */
-  height: 0.9rem;                /* finestra di visibilità (regola a gusto) */
+  overflow: hidden; /* nasconde lo span quando esce */
+  height: 0.9rem; /* finestra di visibilità (regola a gusto) */
   line-height: 0.9rem;
   display: inline-flex;
   align-items: center;
 }
 
-#alignment .arrow-scroll span{
+#alignment .arrow-scroll span {
   display: inline-block;
   will-change: transform;
   animation: arrowScrollLoop 1.2s linear infinite;
 }
 
 /* entra dall’alto -> passa al centro -> esce sotto */
-@keyframes arrowScrollLoop{
-  0%   { transform: translateY(-110%); opacity: 0; }
-  15%  { opacity: 1; }
-  50%  { transform: translateY(0%);   opacity: 1; }
-  85%  { opacity: 1; }
-  100% { transform: translateY(110%); opacity: 0; }
+@keyframes arrowScrollLoop {
+  0% {
+    transform: translateY(-110%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110%);
+    opacity: 0;
+  }
 }
-
-
 
 /*bottone find location*/
 
