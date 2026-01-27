@@ -10,7 +10,7 @@ LOADER
   left: 0;
   width: 100vw;
   height: 100%;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -92,7 +92,7 @@ GENERIC SVG HOLDER
   bottom: 1rem;
   height: fit-content;
   width: 100%;
-  font-size: 1rem;
+  font-size: 0.6rem;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -176,8 +176,8 @@ GENERIC SVG HOLDER
 /* Stato iniziale: SEMPRE nascosti, SENZA transition (anti flash) */
 #load-page .load-wrap .logo-wrap .logo .svg-holder,
 #load-page .powered-by {
-  opacity: 0;
-  transform: translateY(110%);
+  /*opacity: 0;
+  transform: translateY(110%);*/
   transition: none; /* <- anti flash */
   will-change: transform, opacity;
 }
@@ -222,4 +222,117 @@ GENERIC SVG HOLDER
   width: auto;             /* IMPORTANTISSIMO: evita di “portarsi dietro” il padding del viewBox */
   height: 1rem;
   max-width: none;
+}
+
+
+
+/* ===========================
+   DEBUG POWERED BY - AUTO SVG
+=========================== */
+
+#load-page #power-by {
+  display: inline-flex;      /* importantissimo */
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;      /* fa ereditare la larghezza */
+  gap: 0.4rem;
+}
+
+/* figli */
+#load-page #power-by > div {
+  display: inline-flex;      /* si adatta al contenuto */
+  justify-content: center;
+  align-items: center;
+
+  width: auto;               /* NO forzature */
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+/* svg NON deve forzare */
+#load-page #power-by svg {
+  width: auto;
+  max-width: none;
+  height: 1rem; /* come già avevi */
+  display: block;
+}
+
+/* ===========================
+   POWERED BY: width = FIT-CONTENT dell'SVG
+=========================== */
+
+#load-page #power-by {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch; /* il testo prende la stessa width del blocco svg */
+  gap: 0;
+
+  width: fit-content;   /* il parent si chiude sulla larghezza del figlio svg */
+  margin: 0 auto;
+}
+
+/* debug: entrambi i div con bordo */
+#load-page #power-by > div {
+  box-sizing: border-box;
+}
+
+/* 1) testo: stessa larghezza del parent (che è quella dell'SVG) */
+#load-page #power-by > div:first-child {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* 2) blocco svg: deve essere fit-content reale */
+#load-page #power-by > div[data-svg] {
+  width: fit-content;
+  align-self: center; /* centra il blocco svg nel parent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* OVERRIDE della regola globale che ti rompe tutto dentro powered-by */
+#load-page #power-by .svg-holder {
+  width: fit-content !important;
+  height: auto !important;
+  display: inline-block !important;
+}
+
+/* svg: dimensione reale in base al viewBox (height fissa, width auto) */
+#load-page #power-by .svg-holder svg {
+  height: 1.2rem;
+  width: auto !important;
+  max-width: none !important;
+  display: block;
+}
+
+
+/* Forza allineamento sinistro reale del testo */
+
+#load-page #power-by .power-text {
+  width: 100%;                 /* occupa tutta la larghezza del blocco */
+  
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start; /* spinge il testo a sinistra */
+  align-items: center;
+
+  text-align: left;
+
+  padding-left: 0;             /* sicurezza */
+}
+
+/* POWER TEXT: non deve essere flex e non deve essere centrato */
+#load-page #power-by > .power-text {
+  display: block !important;     /* toglie qualsiasi comportamento flex */
+  width: 100% !important;        /* stessa larghezza del blocco (svg-fit) */
+  text-align: left !important;   /* testo a sinistra */
+  margin: 0 !important;
+  padding: 0 !important;
+  justify-content: unset !important; /* nel caso ci fosse ancora flex da qualche parte */
+  align-items: unset !important;
 }

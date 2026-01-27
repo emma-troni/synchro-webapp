@@ -77,7 +77,7 @@
     LOADER
     ======================= 
     -->
-    <section id="load-page" class="view active">
+    <section id="load-page" class="view active force-loader">
       <div class="load-wrap">
         <div class="logo-wrap">
           <!--
@@ -105,8 +105,9 @@
           </div>
         </div>
         <div class="powered-by" id="power-by">
-          Powered by&nbsp;<span data-svg="./public/icons/SVG/synchro-no-bg.svg"
-            ><div class="svg-holder"></div></span
+          <div class="power-text" style="text-align: left;">Powered by</div>
+          <div data-svg="./public/icons/SVG/synchro-no-bg.svg"
+            ><div class="svg-holder"></div></div
           >
         </div>
       </div>
@@ -555,8 +556,61 @@
     <!--ricerca-->
     <script src="./scripts/search-country.js"></script>
 
-    <!--loader - animation-->
-    <script src="./scripts/load-page-fadeout-dissolve.js"></script>
+    <!--loader - animation
+    <script src="./scripts/load-page-fadeout-dissolve.js"></script>-->
+
+    <script>
+      // load-debug-click.js
+
+document.addEventListener("DOMContentLoaded", () => {
+  const loader = document.getElementById("load-page");
+
+  if (!loader) return;
+
+  /* ===============================
+     FORZA STATO VISIBILE + READY
+  =============================== */
+
+  // Rende visibili le animazioni
+  loader.classList.add("is-ready");
+
+  // Mostra logo
+  setTimeout(() => {
+    loader.classList.add("is-logo-in");
+  }, 100);
+
+  // Mostra powered-by
+  setTimeout(() => {
+    loader.classList.add("is-powered-in");
+  }, 300);
+
+  /* ===============================
+     CLICK PER CHIUDERE
+  =============================== */
+
+  let closed = false;
+
+  function closeLoader() {
+    if (closed) return;
+    closed = true;
+
+    // Fade out soft
+    loader.style.transition = "opacity 600ms ease";
+    loader.style.opacity = "0";
+
+    setTimeout(() => {
+      loader.style.display = "none";
+      loader.style.pointerEvents = "none";
+    }, 600);
+  }
+
+  // Click / tap ovunque
+  document.addEventListener("click", closeLoader, { once: true });
+  document.addEventListener("touchstart", closeLoader, { once: true });
+
+});
+
+    </script>
 
     <!--animazione loop pagina recap-->
     <script src="./scripts/animation.js"></script>
