@@ -62,7 +62,7 @@
   font-style: normal;
   font-weight: 500;
   font-size: 1rem;
-  letter-spacing: -3%;
+  letter-spacing: 0%;
   line-height: 1;
   overflow: auto; /* o scroll */
   scrollbar-width: none; /* Firefox */
@@ -101,5 +101,5 @@
 }
 
 #final-vote-overlay .activity-chosen:last-of-type {
-  text-align:right;
+  text-align: right;
 }

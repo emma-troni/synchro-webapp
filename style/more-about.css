@@ -64,14 +64,23 @@
   position: relative;
 }
 
-.more-about .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap {
+.more-about
+  .upper-content-wrap
+  .recap-lock-content
+  .view-graphic
+  .graphic-wrap {
   height: 100%;
   width: 100%;
   aspect-ratio: 1/1;
   position: relative;
 }
 
-.more-about .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap .holder {
+.more-about
+  .upper-content-wrap
+  .recap-lock-content
+  .view-graphic
+  .graphic-wrap
+  .holder {
   height: 100%;
   aspect-ratio: 1/1;
   position: absolute;
@@ -79,13 +88,23 @@
   transform: translate(-50%, 0);
 }
 
-.more-about .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap .holder span {
+.more-about
+  .upper-content-wrap
+  .recap-lock-content
+  .view-graphic
+  .graphic-wrap
+  .holder
+  span {
   height: 100%;
   width: 100%;
 }
 
-
-.more-about .upper-content-wrap .recap-lock-content .view-graphic .graphic-wrap svg {
+.more-about
+  .upper-content-wrap
+  .recap-lock-content
+  .view-graphic
+  .graphic-wrap
+  svg {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -106,7 +125,7 @@
 
 .more-about .comment-overlay-section-wrap {
   width: 100%;
-  height: 70%;
+  /* height: 70%; */
 }
 
 .more-about .comment-overlay-section-wrap .comment-content {
@@ -121,7 +140,7 @@
   font-style: normal;
   font-weight: 500;
   font-size: 1rem;
-  letter-spacing: -3%;
+  letter-spacing: 0%;
   line-height: 1.2;
 }
 
@@ -170,7 +189,6 @@ FIX footer non cliccabile
 */
 
 @media screen and (max-width: 410px) {
-
   /*============== personal overlay =====================*/
   .more-about .upper-content-wrap {
     display: flex;
@@ -213,7 +231,8 @@ FIX footer non cliccabile
     position: relative;
   }
 
-  .more-about .upper-content-wrap
+  .more-about
+    .upper-content-wrap
     .recap-lock-content
     .view-graphic
     .graphic-wrap {
@@ -223,7 +242,8 @@ FIX footer non cliccabile
     position: relative;
   }
 
-  .more-about .upper-content-wrap
+  .more-about
+    .upper-content-wrap
     .recap-lock-content
     .view-graphic
     .graphic-wrap
@@ -235,7 +255,8 @@ FIX footer non cliccabile
     transform: translate(-50%, 0);
   }
 
-  .more-about .upper-content-wrap
+  .more-about
+    .upper-content-wrap
     .recap-lock-content
     .view-graphic
     .graphic-wrap
@@ -271,7 +292,7 @@ FIX footer non cliccabile
 
   .more-about .comment-overlay-section-wrap {
     width: 100%;
-    height: 70%;
+    /* height: 70%; */
     position: relative;
   }
 
@@ -287,7 +308,7 @@ FIX footer non cliccabile
     font-style: normal;
     font-weight: 500;
     font-size: 1rem;
-    letter-spacing: -3%;
+    letter-spacing: 0%;
     line-height: 1.2;
   }
 
@@ -359,19 +380,9 @@ FIX footer non cliccabile
 }
 
 /* Chrome, Safari, Edge */
-.more-about .comment-overlay-section-wrap .comment-content p::-webkit-scrollbar {
+.more-about
+  .comment-overlay-section-wrap
+  .comment-content
+  p::-webkit-scrollbar {
   display: none;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

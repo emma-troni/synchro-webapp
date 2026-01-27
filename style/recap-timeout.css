@@ -43,8 +43,8 @@
   font-size: 0.8rem;
   font-style: normal;
   font-weight: 400;
-  
-  letter-spacing: -2%;
+
+  letter-spacing: 0%;
   display: flex;
   flex-direction: row;
   gap: 8px;
@@ -56,7 +56,7 @@
   font-style: normal;
   font-weight: 500;
   /*font-weight: 700;*/
-  letter-spacing: -2%;
+  letter-spacing: 0%;
   line-height: 0.84;
   font-size: 2.4rem;
 }
@@ -67,7 +67,7 @@
   font-style: normal;
   font-weight: 500;
   /*font-weight: 700;*/
-  letter-spacing: -4%;
+  letter-spacing: 0%;
   line-height: 0.84;
   font-size: 5.4rem;
 }
@@ -90,11 +90,9 @@
   font-style: normal;
   font-weight: 500;
   font-size: 1rem;
-  letter-spacing: -3%;
+  letter-spacing: 0%;
   line-height: 1;
   margin-bottom: 2rem;
-
-  
 }
 
 .final-score-content .part-up {
@@ -114,7 +112,6 @@
   height: fit-content;
 
   margin-bottom: 1.4rem;
-
 }
 
 .graphics-wrap button {
@@ -140,26 +137,25 @@
   width: 8rem;
 }
 
-
 @media screen and (max-width: 400px) {
   /* il contenitore NON deve avere height fissa */
   .graphics-wrap {
     margin-top: 1rem;
-    height: auto;                 /* <-- fondamentale */
-    min-height: 7.5rem;           /* mantiene presenza */
+    height: auto; /* <-- fondamentale */
+    min-height: 7.5rem; /* mantiene presenza */
     margin-bottom: 1.2rem;
   }
 
   /* i bottoni NON devono dipendere da height:100% */
   .graphics-wrap button {
-    height: auto;                 /* <-- invece di 100% */
+    height: auto; /* <-- invece di 100% */
   }
 
   /* dai una forma stabile al blocco (compatibile con grid) */
   .graphics-inner-wrap {
-    aspect-ratio: 1 / 1;          /* quadrato */
-    min-height: 7.5rem;           /* o 7rem */
-    justify-content: flex-end;    /* label in basso */
+    aspect-ratio: 1 / 1; /* quadrato */
+    min-height: 7.5rem; /* o 7rem */
+    justify-content: flex-end; /* label in basso */
     gap: 6px;
     padding-bottom: 4px;
   }
@@ -178,8 +174,6 @@
     font-size: 0.65rem;
   }
 }
-
-
 
 /*==============================================*/
 
@@ -214,7 +208,7 @@
   font-style: normal;
   font-weight: 500;
   font-size: 1rem;
-  letter-spacing: -3%;
+  letter-spacing: 0%;
   line-height: 1;
   overflow-x: hidden;
   overflow-y: scroll; /* o scroll */
@@ -239,28 +233,25 @@
 
 #recap .hour-of-day {
   font-size: 1rem;
-  letter-spacing: -3%;
+  letter-spacing: 0%;
   font-weight: 500;
   display: flex;
   flex-direction: row;
   justify-content: center;
-
 }
 
 #recap .activity-chosen {
   font-size: 1rem;
-  letter-spacing: -3%;
+  letter-spacing: 0%;
   font-weight: 300;
   white-space: nowrap;
   width: 8rem;
   text-align: center;
   grid-column: span 2;
   width: 100%;
-
 }
 
 /*==============================================*/
-
 
 /*
 =================================
@@ -273,7 +264,13 @@ predisposizione responsive / Stili per iPhone 15 / 14 / 13 / 12 (6.1")
 */
 
 @media screen and (max-width: 400px) {
-  .number-big { font-size: 4.6rem; }
-  .graphics-inner-wrap svg { width: 6.8rem; }
-  .final-score-wrap .final-score-content { margin-bottom: 1.2rem; }
+  .number-big {
+    font-size: 4.6rem;
+  }
+  .graphics-inner-wrap svg {
+    width: 6.8rem;
+  }
+  .final-score-wrap .final-score-content {
+    margin-bottom: 1.2rem;
+  }
 }
