@@ -276,6 +276,7 @@ footer button {
   overflow-y: auto; /* scroll verticale */
   padding: var(--padding);
   width: calc(100% - 40px);
+  border-top: var(--border);
   /*
   height: 50vh;*/
   align-items: left;

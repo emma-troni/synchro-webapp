@@ -275,7 +275,7 @@ footer button {
   display: flex;
   flex-direction: column;
   overflow-y: auto; /* scroll verticale */
-  width: calc(100% - 40px);
+  /* width: calc(100% - 40px); */
   /*
   height: 50vh;*/
   align-items: left;
@@ -493,7 +493,7 @@ footer button {
   min-height: 0; /* IMPORTANTISSIMO */
   overflow-y: auto;
   overflow-x: hidden;
-
+  border-top: var(--border);
   box-sizing: border-box;
   padding-bottom: 96px; /* aumenta se hai footer/search che coprono */
   -webkit-overflow-scrolling: touch;
