@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <title>Live Ranking - Zero Hour Day</title>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="style/world-rank.css" />
+    <!-- Ranking page specific styles (must be last to override) -->
+    <link rel="stylesheet" href="style/ranking.css" />
+
+    <!-- Font Typekit -->
+    <link rel="stylesheet" href="https://use.typekit.net/onf3tub.css" />
+  </head>
+  <body>
+    <main>
+      <div class="intro-section">
+        <p class="section-heading subtitle-class">Live ranking</p>
+        <p class="body-text">
+          This live ranking displays the global results of the
+          <span style="font-weight: bold; font-style: italic"
+            >Zero Hour Day</span
+          >, evaluating how effectively each nation synchronizes individual
+          routines with collective activity. Scores are calculated from
+          population-wide temporal data and updated in real time to reflect
+          overall national performance in the use of time.
+        </p>
+      </div>
+
+      <div class="rank-section-wrap">
+        <div
+          class="rank-content"
+          id="ranking-list"
+          style="padding-top: 64px; padding-bottom: 64px"
+        >
+          <!-- Ranking items will be populated by JavaScript -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Timer script -->
+    <script src="scripts/timer.js"></script>
+
+    <!-- ZHD ranking data -->
+    <script src="scripts/zhd-data.js"></script>
+
+    <!-- Ranking Display Script -->
+    <script>
+      /***********************
+       * RANKING DISPLAY
+       * Uses data from zhd-data.js
+       ***********************/
+
+      const MAX_COUNTRIES = 20; // Show top 20 countries
+
+      function formatScore(score) {
+        if (score === null || score === undefined) return "—";
+        return score.toFixed(1).replace(".", ",") + "%";
+      }
+
+      function formatPosition(position) {
+        // Format as #001, #002, etc.
+        return "#" + String(position).padStart(3, "0");
+      }
+
+      function renderRanking(ranking) {
+        const container = document.getElementById("ranking-list");
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        // Take only top N countries
+        const topRanking = ranking.slice(0, MAX_COUNTRIES);
+
+        topRanking.forEach((item, index) => {
+          const line = document.createElement("div");
+          line.className = "line-ranking";
+
+          // Use rank from data if available, otherwise use index
+          const position = item.rank || index + 1;
+          const score = item.score || item.currentScore || 0;
+
+          line.innerHTML = `
+            <div class="name-position">
+              <span class="rank-position">${formatPosition(position)}</span>
+              <span class="country-name">${item.country}</span>
+            </div>
+            <span class="country-rank-score">${formatScore(score)}</span>
+          `;
+          container.appendChild(line);
+        });
+      }
+
+      /***********************
+       * INITIALIZATION
+       * Wait for ZHD data to be ready
+       ***********************/
+
+      function initRanking() {
+        // Check if ZHD is loaded and has data
+        if (
+          window.ZHD &&
+          window.ZHD.isLoaded &&
+          window.ZHD.currentRanking.length > 0
+        ) {
+          renderRanking(window.ZHD.currentRanking);
+          console.log(
+            "Ranking initialized with",
+            window.ZHD.currentRanking.length,
+            "countries",
+          );
+        } else if (window.ZHD) {
+          // ZHD exists but not loaded yet - register callback
+          window.ZHD.onDataReady.push(() => {
+            renderRanking(window.ZHD.currentRanking);
+            console.log(
+              "✅ Ranking initialized (via callback) with",
+              window.ZHD.currentRanking.length,
+              "countries",
+            );
+          });
+        } else {
+          // Fallback: use BASE_RANKING directly if ZHD not available
+          console.warn("⚠️ ZHD not available, using fallback");
+          if (typeof BASE_RANKING !== "undefined") {
+            const fallbackRanking = [...BASE_RANKING]
+              .sort(
+                (a, b) =>
+                  (b.currentScore || b.baseScore) -
+                  (a.currentScore || a.baseScore),
+              )
+              .map((item, index) => ({
+                ...item,
+                rank: index + 1,
+                score: item.currentScore || item.baseScore,
+              }));
+            renderRanking(fallbackRanking);
+          }
+        }
+      }
+
+      /***********************
+       * EVENT LISTENERS
+       * Listen for ranking updates from zhd-data.js
+       ***********************/
+
+      document.addEventListener("zhd-ranking-updated", (event) => {
+        const { ranking } = event.detail;
+        if (ranking && ranking.length > 0) {
+          renderRanking(ranking);
+          console.log("Ranking updated:", ranking.length, "countries");
+        }
+      });
+
+      // Initialize when DOM is ready
+      document.addEventListener("DOMContentLoaded", initRanking);
+    </script>
+  </body>
+  <footer>
+    <div class="page-head">
+      <div class="timer-space">
+        <div class="timer-text">voting closes in:</div>
+        <div class="timer-text" id="timer">00:00:00</div>
+      </div>
+    </div>
+  </footer>
+</html>
