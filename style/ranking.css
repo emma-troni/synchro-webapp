@@ -1,0 +1,492 @@
+/* ===========================
+   RANKING.CSS
+   Styles specific to ranking.html
+   Optimized for 1080x1920px portrait display
+   with responsive fallbacks
+=========================== */
+
+:root {
+  --primary-color: #f0f0f0;
+  --secondary-color: #1a1a1a;
+  --secondary-color-opacity: rgba(26, 26, 26, 0.1);
+  --border: 2px solid var(--secondary-color);
+  --padding: 0px 20px;
+  --padding-vertical: 24px 0px;
+  --width: calc(100% - 48px);
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ===========================
+   BODY - Base responsive
+=========================== */
+
+body {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  font-family:
+    "helvetica-neue-lt-pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  justify-content: center;
+}
+
+/* ===========================
+   HEADER - Centered timer layout
+=========================== */
+
+header {
+  position: relative;
+  height: auto;
+  min-height: 8vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 30px;
+}
+
+header .page-head {
+  height: 100%;
+  min-height: 8vh;
+  padding: 0 5vw;
+  justify-content: center;
+}
+
+header .timer-space {
+  gap: 1rem;
+}
+
+.timer-text {
+  font-size: clamp(0.9rem, 2vw, 1.4rem);
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+#timer {
+  font-size: clamp(0.9rem, 2vw, 1.4rem);
+}
+
+/* ===========================
+   MAIN - Content layout
+=========================== */
+
+main {
+  position: relative;
+  margin-top: 0;
+  height: calc(100vh - 8vh);
+  width: 100%;
+  padding: 4vh 5vw;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+/* ===========================
+   INTRO SECTION
+=========================== */
+
+.intro-section {
+  padding: 3vh 20px;
+  flex-shrink: 0;
+  border-top: var(--border);
+  border-bottom: var(--border);
+}
+
+.intro-section .section-heading {
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  margin: 0 0 2vh 0;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.intro-section .body-text {
+  font-size: clamp(0.95rem, 1.8vw, 1.3rem);
+  line-height: 1.5;
+  max-width: 90%;
+  /* opacity: 0.85; */
+}
+
+/* ===========================
+   RANKING SECTION WRAP
+=========================== */
+
+.rank-section-wrap {
+  flex: 1;
+  min-height: 0;
+  border-top: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-items: center;
+}
+
+/* ===========================
+   RANKING LIST
+=========================== */
+
+.rank-content {
+  flex: 1;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  width: 100%;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.rank-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Loading text */
+.rank-content .loading-text {
+  text-transform: uppercase;
+  text-align: center;
+  padding: 2rem 0;
+  font-size: clamp(0.9rem, 2vw, 1.4rem);
+  font-weight: 300;
+}
+
+.rank-content .line-ranking {
+  padding: 1.8vh 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+}
+
+.rank-content .line-ranking:last-child {
+  border-bottom: none;
+}
+
+.rank-content .name-position {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: clamp(12px, 3vw, 32px);
+  width: 70%;
+}
+
+.rank-content .rank-position {
+  font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+  font-weight: 500;
+  min-width: clamp(30px, 5vw, 60px);
+  /* opacity: 0.6; */
+}
+
+.rank-content .country-name {
+  font-size: clamp(1.2rem, 3vw, 2.4rem);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rank-content .country-rank-score {
+  font-size: clamp(1.2rem, 3vw, 2.4rem);
+  font-weight: 500;
+}
+
+/* FOOTER */
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+
+@keyframes scoreUpdate {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.score-updating {
+  animation: scoreUpdate 0.5s ease;
+}
+
+/* Smooth transition for ranking changes */
+.line-ranking {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease,
+    background-color 0.5s ease;
+}
+
+/* Winner highlight when timer ends */
+.line-ranking.winner {
+  background-color: rgba(26, 26, 26, 0.2);
+}
+
+/* ===========================
+   TARGET DISPLAY: 1080x1920 (Portrait)
+   Width: 1080px, Height: 1920px
+=========================== */
+
+@media screen and (min-width: 1080px) and (min-height: 1900px) {
+  body {
+    width: 1080px;
+    height: 1920px;
+  }
+
+  header {
+    min-height: 120px;
+    height: 120px;
+  }
+  .page-head-container {
+    padding-top: 0px;
+  }
+
+  header .page-head {
+    min-height: 120px;
+    padding: 60px 0 0 0;
+  }
+
+  .timer-text {
+    font-size: 1.6rem;
+  }
+
+  #timer {
+    font-size: 1.6rem;
+  }
+
+  main {
+    height: calc(1920px - 120px);
+    padding: 64px;
+  }
+
+  .intro-section {
+    margin-bottom: 50px;
+  }
+
+  .intro-section .section-heading {
+    font-size: 3.2rem;
+    margin-bottom: 30px;
+  }
+
+  .intro-section .body-text {
+    font-size: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .rank-content {
+    padding-top: 30px;
+  }
+
+  .rank-content .line-ranking {
+    padding: 28px 0;
+  }
+
+  .rank-content .name-position {
+    gap: 40px;
+  }
+
+  .rank-content .rank-position {
+    font-size: 1.4rem;
+    min-width: 70px;
+  }
+
+  .rank-content .country-name {
+    font-size: 2.8rem;
+  }
+
+  .rank-content .country-rank-score {
+    font-size: 2.8rem;
+  }
+}
+
+/* ===========================
+   LARGE SCREENS / TV DISPLAYS
+=========================== */
+
+@media screen and (min-width: 1080px) and (max-height: 1899px) and (min-height: 1000px) {
+  header {
+    min-height: 100px;
+    height: 100px;
+  }
+
+  header .page-head {
+    min-height: 100px;
+    padding: 0 50px;
+  }
+  .page-head-container {
+    padding-top: 0;
+  }
+
+  .timer-text {
+    font-size: 1.4rem;
+  }
+
+  #timer {
+    font-size: 1.4rem;
+  }
+
+  main {
+    height: calc(100vh - 100px);
+    padding: 50px;
+  }
+
+  .intro-section .section-heading {
+    font-size: 2.6rem;
+  }
+
+  .intro-section .body-text {
+    font-size: 1.3rem;
+  }
+
+  .rank-content .line-ranking {
+    padding: 22px 0;
+  }
+
+  .rank-content .country-name {
+    font-size: 2.2rem;
+  }
+
+  .rank-content .country-rank-score {
+    font-size: 2.2rem;
+  }
+}
+
+/* ===========================
+   TABLET PORTRAIT
+=========================== */
+
+@media screen and (min-width: 600px) and (max-width: 1079px) {
+  header {
+    min-height: 80px;
+  }
+
+  header .page-head {
+    min-height: 80px;
+    padding: 0 30px;
+  }
+  .page-head-container {
+    padding-top: 0;
+  }
+
+  main {
+    height: calc(100vh - 80px);
+    padding: 30px;
+  }
+
+  .intro-section .section-heading {
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+
+  .intro-section .body-text {
+    font-size: 1.1rem;
+  }
+
+  .rank-content .line-ranking {
+    padding: 16px 0;
+  }
+
+  .rank-content .name-position {
+    gap: 20px;
+  }
+
+  .rank-content .rank-position {
+    font-size: 1rem;
+    min-width: 40px;
+  }
+
+  .rank-content .country-name {
+    font-size: 1.6rem;
+  }
+
+  .rank-content .country-rank-score {
+    font-size: 1.6rem;
+  }
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media screen and (max-width: 599px) {
+  header {
+    min-height: 70px;
+  }
+
+  header .page-head {
+    min-height: 70px;
+    padding: 0 20px;
+  }
+  .page-head-container {
+    padding-top: 0;
+    display: flex;
+    justify-content: center;
+  }
+  header .timer-space {
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .timer-text {
+    font-size: 0.75rem;
+  }
+
+  #timer {
+    font-size: 0.75rem;
+  }
+
+  main {
+    height: calc(100vh - 70px);
+    padding: 20px;
+  }
+
+  .intro-section {
+    margin-bottom: 20px;
+  }
+
+  .intro-section .section-heading {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+
+  .intro-section .body-text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    max-width: 100%;
+  }
+
+  .rank-content {
+    padding-top: 15px;
+  }
+
+  .rank-content .line-ranking {
+    padding: 14px 0;
+  }
+
+  .rank-content .name-position {
+    gap: 12px;
+    width: 65%;
+  }
+
+  .rank-content .rank-position {
+    font-size: 0.8rem;
+    min-width: 28px;
+  }
+
+  .rank-content .country-name {
+    font-size: 1.2rem;
+  }
+
+  .rank-content .country-rank-score {
+    font-size: 1.2rem;
+  }
+}
