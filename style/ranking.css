@@ -63,13 +63,13 @@ header .timer-space {
 }
 
 .timer-text {
-  font-size: clamp(0.9rem, 2vw, 2rem);
+  font-size: clamp(1.5rem, 2vw, 1.5rem);
   font-weight: 300;
   text-transform: uppercase;
 }
 
 #timer {
-  font-size: clamp(0.9rem, 2vw, 2rem);
+  font-size: clamp(1.5rem, 2vw, 1.5rem);
   font-weight: 500;
 }
 
@@ -254,6 +254,15 @@ main {
   #timer {
     font-size: 2.4rem;
     font-weight: 500;
+  }
+
+  .fullscreen-btn {
+    right: 60px;
+  }
+
+  .fullscreen-btn svg {
+    width: 32px;
+    height: 32px;
   }
 
   main {

@@ -49,7 +49,7 @@
         <div
           class="rank-content"
           id="ranking-list"
-          style="padding-top: 64px; padding-bottom: 64px"
+          style="padding-top: 64px; padding-bottom: 64px; text-align: center"
         >
           <p class="loading-text">Loading ranking...</p>
         </div>
@@ -200,6 +200,31 @@
 
       // Initialize when DOM is ready
       document.addEventListener("DOMContentLoaded", initRanking);
+
+      /***********************
+       * AUTO FULLSCREEN
+       * Enters fullscreen on first user interaction
+       ***********************/
+
+      function enterFullscreen() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen(); // Safari
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen(); // IE11
+        }
+        // Remove listeners after entering fullscreen
+        document.removeEventListener("click", enterFullscreen);
+        document.removeEventListener("keydown", enterFullscreen);
+        document.removeEventListener("touchstart", enterFullscreen);
+      }
+
+      // Fullscreen requires user interaction, so we trigger on first click/key/touch
+      document.addEventListener("click", enterFullscreen, { once: true });
+      document.addEventListener("keydown", enterFullscreen, { once: true });
+      document.addEventListener("touchstart", enterFullscreen, { once: true });
     </script>
   </body>
 </html>
