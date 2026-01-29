@@ -109,7 +109,7 @@ main {
 .intro-section .body-text {
   font-size: clamp(0.95rem, 1.8vw, 1.3rem);
   line-height: 1.5;
-  max-width: 90%;
+  max-width: 100%;
   /* opacity: 0.85; */
 }
 
