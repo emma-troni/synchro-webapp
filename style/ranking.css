@@ -63,13 +63,13 @@ header .timer-space {
 }
 
 .timer-text {
-  font-size: clamp(0.9rem, 2vw, 1.4rem);
+  font-size: clamp(0.9rem, 3vw, 2rem);
   font-weight: 300;
   text-transform: uppercase;
 }
 
 #timer {
-  font-size: clamp(0.9rem, 2vw, 1.4rem);
+  font-size: clamp(0.9rem, 3vw, 1.4rem);
 }
 
 /* ===========================

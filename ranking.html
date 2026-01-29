@@ -34,7 +34,7 @@
     <main>
       <div class="intro-section">
         <p class="section-heading subtitle-class">Live ranking</p>
-        <p class="body-text">
+        <p class="body-text" style="max-width: 100%">
           This live ranking displays the global results of the
           <span style="font-weight: bold; font-style: italic"
             >Zero Hour Day</span
@@ -164,67 +164,37 @@
 
       /***********************
        * INITIALIZATION
-       * Wait for ZHD data to be ready
+       * Wait for ZHD data to be ready from SERVER
        ***********************/
+
+      let rankingInitialized = false;
 
       function initRanking() {
         // Start the timer
         updateTimer();
         timerInterval = setInterval(updateTimer, 1000);
 
-        // Check if ZHD is loaded and has data
-        if (
-          window.ZHD &&
-          window.ZHD.isLoaded &&
-          window.ZHD.currentRanking.length > 0
-        ) {
-          renderRanking(window.ZHD.currentRanking);
-          console.log(
-            "Ranking initialized with",
-            window.ZHD.currentRanking.length,
-            "countries",
-          );
-        } else if (window.ZHD) {
-          // ZHD exists but not loaded yet - register callback
-          window.ZHD.onDataReady.push(() => {
-            renderRanking(window.ZHD.currentRanking);
-            console.log(
-              "Ranking initialized (via callback) with",
-              window.ZHD.currentRanking.length,
-              "countries",
-            );
-          });
-        } else {
-          // ZHD not available yet - wait for it
-          console.log("Waiting for ZHD to initialize...");
-
-          // Check again after a short delay
-          setTimeout(() => {
-            if (window.ZHD) {
-              if (window.ZHD.isLoaded && window.ZHD.currentRanking.length > 0) {
-                renderRanking(window.ZHD.currentRanking);
-              } else {
-                window.ZHD.onDataReady.push(() => {
-                  renderRanking(window.ZHD.currentRanking);
-                });
-              }
-            } else {
-              console.warn("ZHD still not available");
-            }
-          }, 500);
-        }
+        // Don't render immediately - wait for zhd-ranking-updated event
+        // which fires AFTER server data is fetched
+        console.log("Waiting for server ranking data...");
       }
 
       /***********************
        * EVENT LISTENERS
        * Listen for ranking updates from zhd-data.js
+       * This fires AFTER zhdFetchServerRanking() completes
        ***********************/
 
       document.addEventListener("zhd-ranking-updated", (event) => {
         const { ranking } = event.detail;
         if (ranking && ranking.length > 0) {
           renderRanking(ranking);
-          console.log("Ranking updated:", ranking.length, "countries");
+          rankingInitialized = true;
+          console.log(
+            "Ranking updated from server:",
+            ranking.length,
+            "countries",
+          );
         }
       });
 
