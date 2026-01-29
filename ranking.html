@@ -51,7 +51,9 @@
           id="ranking-list"
           style="padding-top: 64px; padding-bottom: 64px"
         >
-          <!-- Ranking items will be populated by JavaScript -->
+          <p class="loading-text section-heading subtitle-class">
+            Loading ranking...
+          </p>
         </div>
       </div>
     </main>
@@ -65,8 +67,8 @@
        * TIMER (without redirect)
        ***********************/
       const timerElement = document.getElementById("timer");
-      // const endTime = new Date("2026-02-03T23:59:59").getTime();
-      const endTime = new Date("2026-01-29T19:23:50").getTime();
+      const endTime = new Date("2026-02-03T23:59:59").getTime();
+      // const endTime = new Date("2026-01-29T19:23:50").getTime();
 
       let timerInterval = null;
 

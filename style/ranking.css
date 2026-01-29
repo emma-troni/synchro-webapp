@@ -145,6 +145,15 @@ main {
   display: none;
 }
 
+/* Loading text */
+.rank-content .loading-text {
+  text-transform: uppercase;
+  text-align: center;
+  padding: 2rem 0;
+  font-size: clamp(0.9rem, 2vw, 1.4rem);
+  font-weight: 300;
+}
+
 .rank-content .line-ranking {
   padding: 1.8vh 0;
   display: flex;
