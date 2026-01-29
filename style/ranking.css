@@ -45,6 +45,10 @@ header {
   position: relative;
   height: auto;
   min-height: 8vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 30px;
 }
 
 header .page-head {
@@ -62,11 +66,10 @@ header .timer-space {
   font-size: clamp(0.9rem, 2vw, 1.4rem);
   font-weight: 300;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 #timer {
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-size: clamp(0.9rem, 2vw, 1.4rem);
 }
 
 /* ===========================
@@ -184,13 +187,7 @@ main {
 }
 
 /* FOOTER */
-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 64px;
-}
+
 /* ===========================
    ANIMATIONS
 =========================== */
@@ -233,10 +230,13 @@ footer {
     min-height: 120px;
     height: 120px;
   }
+  .page-head-container {
+    padding-top: 0px;
+  }
 
   header .page-head {
     min-height: 120px;
-    padding: 0 60px;
+    padding: 60px 0 0 0;
   }
 
   .timer-text {
@@ -244,12 +244,12 @@ footer {
   }
 
   #timer {
-    font-size: 2.6rem;
+    font-size: 1.6rem;
   }
 
   main {
     height: calc(1920px - 120px);
-    padding: 60px;
+    padding: 64px;
   }
 
   .intro-section {
@@ -306,13 +306,16 @@ footer {
     min-height: 100px;
     padding: 0 50px;
   }
+  .page-head-container {
+    padding-top: 0;
+  }
 
   .timer-text {
     font-size: 1.4rem;
   }
 
   #timer {
-    font-size: 2.2rem;
+    font-size: 1.4rem;
   }
 
   main {
@@ -354,14 +357,13 @@ footer {
     min-height: 80px;
     padding: 0 30px;
   }
+  .page-head-container {
+    padding-top: 0;
+  }
 
   main {
     height: calc(100vh - 80px);
     padding: 30px;
-  }
-
-  .intro-section {
-    margin-bottom: 25px;
   }
 
   .intro-section .section-heading {
@@ -408,7 +410,11 @@ footer {
     min-height: 70px;
     padding: 0 20px;
   }
-
+  .page-head-container {
+    padding-top: 0;
+    display: flex;
+    justify-content: center;
+  }
   header .timer-space {
     flex-direction: column;
     gap: 4px;
@@ -420,7 +426,7 @@ footer {
   }
 
   #timer {
-    font-size: 1.4rem;
+    font-size: 0.75rem;
   }
 
   main {

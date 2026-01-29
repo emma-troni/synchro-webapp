@@ -18,7 +18,19 @@
     <!-- Font Typekit -->
     <link rel="stylesheet" href="https://use.typekit.net/onf3tub.css" />
   </head>
+
   <body>
+    <header>
+      <div class="page-head-container">
+        <div class="page-head">
+          <div class="timer-space">
+            <div class="timer-text">voting closes in:</div>
+            <div class="timer-text" id="timer">00:00:00</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
     <main>
       <div class="intro-section">
         <p class="section-heading subtitle-class">Live ranking</p>
@@ -162,12 +174,4 @@
       document.addEventListener("DOMContentLoaded", initRanking);
     </script>
   </body>
-  <footer>
-    <div class="page-head">
-      <div class="timer-space">
-        <div class="timer-text">voting closes in:</div>
-        <div class="timer-text" id="timer">00:00:00</div>
-      </div>
-    </div>
-  </footer>
 </html>
