@@ -56,20 +56,58 @@
       </div>
     </main>
 
-    <!-- Timer script -->
-    <script src="scripts/timer.js"></script>
-
     <!-- ZHD ranking data -->
     <script src="scripts/zhd-data.js"></script>
 
     <!-- Ranking Display Script -->
     <script>
       /***********************
+       * TIMER (without redirect)
+       ***********************/
+      const timerElement = document.getElementById("timer");
+      // const endTime = new Date("2026-02-03T23:59:59").getTime();
+      const endTime = new Date("2026-01-29T19:23:50").getTime();
+
+      let timerInterval = null;
+
+      function updateTimer() {
+        const now = Date.now();
+        let remaining = endTime - now;
+
+        if (remaining <= 0) {
+          remaining = 0;
+          clearInterval(timerInterval);
+          timerElement.textContent = "00:00:00";
+
+          // Highlight winner when timer ends (no redirect)
+          if (!timerEnded) {
+            timerEnded = true;
+            highlightWinner();
+          }
+          return;
+        }
+
+        const hours = Math.floor(remaining / (1000 * 60 * 60));
+        const minutes = Math.floor(
+          (remaining % (1000 * 60 * 60)) / (1000 * 60),
+        );
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+        timerElement.textContent =
+          String(hours).padStart(2, "0") +
+          ":" +
+          String(minutes).padStart(2, "0") +
+          ":" +
+          String(seconds).padStart(2, "0");
+      }
+
+      /***********************
        * RANKING DISPLAY
        * Uses data from zhd-data.js
        ***********************/
 
       const MAX_COUNTRIES = 20; // Show top 20 countries
+      let timerEnded = false;
 
       function formatScore(score) {
         if (score === null || score === undefined) return "—";
@@ -79,6 +117,16 @@
       function formatPosition(position) {
         // Format as #001, #002, etc.
         return "#" + String(position).padStart(3, "0");
+      }
+
+      function highlightWinner() {
+        const container = document.getElementById("ranking-list");
+        if (!container) return;
+
+        const firstLine = container.querySelector(".line-ranking");
+        if (firstLine) {
+          firstLine.classList.add("winner");
+        }
       }
 
       function renderRanking(ranking) {
@@ -107,6 +155,11 @@
           `;
           container.appendChild(line);
         });
+
+        // If timer has ended, highlight the winner
+        if (timerEnded) {
+          highlightWinner();
+        }
       }
 
       /***********************
@@ -115,6 +168,10 @@
        ***********************/
 
       function initRanking() {
+        // Start the timer
+        updateTimer();
+        timerInterval = setInterval(updateTimer, 1000);
+
         // Check if ZHD is loaded and has data
         if (
           window.ZHD &&
@@ -132,14 +189,14 @@
           window.ZHD.onDataReady.push(() => {
             renderRanking(window.ZHD.currentRanking);
             console.log(
-              "✅ Ranking initialized (via callback) with",
+              "Ranking initialized (via callback) with",
               window.ZHD.currentRanking.length,
               "countries",
             );
           });
         } else {
           // Fallback: use BASE_RANKING directly if ZHD not available
-          console.warn("⚠️ ZHD not available, using fallback");
+          console.warn("ZHD not available, using fallback");
           if (typeof BASE_RANKING !== "undefined") {
             const fallbackRanking = [...BASE_RANKING]
               .sort(
