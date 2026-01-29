@@ -63,13 +63,14 @@ header .timer-space {
 }
 
 .timer-text {
-  font-size: clamp(0.9rem, 3vw, 2rem);
+  font-size: clamp(0.9rem, 2vw, 2rem);
   font-weight: 300;
   text-transform: uppercase;
 }
 
 #timer {
-  font-size: clamp(0.9rem, 3vw, 1.4rem);
+  font-size: clamp(0.9rem, 2vw, 2rem);
+  font-weight: 500;
 }
 
 /* ===========================
@@ -109,7 +110,7 @@ main {
 .intro-section .body-text {
   font-size: clamp(0.95rem, 1.8vw, 1.3rem);
   line-height: 1.5;
-  max-width: 100%;
+  max-width: 90%;
   /* opacity: 0.85; */
 }
 
@@ -143,15 +144,6 @@ main {
 
 .rank-content::-webkit-scrollbar {
   display: none;
-}
-
-/* Loading text */
-.rank-content .loading-text {
-  text-transform: uppercase;
-  text-align: center;
-  padding: 2rem 0;
-  font-size: clamp(0.9rem, 2vw, 1.4rem);
-  font-weight: 300;
 }
 
 .rank-content .line-ranking {
@@ -255,11 +247,13 @@ main {
   }
 
   .timer-text {
-    font-size: 1.6rem;
+    font-size: 2.4rem;
+    font-weight: 300;
   }
 
   #timer {
-    font-size: 1.6rem;
+    font-size: 2.4rem;
+    font-weight: 500;
   }
 
   main {
@@ -326,11 +320,13 @@ main {
   }
 
   .timer-text {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
+    font-weight: 300;
   }
 
   #timer {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
+    font-weight: 500;
   }
 
   main {
@@ -437,11 +433,13 @@ main {
   }
 
   .timer-text {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 300;
   }
 
   #timer {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
   }
 
   main {
