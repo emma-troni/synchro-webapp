@@ -51,9 +51,7 @@
           id="ranking-list"
           style="padding-top: 64px; padding-bottom: 64px"
         >
-          <p class="loading-text section-heading subtitle-class">
-            Loading ranking...
-          </p>
+          <p class="loading-text">Loading ranking...</p>
         </div>
       </div>
     </main>
@@ -67,8 +65,8 @@
        * TIMER (without redirect)
        ***********************/
       const timerElement = document.getElementById("timer");
-      const endTime = new Date("2026-02-03T23:59:59").getTime();
-      // const endTime = new Date("2026-01-29T19:23:50").getTime();
+      // const endTime = new Date("2026-02-03T23:59:59").getTime();
+      const endTime = new Date("2026-01-29T19:23:50").getTime();
 
       let timerInterval = null;
 
@@ -197,22 +195,23 @@
             );
           });
         } else {
-          // Fallback: use BASE_RANKING directly if ZHD not available
-          console.warn("ZHD not available, using fallback");
-          if (typeof BASE_RANKING !== "undefined") {
-            const fallbackRanking = [...BASE_RANKING]
-              .sort(
-                (a, b) =>
-                  (b.currentScore || b.baseScore) -
-                  (a.currentScore || a.baseScore),
-              )
-              .map((item, index) => ({
-                ...item,
-                rank: index + 1,
-                score: item.currentScore || item.baseScore,
-              }));
-            renderRanking(fallbackRanking);
-          }
+          // ZHD not available yet - wait for it
+          console.log("Waiting for ZHD to initialize...");
+
+          // Check again after a short delay
+          setTimeout(() => {
+            if (window.ZHD) {
+              if (window.ZHD.isLoaded && window.ZHD.currentRanking.length > 0) {
+                renderRanking(window.ZHD.currentRanking);
+              } else {
+                window.ZHD.onDataReady.push(() => {
+                  renderRanking(window.ZHD.currentRanking);
+                });
+              }
+            } else {
+              console.warn("ZHD still not available");
+            }
+          }, 500);
         }
       }
 
