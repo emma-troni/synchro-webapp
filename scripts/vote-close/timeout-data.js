@@ -379,8 +379,9 @@
 
   async function fetchAndFixRanking() {
     try {
+      // Fetch ALL countries ranking (not just top 50) and winner in parallel
       const [rankingResponse, winnerResponse] = await Promise.all([
-        fetch(`${CONFIG.SCRIPT_URL}?action=ranking&top=50&t=${Date.now()}`),
+        fetch(`${CONFIG.SCRIPT_URL}?action=ranking&all=true&t=${Date.now()}`),
         fetch(`${CONFIG.SCRIPT_URL}?action=winner&t=${Date.now()}`),
       ]);
 
@@ -389,12 +390,41 @@
         winnerResponse.json(),
       ]);
 
+      let italyRank = null;
+
       if (!rankingData.error && rankingData.ranking) {
         fixedRanking = rankingData.ranking;
         console.log(
           "[Timeout-Data] Fixed ranking loaded:",
           fixedRanking.length,
           "countries",
+        );
+
+        // Prima prova a ottenere il rank dell'Italia dai dati diretti dell'API
+        if (rankingData.italy && rankingData.italy.rank) {
+          italyRank = rankingData.italy.rank;
+          console.log("[Timeout-Data] Italy rank from API:", italyRank);
+        } else {
+          // Fallback: cerca nel ranking
+          const italy = fixedRanking.find((r) => r.country === "Italy");
+          if (italy) {
+            italyRank = italy.rank;
+            console.log(
+              "[Timeout-Data] Italy rank from ranking array:",
+              italyRank,
+            );
+          }
+        }
+
+        // Emit event for other scripts
+        document.dispatchEvent(
+          new CustomEvent("timeout-ranking-ready", {
+            detail: {
+              ranking: fixedRanking,
+              italyRank: italyRank,
+              italy: rankingData.italy,
+            },
+          }),
         );
       }
 
@@ -671,6 +701,128 @@
   }
 
   /***********************
+   * NO USER ID LAYOUT
+   * Applica modifiche UI quando non c'è ID nell'URL
+   ***********************/
+  function applyNoUserIdLayout() {
+    // 1. Header: nascondi id-space, centra timer-space
+    const idSpace = document.querySelector(".id-space");
+    if (idSpace) {
+      idSpace.style.display = "none";
+    }
+
+    const pageHead = document.querySelector(".page-head.divide");
+    if (pageHead) {
+      pageHead.style.justifyContent = "center";
+    }
+
+    // 2. Nascondi personal-value-btn e la linea verticale
+    const personalBtn = document.getElementById("personal-value-btn");
+    if (personalBtn) {
+      personalBtn.style.display = "none";
+    }
+
+    const lineVertical = document.querySelector(".align-values .line-vertical");
+    if (lineVertical) {
+      lineVertical.style.display = "none";
+    }
+
+    // 3. Nascondi internal-graphic (raggiera personale)
+    const internalGraphic = document.querySelector(".internal-graphic");
+    if (internalGraphic) {
+      internalGraphic.style.display = "none";
+    }
+    // 4. align-values
+    // const alignValues = document.querySelector(".align-values");
+    // if (alignValues) {
+    //   alignValues.style.flexDirection = "row";
+    // }
+    // 5. Modifica country-value-btn per prendere tutta la width
+    const countryBtn = document.getElementById("country-value-btn");
+    if (countryBtn) {
+      countryBtn.style.width = "100%";
+      countryBtn.style.display = "flex";
+      countryBtn.style.flexDirection = "column";
+      countryBtn.style.justifyContent = "space-between";
+
+      // Crea wrapper per value-name e subtitle (colonna sinistra)
+      const valueName = countryBtn.querySelector(".value-name");
+      const subtitle = countryBtn.querySelector(".subtitle");
+      const valuePercentage = countryBtn.querySelector(".value-percentage");
+
+      if (valueName && subtitle && valuePercentage) {
+        // Crea contenitore per la colonna sinistra
+        const leftColumn = document.createElement("div");
+        leftColumn.style.display = "flex";
+        leftColumn.style.flexDirection = "column";
+        leftColumn.style.gap = "5px";
+        leftColumn.style.alignItems = "flex-start";
+
+        // Sposta value-name e subtitle nel contenitore sinistro
+        leftColumn.appendChild(valueName);
+        leftColumn.appendChild(subtitle);
+
+        // Svuota il button e ricostruisci
+        countryBtn.innerHTML = "";
+        countryBtn.appendChild(leftColumn);
+        countryBtn.appendChild(valuePercentage);
+      }
+    }
+
+    console.log("[Timeout-Data] Applied no-user-ID layout");
+  }
+
+  function updateNoUserComment() {
+    // Aggiorna il commento nella sezione align con il rank dell'Italia
+    const commentContent = document.querySelector(
+      "#alignment .comment-section-wrap .comment-content",
+    );
+    if (!commentContent) return;
+
+    // Funzione per aggiornare il testo con il rank
+    const updateText = (rankValue) => {
+      let rankText = "";
+
+      // Se viene passato un rank direttamente, usalo
+      if (rankValue) {
+        rankText = `#${rankValue}`;
+      }
+      // Altrimenti prova a ottenere il rank dal fixedRanking
+      else if (fixedRanking && fixedRanking.length > 0) {
+        const italy = fixedRanking.find((r) => r.country === "Italy");
+        if (italy) {
+          rankText = `#${italy.rank}`;
+        }
+      }
+
+      if (!rankText) {
+        rankText = "#—";
+      }
+
+      commentContent.innerHTML = `Voting session ended. Your country is positioned ${rankText} on the global ranking.`;
+      console.log(
+        "[Timeout-Data] Updated no-user comment with rank:",
+        rankText,
+      );
+    };
+
+    // Aggiorna subito (mostrerà #— se ranking non ancora caricato)
+    updateText();
+
+    // Ascolta l'evento quando il ranking è pronto
+    document.addEventListener("timeout-ranking-ready", (event) => {
+      const { italyRank } = event.detail;
+      if (italyRank) {
+        updateText(italyRank);
+      }
+    });
+
+    // Fallback con timeout nel caso l'evento sia già stato emesso
+    setTimeout(() => updateText(), 2000);
+    setTimeout(() => updateText(), 4000);
+  }
+
+  /***********************
    * MAIN INITIALIZATION
    ***********************/
   async function init() {
@@ -688,7 +840,9 @@
 
     if (!userId) {
       console.warn("[Timeout-Data] No user ID in URL");
-      updateFinalScore(0);
+
+      // Applica layout per utente senza ID
+      applyNoUserIdLayout();
 
       // Anche senza userId, carica i dati per mostrare almeno il country score
       try {
@@ -711,6 +865,9 @@
           countryScore.toFixed(1),
         );
         updateAlignSection(null, countryScore);
+
+        // Aggiorna il commento con il rank dell'Italia (aspetta che il ranking sia caricato)
+        updateNoUserComment();
 
         // Prova ad animare gli SVG align
         tryAnimateAlignSvgs();
@@ -1080,6 +1237,8 @@
     updateWorldSection,
     highlightTimezone,
     tryAnimateAlignSvgs,
+    applyNoUserIdLayout,
+    updateNoUserComment,
     ACTIVITY_COLORS,
     T_0_MODEL,
     getFixedRanking: () => fixedRanking,
