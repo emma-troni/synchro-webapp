@@ -21,7 +21,7 @@
   const CONFIG = {
     SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
     APP_SCRIPT_ID:
-      "AKfycbzWBb9jvlPpi3iugM7CB6Sz6XuvCYNSGPYawNCUTzxcaRgf5ij5cihMPMizrGWPBVAi",
+      "AKfycbw0m6meuxpGeOBiBrRohZ-rptpb8XmiYBMF3ayD_aqwT9xvQ_nMlRk5YiXlK9RSfQrl",
     SEGMENT_ID_PREFIX: "_x3C_Rettangolo",
     SEGMENT_ID_SUFFIX: "_x3E_",
     NUM_SEGMENTS: 24,
