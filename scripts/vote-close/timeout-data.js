@@ -38,10 +38,10 @@
    * ACTIVITY COLORS & MAPS
    ***********************/
   const ACTIVITY_COLORS = {
-    Sleep: "#566CD2", // Blue
-    Work: "#A51538", // Red
-    Eat: "#E1A65E", // Yellow
-    Other: "#1A8E8F", // Green
+    Sleep: "#566CD2",
+    Work: "#A51538",
+    Eat: "#E1A65E",
+    Other: "#1A8E8F",
   };
 
   const ACTIVITY_MAP = {
@@ -88,9 +88,6 @@
     23: "Sleep",
   };
 
-  /***********************
-   * TIMEZONE MAP HIGHLIGHT STYLING
-   ***********************/
   const TZ_HIGHLIGHT = {
     FILL: "#1a1a1a2f",
     STROKE: "#1a1a1a",
@@ -101,14 +98,7 @@
    * UTILITY FUNCTIONS
    ***********************/
   function getUserIdFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("id");
-  }
-
-  function getTimezoneFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const tz = params.get("tz");
-    return tz ? parseInt(tz, 10) : null;
+    return new URLSearchParams(window.location.search).get("id");
   }
 
   function normalizeActivity(activity) {
@@ -165,8 +155,7 @@
     for (let h = 0; h < 24; h++) {
       const hourData = timeline[h];
       const rawActivity = hourData?.activity || "Other time";
-      const activity = normalizeActivity(rawActivity);
-      vectors.push(activityToOneHot(activity));
+      vectors.push(activityToOneHot(normalizeActivity(rawActivity)));
     }
     return vectors;
   }
@@ -196,31 +185,23 @@
     const tutteTimeline = [];
     allDati.forEach((datiStr) => {
       try {
-        const blocks = JSON.parse(datiStr);
-        tutteTimeline.push(expandTo24Hours(blocks));
+        tutteTimeline.push(expandTo24Hours(JSON.parse(datiStr)));
       } catch (e) {}
     });
 
     const N = tutteTimeline.length;
-
-    if (N === 0) {
+    if (N === 0)
       return { score: 0, numCittadini: 0, T_model: buildT0Vectors() };
-    }
 
     const T_model_full = buildT0Vectors().map((row) => [...row]);
     tutteTimeline.forEach((tl) => {
       const vecs = buildCitizenVectors(tl);
       vecs.forEach((vec, h) => {
-        for (let c = 0; c < 4; c++) {
-          T_model_full[h][c] += vec[c];
-        }
+        for (let c = 0; c < 4; c++) T_model_full[h][c] += vec[c];
       });
     });
-
     for (let h = 0; h < 24; h++) {
-      for (let c = 0; c < 4; c++) {
-        T_model_full[h][c] /= N + 1;
-      }
+      for (let c = 0; c < 4; c++) T_model_full[h][c] /= N + 1;
     }
 
     let sommaScore = 0;
@@ -230,16 +211,12 @@
         if (i !== j) {
           const vecs = buildCitizenVectors(tl_j);
           vecs.forEach((vec, h) => {
-            for (let c = 0; c < 4; c++) {
-              T_model_minus_i[h][c] += vec[c];
-            }
+            for (let c = 0; c < 4; c++) T_model_minus_i[h][c] += vec[c];
           });
         }
       });
       for (let h = 0; h < 24; h++) {
-        for (let c = 0; c < 4; c++) {
-          T_model_minus_i[h][c] /= N;
-        }
+        for (let c = 0; c < 4; c++) T_model_minus_i[h][c] /= N;
       }
       sommaScore += calculateScoreVsTn(tl_i, T_model_minus_i);
     });
@@ -248,18 +225,79 @@
   }
 
   /***********************
+   * FORCE SVG INJECTION
+   ***********************/
+  async function forceInjectSvg(container) {
+    if (!container) return null;
+    const url = container.dataset.svg;
+    const holder = container.querySelector(".svg-holder");
+    if (!url || !holder) return null;
+
+    if (container.dataset.svgInjected === "1") {
+      return holder.querySelector("svg");
+    }
+
+    try {
+      const response = await fetch(url, { cache: "no-cache" });
+      if (!response.ok) return null;
+
+      const svgText = await response.text();
+      holder.innerHTML = svgText;
+
+      const svg = holder.querySelector("svg");
+      if (!svg) return null;
+
+      svg.removeAttribute("width");
+      svg.removeAttribute("height");
+      container.dataset.svgInjected = "1";
+
+      console.log("[Timeout-Data] Force injected SVG:", url);
+      document.dispatchEvent(
+        new CustomEvent("svg-injected", { detail: { svg, container } }),
+      );
+
+      return svg;
+    } catch (err) {
+      console.warn("[Timeout-Data] SVG injection error:", err);
+      return null;
+    }
+  }
+
+  async function forceInjectAlignSvgs() {
+    const containers = [
+      document.querySelector(".internal-graphic"),
+      document.querySelector(".external-graphic"),
+      document.querySelector("#align-personal-overlay .holder.int"),
+      document.querySelector("#align-personal-overlay .holder.ext"),
+      document.querySelector("#align-country-overlay .holder.int"),
+      document.querySelector("#align-country-overlay .holder.ext"),
+    ];
+
+    for (const container of containers) {
+      if (container && container.dataset.svg) {
+        await forceInjectSvg(container);
+      }
+    }
+    console.log("[Timeout-Data] Force injected all align SVGs");
+  }
+
+  /***********************
    * ALIGN SECTION
    ***********************/
+  let alignPersonalScore = null;
+  let alignCountryScore = null;
+  let alignInternalAnimated = false;
+  let alignExternalAnimated = false;
+  let alignPersonalOverlayAnimated = false;
+  let alignCountryOverlayAnimated = false;
+
   function animateAlignSegments(container, activeSegments, useStagger = true) {
     if (!container) return;
     const svgHolder = container.querySelector(".svg-holder");
-    if (!svgHolder) return;
+    if (!svgHolder || !svgHolder.querySelector("svg")) return;
 
     for (let i = 0; i < CONFIG.NUM_SEGMENTS; i++) {
-      const elementId = `${CONFIG.SEGMENT_ID_PREFIX}${String(i).padStart(
-        2,
-        "0",
-      )}${CONFIG.SEGMENT_ID_SUFFIX}`;
+      const elementId = `${CONFIG.SEGMENT_ID_PREFIX}${String(i).padStart(2, "0")}${CONFIG.SEGMENT_ID_SUFFIX}`;
       const polygon = svgHolder.querySelector(`#${CSS.escape(elementId)}`);
       if (polygon) {
         const targetOpacity =
@@ -277,19 +315,18 @@
 
   function updatePersonalVisual(personalScore) {
     if (personalScore === null || personalScore === undefined) return;
-
-    // Salva lo score per uso successivo quando l'SVG sarà pronto
     alignPersonalScore = personalScore;
-
     const activeSegments = Math.round(
       (personalScore / 100) * CONFIG.NUM_SEGMENTS,
     );
 
-    // Prova ad animare subito (potrebbe non funzionare se SVG non è pronto)
     const mainContainer = document.querySelector(".internal-graphic");
     if (mainContainer?.querySelector(".svg-holder svg")) {
       animateAlignSegments(mainContainer, activeSegments, true);
       alignInternalAnimated = true;
+      console.log(
+        "[Timeout-Data] updatePersonalVisual: animated internal-graphic",
+      );
     }
 
     const overlayContainer = document.querySelector(
@@ -309,22 +346,20 @@
 
   function updateCountryVisual(countryScore) {
     if (countryScore === null || countryScore === undefined) return;
-
-    // Salva lo score per uso successivo quando l'SVG sarà pronto
     alignCountryScore = countryScore;
-
     const activeSegments = Math.round(
       (countryScore / 100) * CONFIG.NUM_SEGMENTS,
     );
 
-    // Prova ad animare subito (potrebbe non funzionare se SVG non è pronto)
     const mainContainer = document.querySelector(".external-graphic");
     if (mainContainer?.querySelector(".svg-holder svg")) {
       animateAlignSegments(mainContainer, activeSegments, true);
       alignExternalAnimated = true;
+      console.log(
+        "[Timeout-Data] updateCountryVisual: animated external-graphic",
+      );
     }
 
-    // Update ext raggiera in country overlay
     const overlayContainerExt = document.querySelector(
       "#align-country-overlay .holder.ext",
     );
@@ -352,34 +387,81 @@
       if (valueEl) valueEl.textContent = formatScoreItalian(countryScore);
     }
 
-    // Update ALL comments via timeout-comments.js
     if (
       window.TimeoutComments &&
       typeof window.TimeoutComments.setScores === "function"
     ) {
       window.TimeoutComments.setScores(personalScore, countryScore);
-      console.log(
-        "[Timeout-Data] Comments updated via TimeoutComments.setScores()",
-      );
-    } else {
-      console.warn(
-        "[Timeout-Data] TimeoutComments not available - make sure timeout-comments.js is loaded BEFORE timeout-data.js",
-      );
     }
 
     updatePersonalVisual(personalScore);
     updateCountryVisual(countryScore);
   }
 
+  function tryAnimateAlignSvgs() {
+    if (alignPersonalScore !== null && !alignInternalAnimated) {
+      const mainContainer = document.querySelector(".internal-graphic");
+      if (mainContainer?.querySelector(".svg-holder svg")) {
+        const activeSegments = Math.round(
+          (alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS,
+        );
+        animateAlignSegments(mainContainer, activeSegments, true);
+        alignInternalAnimated = true;
+        console.log(
+          "[Timeout-Data] tryAnimateAlignSvgs: animated internal-graphic",
+        );
+      }
+    }
+
+    if (alignCountryScore !== null && !alignExternalAnimated) {
+      const mainContainer = document.querySelector(".external-graphic");
+      if (mainContainer?.querySelector(".svg-holder svg")) {
+        const activeSegments = Math.round(
+          (alignCountryScore / 100) * CONFIG.NUM_SEGMENTS,
+        );
+        animateAlignSegments(mainContainer, activeSegments, true);
+        alignExternalAnimated = true;
+        console.log(
+          "[Timeout-Data] tryAnimateAlignSvgs: animated external-graphic",
+        );
+      }
+    }
+
+    if (alignPersonalScore !== null && !alignPersonalOverlayAnimated) {
+      const overlayContainer = document.querySelector(
+        "#align-personal-overlay .holder.int",
+      );
+      if (overlayContainer?.querySelector(".svg-holder svg")) {
+        const activeSegments = Math.round(
+          (alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS,
+        );
+        animateAlignSegments(overlayContainer, activeSegments, false);
+        alignPersonalOverlayAnimated = true;
+      }
+    }
+
+    if (alignCountryScore !== null && !alignCountryOverlayAnimated) {
+      const overlayContainer = document.querySelector(
+        "#align-country-overlay .holder.ext",
+      );
+      if (overlayContainer?.querySelector(".svg-holder svg")) {
+        const activeSegments = Math.round(
+          (alignCountryScore / 100) * CONFIG.NUM_SEGMENTS,
+        );
+        animateAlignSegments(overlayContainer, activeSegments, false);
+        alignCountryOverlayAnimated = true;
+      }
+    }
+  }
+
   /***********************
-   * WORLD SECTION - FIXED RANKING
+   * WORLD SECTION
    ***********************/
   let fixedRanking = [];
   let fixedWinnerTimezone = null;
 
   async function fetchAndFixRanking() {
     try {
-      // Fetch ALL countries ranking (not just top 50) and winner in parallel
       const [rankingResponse, winnerResponse] = await Promise.all([
         fetch(`${CONFIG.SCRIPT_URL}?action=ranking&all=true&t=${Date.now()}`),
         fetch(`${CONFIG.SCRIPT_URL}?action=winner&t=${Date.now()}`),
@@ -400,28 +482,18 @@
           "countries",
         );
 
-        // Prima prova a ottenere il rank dell'Italia dai dati diretti dell'API
         if (rankingData.italy && rankingData.italy.rank) {
           italyRank = rankingData.italy.rank;
-          console.log("[Timeout-Data] Italy rank from API:", italyRank);
         } else {
-          // Fallback: cerca nel ranking
           const italy = fixedRanking.find((r) => r.country === "Italy");
-          if (italy) {
-            italyRank = italy.rank;
-            console.log(
-              "[Timeout-Data] Italy rank from ranking array:",
-              italyRank,
-            );
-          }
+          if (italy) italyRank = italy.rank;
         }
 
-        // Emit event for other scripts
         document.dispatchEvent(
           new CustomEvent("timeout-ranking-ready", {
             detail: {
               ranking: fixedRanking,
-              italyRank: italyRank,
+              italyRank,
               italy: rankingData.italy,
             },
           }),
@@ -430,13 +502,8 @@
 
       if (!winnerData.error && winnerData.timezone) {
         fixedWinnerTimezone = winnerData.timezone;
-        console.log(
-          "[Timeout-Data] Fixed winner timezone:",
-          fixedWinnerTimezone,
-        );
       }
 
-      // Update UI with fixed data
       updateWorldSection();
     } catch (error) {
       console.error("[Timeout-Data] Failed to fetch ranking:", error);
@@ -444,25 +511,17 @@
   }
 
   function updateWorldSection() {
-    // Update winner marquee
     if (fixedRanking.length > 0) {
-      const winner = fixedRanking[0];
-      updateWinnerMarquee(winner.country);
+      updateWinnerMarquee(fixedRanking[0].country);
       renderRankingPreview(fixedRanking);
       renderCompleteList(fixedRanking);
     }
-
-    // Highlight timezone on map
-    if (fixedWinnerTimezone) {
-      waitForMapAndHighlight(fixedWinnerTimezone);
-    }
+    if (fixedWinnerTimezone) waitForMapAndHighlight(fixedWinnerTimezone);
   }
 
   function updateWinnerMarquee(countryName) {
     const track = document.getElementById("track");
     if (!track) return;
-
-    // Clear and create marquee content (3 copies for seamless loop)
     track.innerHTML = "";
     for (let i = 0; i < 3; i++) {
       const span = document.createElement("span");
@@ -470,33 +529,23 @@
       span.textContent = countryName;
       track.appendChild(span);
     }
-
-    console.log("[Timeout-Data] Winner marquee updated:", countryName);
   }
 
   function renderRankingPreview(ranking) {
     const container = document.getElementById("rank-preview");
     if (!container) return;
-
     container.innerHTML = "";
-    const top5 = ranking.slice(0, 5);
-
-    top5.forEach((item, index) => {
+    ranking.slice(0, 5).forEach((item, index) => {
       const row = document.createElement("div");
-      row.className = "line-ranking";
-      if (item.country === "Italy") row.classList.add("highlight");
-
+      row.className =
+        "line-ranking" + (item.country === "Italy" ? " highlight" : "");
       row.innerHTML = `
         <div class="name-position">
-          <div class="rank-position">#${String(index + 1).padStart(
-            3,
-            "0",
-          )}</div>
+          <div class="rank-position">#${String(index + 1).padStart(3, "0")}</div>
           <div class="country-name">${item.country}</div>
         </div>
         <div class="country-rank-score">${formatScoreItalian(item.score)}</div>
       `;
-
       container.appendChild(row);
     });
   }
@@ -504,28 +553,20 @@
   function renderCompleteList(ranking) {
     const container = document.getElementById("complete-list");
     if (!container) return;
-
     container.innerHTML = "";
-
     ranking.forEach((item, index) => {
       const row = document.createElement("div");
-      row.className = "line-ranking";
-      if (item.country === "Italy") row.classList.add("highlight");
-
+      row.className =
+        "line-ranking" + (item.country === "Italy" ? " highlight" : "");
       row.innerHTML = `
         <div class="name-position">
-          <div class="rank-position">#${String(index + 1).padStart(
-            3,
-            "0",
-          )}</div>
+          <div class="rank-position">#${String(index + 1).padStart(3, "0")}</div>
           <div class="country-name">${item.country}</div>
         </div>
         <div class="country-rank-score">${formatScoreItalian(item.score)}</div>
       `;
-
       container.appendChild(row);
     });
-
     console.log(
       "[Timeout-Data] Complete list rendered:",
       ranking.length,
@@ -538,64 +579,44 @@
    ***********************/
   function highlightTimezone(svgElement, timezone) {
     if (!svgElement || !timezone) return;
-
-    const groupId = `_tz${timezone}`;
-    const group = svgElement.getElementById(groupId);
-
+    const group = svgElement.getElementById(`_tz${timezone}`);
     if (group) {
-      const shapes = group.querySelectorAll("polygon, rect, path");
-      shapes.forEach((shape) => {
+      group.querySelectorAll("polygon, rect, path").forEach((shape) => {
         shape.style.fill = TZ_HIGHLIGHT.FILL;
         shape.style.stroke = TZ_HIGHLIGHT.STROKE;
         shape.style.strokeWidth = TZ_HIGHLIGHT.STROKE_WIDTH;
-        shape.style.strokeMiterlimit = "10";
       });
-      console.log(
-        `[Timeout-Data] Highlighted timezone ${timezone} (ID: ${groupId})`,
-      );
-    } else {
-      console.warn(`[Timeout-Data] Timezone group ${groupId} not found`);
     }
   }
 
   function waitForMapAndHighlight(timezone) {
-    // Try to find the map SVG
     const tryHighlight = () => {
-      const mapSvg =
-        document.querySelector(".visual-map-content .svg-holder svg") ||
-        document.querySelector("svg#Layer_3");
+      const mapSvg = document.querySelector(
+        ".visual-map-content .svg-holder svg",
+      );
       if (mapSvg) {
         highlightTimezone(mapSvg, timezone);
         return true;
       }
       return false;
     };
-
-    // Try immediately
     if (tryHighlight()) return;
-
-    // Listen for svg-injected event
-    const handler = (event) => {
-      const { svg, container } = event.detail;
-      if (
-        svg?.id === "Layer_3" ||
-        container?.classList.contains("visual-map-content")
-      ) {
-        highlightTimezone(svg, timezone);
-        document.removeEventListener("svg-injected", handler);
+    document.addEventListener("svg-injected", (event) => {
+      if (event.detail.container?.classList.contains("visual-map-content")) {
+        highlightTimezone(event.detail.svg, timezone);
       }
-    };
-    document.addEventListener("svg-injected", handler);
-
-    // Fallback retries
+    });
     setTimeout(tryHighlight, 500);
     setTimeout(tryHighlight, 1000);
-    setTimeout(tryHighlight, 2000);
   }
 
   /***********************
-   * RECAP SECTION - COLORED RAGGIERE
+   * RECAP SECTION
    ***********************/
+  let userTimelineGlobal = null;
+  let personalAnimated = false;
+  let nationAnimated = false;
+
   function colorRaggiera(
     container,
     timeline,
@@ -604,34 +625,21 @@
   ) {
     if (!container) return;
     const svgHolder = container.querySelector(".svg-holder");
-    if (!svgHolder) return;
-    const svg = svgHolder.querySelector("svg");
-    if (!svg) return;
+    if (!svgHolder?.querySelector("svg")) return;
 
     for (let hour = 0; hour < CONFIG.NUM_SEGMENTS; hour++) {
-      const segmentId = `${CONFIG.SEGMENT_ID_PREFIX}${String(hour).padStart(
-        2,
-        "0",
-      )}${CONFIG.SEGMENT_ID_SUFFIX}`;
+      const segmentId = `${CONFIG.SEGMENT_ID_PREFIX}${String(hour).padStart(2, "0")}${CONFIG.SEGMENT_ID_SUFFIX}`;
       const segment = svgHolder.querySelector(`#${CSS.escape(segmentId)}`);
-
       if (segment) {
-        let activity;
-        if (useT0) {
-          activity = T_0_MODEL[hour];
-        } else if (timeline && timeline[hour]) {
-          activity = normalizeActivity(timeline[hour].activity);
-        } else {
-          activity = "Other";
-        }
-
-        const color = ACTIVITY_COLORS[activity] || ACTIVITY_COLORS.Other;
-        segment.style.fill = color;
+        const activity = useT0
+          ? T_0_MODEL[hour]
+          : timeline?.[hour]
+            ? normalizeActivity(timeline[hour].activity)
+            : "Other";
+        segment.style.fill = ACTIVITY_COLORS[activity] || ACTIVITY_COLORS.Other;
         segment.style.fillOpacity = CONFIG.INITIAL_OPACITY;
-
         if (useStagger) {
           setTimeout(() => {
-            segment.style.transition = "fill-opacity 0.2s ease-out";
             segment.style.fillOpacity = 1;
           }, hour * CONFIG.STAGGER_DELAY);
         } else {
@@ -641,45 +649,61 @@
     }
   }
 
-  /***********************
-   * COMPARISON TABLE
-   ***********************/
   function populateComparisonTable(userTimeline) {
     const container = document.querySelector("#measure-compare .rank-content");
     if (!container) return;
-
     container.innerHTML = "";
-
     for (let hour = 0; hour < 24; hour++) {
-      let userActivity = "Other";
-      if (userTimeline && userTimeline[hour]) {
-        userActivity = normalizeActivity(userTimeline[hour].activity);
-      }
+      const userActivity = userTimeline?.[hour]
+        ? normalizeActivity(userTimeline[hour].activity)
+        : "Other";
       const nationActivity = T_0_MODEL[hour];
-
       const row = document.createElement("div");
       row.className = "line-ranking";
-
-      const userDiv = document.createElement("div");
-      userDiv.className = "activity-chosen";
-      userDiv.textContent = ACTIVITY_DISPLAY[userActivity] || "other";
-      userDiv.style.color =
-        ACTIVITY_COLORS[userActivity] || ACTIVITY_COLORS.Other;
-
-      const hourDiv = document.createElement("div");
-      hourDiv.className = "hour-of-day";
-      hourDiv.textContent = formatHour(hour);
-
-      const nationDiv = document.createElement("div");
-      nationDiv.className = "activity-chosen";
-      nationDiv.textContent = ACTIVITY_DISPLAY[nationActivity] || "other";
-      nationDiv.style.color =
-        ACTIVITY_COLORS[nationActivity] || ACTIVITY_COLORS.Other;
-
-      row.appendChild(userDiv);
-      row.appendChild(hourDiv);
-      row.appendChild(nationDiv);
+      row.innerHTML = `
+        <div class="activity-chosen" style="color: ${ACTIVITY_COLORS[userActivity]}">${ACTIVITY_DISPLAY[userActivity]}</div>
+        <div class="hour-of-day">${formatHour(hour)}</div>
+        <div class="activity-chosen" style="color: ${ACTIVITY_COLORS[nationActivity]}">${ACTIVITY_DISPLAY[nationActivity]}</div>
+      `;
       container.appendChild(row);
+    }
+  }
+
+  function waitForSvgsAndColor(userTimeline) {
+    userTimelineGlobal = userTimeline;
+    personalAnimated = false;
+    nationAnimated = false;
+    tryColorRaggiere(true);
+    setTimeout(() => tryColorRaggiere(true), 500);
+    setTimeout(() => tryColorRaggiere(true), 1000);
+    tryAnimateAlignSvgs();
+    setTimeout(() => tryAnimateAlignSvgs(), 500);
+    setTimeout(() => tryAnimateAlignSvgs(), 1000);
+  }
+
+  function tryColorRaggiere(useStagger = true) {
+    if (!userTimelineGlobal) return;
+    const personalRaggiera = document.getElementById(
+      "personal-measure-raggiera",
+    );
+    const nationRaggiera = document.getElementById("nation-measure-raggiera");
+    if (
+      personalRaggiera?.querySelector(".svg-holder svg") &&
+      !personalAnimated
+    ) {
+      colorRaggiera(personalRaggiera, userTimelineGlobal, false, useStagger);
+      personalAnimated = true;
+    }
+    if (nationRaggiera?.querySelector(".svg-holder svg") && !nationAnimated) {
+      setTimeout(
+        () => {
+          if (!nationAnimated) {
+            colorRaggiera(nationRaggiera, userTimelineGlobal, true, useStagger);
+            nationAnimated = true;
+          }
+        },
+        useStagger ? CONFIG.NUM_SEGMENTS * CONFIG.STAGGER_DELAY + 100 : 0,
+      );
     }
   }
 
@@ -688,11 +712,8 @@
    ***********************/
   function updateFinalScore(score) {
     const scoreEl = document.getElementById("final-score");
-    if (scoreEl) {
-      scoreEl.innerHTML = `${formatScoreItalianNoPercent(
-        score,
-      )}<span style="font-size: 3rem">%</span>`;
-    }
+    if (scoreEl)
+      scoreEl.innerHTML = `${formatScoreItalianNoPercent(score)}<span style="font-size: 3rem">%</span>`;
   }
 
   function updateUserId(userId) {
@@ -702,416 +723,88 @@
 
   /***********************
    * NO USER ID LAYOUT
-   * Applica modifiche UI quando non c'è ID nell'URL
    ***********************/
   function applyNoUserIdLayout() {
-    // 1. Header: nascondi id-space, centra timer-space
     const idSpace = document.querySelector(".id-space");
-    if (idSpace) {
-      idSpace.style.display = "none";
-    }
+    if (idSpace) idSpace.style.display = "none";
 
     const pageHead = document.querySelector(".page-head.divide");
-    if (pageHead) {
-      pageHead.style.justifyContent = "center";
-    }
+    if (pageHead) pageHead.style.justifyContent = "center";
 
-    // 2. Nascondi personal-value-btn e la linea verticale
     const personalBtn = document.getElementById("personal-value-btn");
-    if (personalBtn) {
-      personalBtn.style.display = "none";
-    }
+    if (personalBtn) personalBtn.style.display = "none";
 
     const lineVertical = document.querySelector(".align-values .line-vertical");
-    if (lineVertical) {
-      lineVertical.style.display = "none";
-    }
+    if (lineVertical) lineVertical.style.display = "none";
 
-    // 3. Nascondi internal-graphic (raggiera personale)
     const internalGraphic = document.querySelector(".internal-graphic");
-    if (internalGraphic) {
-      internalGraphic.style.display = "none";
-    }
-    // 4. align-values
-    // const alignValues = document.querySelector(".align-values");
-    // if (alignValues) {
-    //   alignValues.style.flexDirection = "row";
-    // }
-    // 5. Modifica country-value-btn per prendere tutta la width
+    if (internalGraphic) internalGraphic.style.display = "none";
+
     const countryBtn = document.getElementById("country-value-btn");
     if (countryBtn) {
       countryBtn.style.width = "100%";
       countryBtn.style.display = "flex";
       countryBtn.style.flexDirection = "column";
-      countryBtn.style.justifyContent = "space-between";
-
-      // Crea wrapper per value-name e subtitle (colonna sinistra)
-      const valueName = countryBtn.querySelector(".value-name");
-      const subtitle = countryBtn.querySelector(".subtitle");
-      const valuePercentage = countryBtn.querySelector(".value-percentage");
-
-      if (valueName && subtitle && valuePercentage) {
-        // Crea contenitore per la colonna sinistra
-        const leftColumn = document.createElement("div");
-        leftColumn.style.display = "flex";
-        leftColumn.style.flexDirection = "column";
-        leftColumn.style.gap = "5px";
-        leftColumn.style.alignItems = "flex-start";
-
-        // Sposta value-name e subtitle nel contenitore sinistro
-        leftColumn.appendChild(valueName);
-        leftColumn.appendChild(subtitle);
-
-        // Svuota il button e ricostruisci
-        countryBtn.innerHTML = "";
-        countryBtn.appendChild(leftColumn);
-        countryBtn.appendChild(valuePercentage);
-      }
     }
-
     console.log("[Timeout-Data] Applied no-user-ID layout");
   }
 
   function updateNoUserComment() {
-    // Aggiorna il commento nella sezione align con il rank dell'Italia
     const commentContent = document.querySelector(
       "#alignment .comment-section-wrap .comment-content",
     );
     if (!commentContent) return;
 
-    // Funzione per aggiornare il testo con il rank
     const updateText = (rankValue) => {
-      let rankText = "";
-
-      // Se viene passato un rank direttamente, usalo
-      if (rankValue) {
-        rankText = `#${rankValue}`;
-      }
-      // Altrimenti prova a ottenere il rank dal fixedRanking
-      else if (fixedRanking && fixedRanking.length > 0) {
+      let rankText = rankValue ? `#${rankValue}` : "#—";
+      if (!rankValue && fixedRanking.length > 0) {
         const italy = fixedRanking.find((r) => r.country === "Italy");
-        if (italy) {
-          rankText = `#${italy.rank}`;
-        }
+        if (italy) rankText = `#${italy.rank}`;
       }
-
-      if (!rankText) {
-        rankText = "#—";
-      }
-
       commentContent.innerHTML = `Voting session ended. Your country is positioned ${rankText} on the global ranking.`;
-      console.log(
-        "[Timeout-Data] Updated no-user comment with rank:",
-        rankText,
-      );
     };
 
-    // Aggiorna subito (mostrerà #— se ranking non ancora caricato)
     updateText();
-
-    // Ascolta l'evento quando il ranking è pronto
     document.addEventListener("timeout-ranking-ready", (event) => {
-      const { italyRank } = event.detail;
-      if (italyRank) {
-        updateText(italyRank);
-      }
+      if (event.detail.italyRank) updateText(event.detail.italyRank);
     });
-
-    // Fallback con timeout nel caso l'evento sia già stato emesso
     setTimeout(() => updateText(), 2000);
-    setTimeout(() => updateText(), 4000);
   }
 
   /***********************
-   * MAIN INITIALIZATION
-   ***********************/
-  async function init() {
-    const userId = getUserIdFromUrl();
-    updateUserId(userId);
-
-    // Setup observer per sezione align (deve essere fatto subito)
-    setupAlignSectionObserver();
-
-    // Registra listener per svg-injected (per gli SVG align)
-    document.addEventListener("svg-injected", onSvgInjected);
-
-    // Fetch and fix ranking immediately (doesn't update after)
-    fetchAndFixRanking();
-
-    if (!userId) {
-      console.warn("[Timeout-Data] No user ID in URL");
-
-      // Applica layout per utente senza ID
-      applyNoUserIdLayout();
-
-      // Anche senza userId, carica i dati per mostrare almeno il country score
-      try {
-        const response = await fetch(CONFIG.SHEET_URL);
-        const text = await response.text();
-        const jsonText = text.substring(47, text.length - 2);
-        const data = JSON.parse(jsonText);
-
-        const rows = data.table.rows.map((row) => ({
-          ID: row.c[1]?.v,
-          Dati: row.c[2]?.v,
-        }));
-
-        const tuttiDati = rows.map((r) => r.Dati).filter(Boolean);
-        const countryResult = calculateCountryScore(tuttiDati);
-        const countryScore = countryResult.score;
-
-        console.log(
-          "[Timeout-Data] Country score (no user):",
-          countryScore.toFixed(1),
-        );
-        updateAlignSection(null, countryScore);
-
-        // Aggiorna il commento con il rank dell'Italia (aspetta che il ranking sia caricato)
-        updateNoUserComment();
-
-        // Prova ad animare gli SVG align
-        tryAnimateAlignSvgs();
-        setTimeout(() => tryAnimateAlignSvgs(), 500);
-        setTimeout(() => tryAnimateAlignSvgs(), 1000);
-        setTimeout(() => tryAnimateAlignSvgs(), 2000);
-      } catch (error) {
-        console.error("[Timeout-Data] Error fetching country data:", error);
-      }
-      return;
-    }
-
-    try {
-      const response = await fetch(CONFIG.SHEET_URL);
-      const text = await response.text();
-      const jsonText = text.substring(47, text.length - 2);
-      const data = JSON.parse(jsonText);
-
-      const rows = data.table.rows.map((row) => ({
-        ID: row.c[1]?.v,
-        Dati: row.c[2]?.v,
-      }));
-
-      const tuttiDati = rows.map((r) => r.Dati).filter(Boolean);
-      const countryResult = calculateCountryScore(tuttiDati);
-      const countryScore = countryResult.score;
-
-      const userRow = rows.find((r) => String(r.ID) === String(userId));
-
-      if (userRow && userRow.Dati) {
-        const blocks = JSON.parse(userRow.Dati);
-        const userTimeline = expandTo24Hours(blocks);
-
-        const altriDati = rows
-          .filter((r) => String(r.ID) !== String(userId))
-          .map((r) => r.Dati)
-          .filter(Boolean);
-
-        let T_model = buildT0Vectors();
-        if (altriDati.length > 0) {
-          T_model = buildT0Vectors().map((row) => [...row]);
-          altriDati.forEach((datiStr) => {
-            try {
-              const bl = JSON.parse(datiStr);
-              const tl = expandTo24Hours(bl);
-              const vecs = buildCitizenVectors(tl);
-              vecs.forEach((vec, h) => {
-                for (let c = 0; c < 4; c++) {
-                  T_model[h][c] += vec[c];
-                }
-              });
-            } catch (e) {}
-          });
-          const N = altriDati.length;
-          for (let h = 0; h < 24; h++) {
-            for (let c = 0; c < 4; c++) {
-              T_model[h][c] /= N + 1;
-            }
-          }
-        }
-
-        const personalScore = calculateScoreVsTn(userTimeline, T_model);
-
-        console.log("[Timeout-Data] User found:", userId);
-        console.log("[Timeout-Data] Personal score:", personalScore.toFixed(1));
-        console.log("[Timeout-Data] Country score:", countryScore.toFixed(1));
-
-        updateFinalScore(personalScore);
-        populateComparisonTable(userTimeline);
-        updateAlignSection(personalScore, countryScore);
-        waitForSvgsAndColor(userTimeline);
-      } else {
-        console.warn("[Timeout-Data] User not found:", userId);
-        updateFinalScore(0);
-        updateAlignSection(null, countryScore);
-
-        // Anche senza utente, prova ad animare gli SVG align (almeno external-graphic per country)
-        tryAnimateAlignSvgs();
-        setTimeout(() => tryAnimateAlignSvgs(), 500);
-        setTimeout(() => tryAnimateAlignSvgs(), 1000);
-        setTimeout(() => tryAnimateAlignSvgs(), 2000);
-      }
-    } catch (error) {
-      console.error("[Timeout-Data] Error fetching data:", error);
-      updateFinalScore(0);
-    }
-  }
-
-  /***********************
-   * WAIT FOR SVG INJECTION (RECAP RAGGIERE)
-   ***********************/
-  let userTimelineGlobal = null;
-  let personalAnimated = false;
-  let nationAnimated = false;
-
-  /***********************
-   * ALIGN SECTION SVG TRACKING
-   ***********************/
-  let alignPersonalScore = null;
-  let alignCountryScore = null;
-  let alignInternalAnimated = false;
-  let alignExternalAnimated = false;
-  let alignPersonalOverlayAnimated = false;
-  let alignCountryOverlayAnimated = false;
-
-  function waitForSvgsAndColor(userTimeline) {
-    userTimelineGlobal = userTimeline;
-    personalAnimated = false;
-    nationAnimated = false;
-
-    // Il listener svg-injected è già registrato in init()
-    tryColorRaggiere(true);
-    setTimeout(() => tryColorRaggiere(true), 500);
-    setTimeout(() => tryColorRaggiere(true), 1000);
-    setTimeout(() => tryColorRaggiere(true), 2000);
-
-    // Prova anche ad animare gli SVG align con ritardi
-    tryAnimateAlignSvgs();
-    setTimeout(() => tryAnimateAlignSvgs(), 500);
-    setTimeout(() => tryAnimateAlignSvgs(), 1000);
-    setTimeout(() => tryAnimateAlignSvgs(), 2000);
-  }
-
-  /***********************
-   * TRY ANIMATE ALIGN SVGS
-   * Chiamata quando gli score sono disponibili e/o quando la view diventa attiva
-   ***********************/
-  function tryAnimateAlignSvgs() {
-    // Internal graphic (personal score)
-    if (alignPersonalScore !== null && !alignInternalAnimated) {
-      const mainContainer = document.querySelector(".internal-graphic");
-      if (mainContainer?.querySelector(".svg-holder svg")) {
-        const activeSegments = Math.round(
-          (alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS,
-        );
-        animateAlignSegments(mainContainer, activeSegments, true);
-        alignInternalAnimated = true;
-        console.log(
-          "[Timeout-Data] tryAnimateAlignSvgs: animated internal-graphic",
-        );
-      }
-    }
-
-    // External graphic (country score)
-    if (alignCountryScore !== null && !alignExternalAnimated) {
-      const mainContainer = document.querySelector(".external-graphic");
-      if (mainContainer?.querySelector(".svg-holder svg")) {
-        const activeSegments = Math.round(
-          (alignCountryScore / 100) * CONFIG.NUM_SEGMENTS,
-        );
-        animateAlignSegments(mainContainer, activeSegments, true);
-        alignExternalAnimated = true;
-        console.log(
-          "[Timeout-Data] tryAnimateAlignSvgs: animated external-graphic",
-        );
-      }
-    }
-
-    // Personal overlay
-    if (alignPersonalScore !== null && !alignPersonalOverlayAnimated) {
-      const overlayContainer = document.querySelector(
-        "#align-personal-overlay .holder.int",
-      );
-      if (overlayContainer?.querySelector(".svg-holder svg")) {
-        const activeSegments = Math.round(
-          (alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS,
-        );
-        animateAlignSegments(overlayContainer, activeSegments, false);
-        alignPersonalOverlayAnimated = true;
-        console.log(
-          "[Timeout-Data] tryAnimateAlignSvgs: animated personal overlay",
-        );
-      }
-    }
-
-    // Country overlay
-    if (alignCountryScore !== null && !alignCountryOverlayAnimated) {
-      const overlayContainer = document.querySelector(
-        "#align-country-overlay .holder.ext",
-      );
-      if (overlayContainer?.querySelector(".svg-holder svg")) {
-        const activeSegments = Math.round(
-          (alignCountryScore / 100) * CONFIG.NUM_SEGMENTS,
-        );
-        animateAlignSegments(overlayContainer, activeSegments, false);
-        alignCountryOverlayAnimated = true;
-        console.log(
-          "[Timeout-Data] tryAnimateAlignSvgs: animated country overlay",
-        );
-      }
-    }
-  }
-
-  /***********************
-   * OBSERVER PER SEZIONE ALIGN
-   * Quando la sezione alignment diventa attiva, prova ad animare gli SVG
+   * OBSERVERS
    ***********************/
   function setupAlignSectionObserver() {
-    const alignmentSection = document.getElementById("alignment");
-    const personalOverlay = document.getElementById("align-personal-overlay");
-    const countryOverlay = document.getElementById("align-country-overlay");
-
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         if (
           mutation.type === "attributes" &&
           mutation.attributeName === "class"
         ) {
-          const target = mutation.target;
-          if (target.classList.contains("active")) {
-            // La sezione è diventata attiva, prova ad animare
+          if (mutation.target.classList.contains("active")) {
             setTimeout(() => tryAnimateAlignSvgs(), 100);
             setTimeout(() => tryAnimateAlignSvgs(), 300);
-            setTimeout(() => tryAnimateAlignSvgs(), 600);
           }
         }
       }
     });
 
-    if (alignmentSection) {
-      observer.observe(alignmentSection, {
-        attributes: true,
-        attributeFilter: ["class"],
-      });
-    }
-    if (personalOverlay) {
-      observer.observe(personalOverlay, {
-        attributes: true,
-        attributeFilter: ["class"],
-      });
-    }
-    if (countryOverlay) {
-      observer.observe(countryOverlay, {
-        attributes: true,
-        attributeFilter: ["class"],
-      });
-    }
+    ["alignment", "align-personal-overlay", "align-country-overlay"].forEach(
+      (id) => {
+        const el = document.getElementById(id);
+        if (el)
+          observer.observe(el, {
+            attributes: true,
+            attributeFilter: ["class"],
+          });
+      },
+    );
   }
 
   function onSvgInjected(event) {
     const { container } = event.detail;
     if (!container) return;
 
-    // RECAP RAGGIERE (colorazione per attività)
     if (userTimelineGlobal) {
       if (container?.id === "personal-measure-raggiera" && !personalAnimated) {
         colorRaggiera(container, userTimelineGlobal, false, true);
@@ -1130,18 +823,17 @@
       }
     }
 
-    // ALIGN SECTION - Main graphics (animazione opacity per percentuale)
     if (
       container.classList?.contains("internal-graphic") &&
       !alignInternalAnimated &&
       alignPersonalScore !== null
     ) {
-      const activeSegments = Math.round(
-        (alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS,
+      animateAlignSegments(
+        container,
+        Math.round((alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS),
+        true,
       );
-      animateAlignSegments(container, activeSegments, true);
       alignInternalAnimated = true;
-      console.log("[Timeout-Data] Animated internal-graphic SVG");
     }
 
     if (
@@ -1149,74 +841,118 @@
       !alignExternalAnimated &&
       alignCountryScore !== null
     ) {
-      const activeSegments = Math.round(
-        (alignCountryScore / 100) * CONFIG.NUM_SEGMENTS,
+      animateAlignSegments(
+        container,
+        Math.round((alignCountryScore / 100) * CONFIG.NUM_SEGMENTS),
+        true,
       );
-      animateAlignSegments(container, activeSegments, true);
       alignExternalAnimated = true;
-      console.log("[Timeout-Data] Animated external-graphic SVG");
-    }
-
-    // ALIGN SECTION - Overlay graphics
-    // Personal overlay (holder.int dentro #align-personal-overlay)
-    if (
-      container.classList?.contains("holder") &&
-      container.classList?.contains("int") &&
-      container.closest("#align-personal-overlay") &&
-      !alignPersonalOverlayAnimated &&
-      alignPersonalScore !== null
-    ) {
-      const activeSegments = Math.round(
-        (alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS,
-      );
-      animateAlignSegments(container, activeSegments, false);
-      alignPersonalOverlayAnimated = true;
-      console.log("[Timeout-Data] Animated align-personal-overlay int SVG");
-    }
-
-    // Country overlay (holder.ext dentro #align-country-overlay)
-    if (
-      container.classList?.contains("holder") &&
-      container.classList?.contains("ext") &&
-      container.closest("#align-country-overlay") &&
-      !alignCountryOverlayAnimated &&
-      alignCountryScore !== null
-    ) {
-      const activeSegments = Math.round(
-        (alignCountryScore / 100) * CONFIG.NUM_SEGMENTS,
-      );
-      animateAlignSegments(container, activeSegments, false);
-      alignCountryOverlayAnimated = true;
-      console.log("[Timeout-Data] Animated align-country-overlay ext SVG");
     }
   }
 
-  function tryColorRaggiere(useStagger = true) {
-    if (!userTimelineGlobal) return;
+  /***********************
+   * MAIN INITIALIZATION
+   ***********************/
+  async function init() {
+    const userId = getUserIdFromUrl();
+    updateUserId(userId);
+    setupAlignSectionObserver();
+    document.addEventListener("svg-injected", onSvgInjected);
+    fetchAndFixRanking();
 
-    const personalRaggiera = document.getElementById(
-      "personal-measure-raggiera",
-    );
-    const nationRaggiera = document.getElementById("nation-measure-raggiera");
+    // FORZA L'INIEZIONE DEGLI SVG ALIGN SUBITO
+    await forceInjectAlignSvgs();
 
-    if (
-      personalRaggiera?.querySelector(".svg-holder svg") &&
-      !personalAnimated
-    ) {
-      colorRaggiera(personalRaggiera, userTimelineGlobal, false, useStagger);
-      personalAnimated = true;
+    if (!userId) {
+      console.warn("[Timeout-Data] No user ID in URL");
+      applyNoUserIdLayout();
+
+      try {
+        const response = await fetch(CONFIG.SHEET_URL);
+        const text = await response.text();
+        const data = JSON.parse(text.substring(47, text.length - 2));
+        const rows = data.table.rows.map((row) => ({
+          ID: row.c[1]?.v,
+          Dati: row.c[2]?.v,
+        }));
+        const tuttiDati = rows.map((r) => r.Dati).filter(Boolean);
+        const countryScore = calculateCountryScore(tuttiDati).score;
+
+        console.log(
+          "[Timeout-Data] Country score (no user):",
+          countryScore.toFixed(1),
+        );
+        updateAlignSection(null, countryScore);
+        updateNoUserComment();
+        tryAnimateAlignSvgs();
+        setTimeout(() => tryAnimateAlignSvgs(), 500);
+      } catch (error) {
+        console.error("[Timeout-Data] Error:", error);
+      }
+      return;
     }
 
-    if (nationRaggiera?.querySelector(".svg-holder svg") && !nationAnimated) {
-      const delay = useStagger
-        ? CONFIG.NUM_SEGMENTS * CONFIG.STAGGER_DELAY + 100
-        : 0;
-      setTimeout(() => {
-        if (!nationAnimated) {
-          colorRaggiera(nationRaggiera, userTimelineGlobal, true, useStagger);
-          nationAnimated = true;
+    try {
+      const response = await fetch(CONFIG.SHEET_URL);
+      const text = await response.text();
+      const data = JSON.parse(text.substring(47, text.length - 2));
+      const rows = data.table.rows.map((row) => ({
+        ID: row.c[1]?.v,
+        Dati: row.c[2]?.v,
+      }));
+      const tuttiDati = rows.map((r) => r.Dati).filter(Boolean);
+      const countryScore = calculateCountryScore(tuttiDati).score;
+      const userRow = rows.find((r) => String(r.ID) === String(userId));
+
+      if (userRow && userRow.Dati) {
+        const userTimeline = expandTo24Hours(JSON.parse(userRow.Dati));
+        const altriDati = rows
+          .filter((r) => String(r.ID) !== String(userId))
+          .map((r) => r.Dati)
+          .filter(Boolean);
+
+        let T_model = buildT0Vectors();
+        if (altriDati.length > 0) {
+          T_model = buildT0Vectors().map((row) => [...row]);
+          altriDati.forEach((datiStr) => {
+            try {
+              const vecs = buildCitizenVectors(
+                expandTo24Hours(JSON.parse(datiStr)),
+              );
+              vecs.forEach((vec, h) => {
+                for (let c = 0; c < 4; c++) T_model[h][c] += vec[c];
+              });
+            } catch (e) {}
+          });
+          for (let h = 0; h < 24; h++) {
+            for (let c = 0; c < 4; c++) T_model[h][c] /= altriDati.length + 1;
+          }
         }
-      }, delay);
+
+        const personalScore = calculateScoreVsTn(userTimeline, T_model);
+        console.log(
+          "[Timeout-Data] User found:",
+          userId,
+          "Personal:",
+          personalScore.toFixed(1),
+          "Country:",
+          countryScore.toFixed(1),
+        );
+
+        updateFinalScore(personalScore);
+        populateComparisonTable(userTimeline);
+        updateAlignSection(personalScore, countryScore);
+        waitForSvgsAndColor(userTimeline);
+      } else {
+        console.warn("[Timeout-Data] User not found:", userId);
+        updateFinalScore(0);
+        updateAlignSection(null, countryScore);
+        tryAnimateAlignSvgs();
+        setTimeout(() => tryAnimateAlignSvgs(), 500);
+      }
+    } catch (error) {
+      console.error("[Timeout-Data] Error:", error);
+      updateFinalScore(0);
     }
   }
 
@@ -1229,7 +965,6 @@
     init();
   }
 
-  // Export for debugging
   window.TimeoutData = {
     colorRaggiera,
     populateComparisonTable,
@@ -1239,6 +974,8 @@
     tryAnimateAlignSvgs,
     applyNoUserIdLayout,
     updateNoUserComment,
+    forceInjectAlignSvgs,
+    forceInjectSvg,
     ACTIVITY_COLORS,
     T_0_MODEL,
     getFixedRanking: () => fixedRanking,
@@ -1246,12 +983,6 @@
     getAlignScores: () => ({
       personal: alignPersonalScore,
       country: alignCountryScore,
-    }),
-    getAlignAnimationStatus: () => ({
-      internal: alignInternalAnimated,
-      external: alignExternalAnimated,
-      personalOverlay: alignPersonalOverlayAnimated,
-      countryOverlay: alignCountryOverlayAnimated,
     }),
   };
 })();
