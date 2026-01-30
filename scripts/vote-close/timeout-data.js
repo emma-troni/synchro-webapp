@@ -277,15 +277,29 @@
 
   function updatePersonalVisual(personalScore) {
     if (personalScore === null || personalScore === undefined) return;
+
+    // Salva lo score per uso successivo quando l'SVG sarà pronto
+    alignPersonalScore = personalScore;
+
     const activeSegments = Math.round(
       (personalScore / 100) * CONFIG.NUM_SEGMENTS,
     );
+
+    // Prova ad animare subito (potrebbe non funzionare se SVG non è pronto)
     const mainContainer = document.querySelector(".internal-graphic");
-    animateAlignSegments(mainContainer, activeSegments, true);
+    if (mainContainer?.querySelector(".svg-holder svg")) {
+      animateAlignSegments(mainContainer, activeSegments, true);
+      alignInternalAnimated = true;
+    }
+
     const overlayContainer = document.querySelector(
       "#align-personal-overlay .holder.int",
     );
-    animateAlignSegments(overlayContainer, activeSegments, false);
+    if (overlayContainer?.querySelector(".svg-holder svg")) {
+      animateAlignSegments(overlayContainer, activeSegments, false);
+      alignPersonalOverlayAnimated = true;
+    }
+
     const personalScoreEl = document.querySelector(
       "#align-personal-overlay .view-score",
     );
@@ -295,17 +309,29 @@
 
   function updateCountryVisual(countryScore) {
     if (countryScore === null || countryScore === undefined) return;
+
+    // Salva lo score per uso successivo quando l'SVG sarà pronto
+    alignCountryScore = countryScore;
+
     const activeSegments = Math.round(
       (countryScore / 100) * CONFIG.NUM_SEGMENTS,
     );
-    const mainContainer = document.querySelector(".external-graphic");
-    animateAlignSegments(mainContainer, activeSegments, true);
 
-    // Update BOTH ext raggiera in country overlay
+    // Prova ad animare subito (potrebbe non funzionare se SVG non è pronto)
+    const mainContainer = document.querySelector(".external-graphic");
+    if (mainContainer?.querySelector(".svg-holder svg")) {
+      animateAlignSegments(mainContainer, activeSegments, true);
+      alignExternalAnimated = true;
+    }
+
+    // Update ext raggiera in country overlay
     const overlayContainerExt = document.querySelector(
       "#align-country-overlay .holder.ext",
     );
-    animateAlignSegments(overlayContainerExt, activeSegments, false);
+    if (overlayContainerExt?.querySelector(".svg-holder svg")) {
+      animateAlignSegments(overlayContainerExt, activeSegments, false);
+      alignCountryOverlayAnimated = true;
+    }
 
     const countryScoreEl = document.querySelector(
       "#align-country-overlay .view-score",
@@ -651,12 +677,49 @@
     const userId = getUserIdFromUrl();
     updateUserId(userId);
 
+    // Setup observer per sezione align (deve essere fatto subito)
+    setupAlignSectionObserver();
+
+    // Registra listener per svg-injected (per gli SVG align)
+    document.addEventListener("svg-injected", onSvgInjected);
+
     // Fetch and fix ranking immediately (doesn't update after)
     fetchAndFixRanking();
 
     if (!userId) {
       console.warn("[Timeout-Data] No user ID in URL");
       updateFinalScore(0);
+
+      // Anche senza userId, carica i dati per mostrare almeno il country score
+      try {
+        const response = await fetch(CONFIG.SHEET_URL);
+        const text = await response.text();
+        const jsonText = text.substring(47, text.length - 2);
+        const data = JSON.parse(jsonText);
+
+        const rows = data.table.rows.map((row) => ({
+          ID: row.c[1]?.v,
+          Dati: row.c[2]?.v,
+        }));
+
+        const tuttiDati = rows.map((r) => r.Dati).filter(Boolean);
+        const countryResult = calculateCountryScore(tuttiDati);
+        const countryScore = countryResult.score;
+
+        console.log(
+          "[Timeout-Data] Country score (no user):",
+          countryScore.toFixed(1),
+        );
+        updateAlignSection(null, countryScore);
+
+        // Prova ad animare gli SVG align
+        tryAnimateAlignSvgs();
+        setTimeout(() => tryAnimateAlignSvgs(), 500);
+        setTimeout(() => tryAnimateAlignSvgs(), 1000);
+        setTimeout(() => tryAnimateAlignSvgs(), 2000);
+      } catch (error) {
+        console.error("[Timeout-Data] Error fetching country data:", error);
+      }
       return;
     }
 
@@ -723,6 +786,12 @@
         console.warn("[Timeout-Data] User not found:", userId);
         updateFinalScore(0);
         updateAlignSection(null, countryScore);
+
+        // Anche senza utente, prova ad animare gli SVG align (almeno external-graphic per country)
+        tryAnimateAlignSvgs();
+        setTimeout(() => tryAnimateAlignSvgs(), 500);
+        setTimeout(() => tryAnimateAlignSvgs(), 1000);
+        setTimeout(() => tryAnimateAlignSvgs(), 2000);
       }
     } catch (error) {
       console.error("[Timeout-Data] Error fetching data:", error);
@@ -737,33 +806,231 @@
   let personalAnimated = false;
   let nationAnimated = false;
 
+  /***********************
+   * ALIGN SECTION SVG TRACKING
+   ***********************/
+  let alignPersonalScore = null;
+  let alignCountryScore = null;
+  let alignInternalAnimated = false;
+  let alignExternalAnimated = false;
+  let alignPersonalOverlayAnimated = false;
+  let alignCountryOverlayAnimated = false;
+
   function waitForSvgsAndColor(userTimeline) {
     userTimelineGlobal = userTimeline;
     personalAnimated = false;
     nationAnimated = false;
 
-    document.addEventListener("svg-injected", onSvgInjected);
+    // Il listener svg-injected è già registrato in init()
     tryColorRaggiere(true);
     setTimeout(() => tryColorRaggiere(true), 500);
     setTimeout(() => tryColorRaggiere(true), 1000);
     setTimeout(() => tryColorRaggiere(true), 2000);
+
+    // Prova anche ad animare gli SVG align con ritardi
+    tryAnimateAlignSvgs();
+    setTimeout(() => tryAnimateAlignSvgs(), 500);
+    setTimeout(() => tryAnimateAlignSvgs(), 1000);
+    setTimeout(() => tryAnimateAlignSvgs(), 2000);
+  }
+
+  /***********************
+   * TRY ANIMATE ALIGN SVGS
+   * Chiamata quando gli score sono disponibili e/o quando la view diventa attiva
+   ***********************/
+  function tryAnimateAlignSvgs() {
+    // Internal graphic (personal score)
+    if (alignPersonalScore !== null && !alignInternalAnimated) {
+      const mainContainer = document.querySelector(".internal-graphic");
+      if (mainContainer?.querySelector(".svg-holder svg")) {
+        const activeSegments = Math.round(
+          (alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS,
+        );
+        animateAlignSegments(mainContainer, activeSegments, true);
+        alignInternalAnimated = true;
+        console.log(
+          "[Timeout-Data] tryAnimateAlignSvgs: animated internal-graphic",
+        );
+      }
+    }
+
+    // External graphic (country score)
+    if (alignCountryScore !== null && !alignExternalAnimated) {
+      const mainContainer = document.querySelector(".external-graphic");
+      if (mainContainer?.querySelector(".svg-holder svg")) {
+        const activeSegments = Math.round(
+          (alignCountryScore / 100) * CONFIG.NUM_SEGMENTS,
+        );
+        animateAlignSegments(mainContainer, activeSegments, true);
+        alignExternalAnimated = true;
+        console.log(
+          "[Timeout-Data] tryAnimateAlignSvgs: animated external-graphic",
+        );
+      }
+    }
+
+    // Personal overlay
+    if (alignPersonalScore !== null && !alignPersonalOverlayAnimated) {
+      const overlayContainer = document.querySelector(
+        "#align-personal-overlay .holder.int",
+      );
+      if (overlayContainer?.querySelector(".svg-holder svg")) {
+        const activeSegments = Math.round(
+          (alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS,
+        );
+        animateAlignSegments(overlayContainer, activeSegments, false);
+        alignPersonalOverlayAnimated = true;
+        console.log(
+          "[Timeout-Data] tryAnimateAlignSvgs: animated personal overlay",
+        );
+      }
+    }
+
+    // Country overlay
+    if (alignCountryScore !== null && !alignCountryOverlayAnimated) {
+      const overlayContainer = document.querySelector(
+        "#align-country-overlay .holder.ext",
+      );
+      if (overlayContainer?.querySelector(".svg-holder svg")) {
+        const activeSegments = Math.round(
+          (alignCountryScore / 100) * CONFIG.NUM_SEGMENTS,
+        );
+        animateAlignSegments(overlayContainer, activeSegments, false);
+        alignCountryOverlayAnimated = true;
+        console.log(
+          "[Timeout-Data] tryAnimateAlignSvgs: animated country overlay",
+        );
+      }
+    }
+  }
+
+  /***********************
+   * OBSERVER PER SEZIONE ALIGN
+   * Quando la sezione alignment diventa attiva, prova ad animare gli SVG
+   ***********************/
+  function setupAlignSectionObserver() {
+    const alignmentSection = document.getElementById("alignment");
+    const personalOverlay = document.getElementById("align-personal-overlay");
+    const countryOverlay = document.getElementById("align-country-overlay");
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "class"
+        ) {
+          const target = mutation.target;
+          if (target.classList.contains("active")) {
+            // La sezione è diventata attiva, prova ad animare
+            setTimeout(() => tryAnimateAlignSvgs(), 100);
+            setTimeout(() => tryAnimateAlignSvgs(), 300);
+            setTimeout(() => tryAnimateAlignSvgs(), 600);
+          }
+        }
+      }
+    });
+
+    if (alignmentSection) {
+      observer.observe(alignmentSection, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    }
+    if (personalOverlay) {
+      observer.observe(personalOverlay, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    }
+    if (countryOverlay) {
+      observer.observe(countryOverlay, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    }
   }
 
   function onSvgInjected(event) {
     const { container } = event.detail;
-    if (!userTimelineGlobal) return;
+    if (!container) return;
 
-    if (container?.id === "personal-measure-raggiera" && !personalAnimated) {
-      colorRaggiera(container, userTimelineGlobal, false, true);
-      personalAnimated = true;
-    } else if (container?.id === "nation-measure-raggiera" && !nationAnimated) {
-      setTimeout(
-        () => {
-          colorRaggiera(container, userTimelineGlobal, true, true);
-          nationAnimated = true;
-        },
-        CONFIG.NUM_SEGMENTS * CONFIG.STAGGER_DELAY + 100,
+    // RECAP RAGGIERE (colorazione per attività)
+    if (userTimelineGlobal) {
+      if (container?.id === "personal-measure-raggiera" && !personalAnimated) {
+        colorRaggiera(container, userTimelineGlobal, false, true);
+        personalAnimated = true;
+      } else if (
+        container?.id === "nation-measure-raggiera" &&
+        !nationAnimated
+      ) {
+        setTimeout(
+          () => {
+            colorRaggiera(container, userTimelineGlobal, true, true);
+            nationAnimated = true;
+          },
+          CONFIG.NUM_SEGMENTS * CONFIG.STAGGER_DELAY + 100,
+        );
+      }
+    }
+
+    // ALIGN SECTION - Main graphics (animazione opacity per percentuale)
+    if (
+      container.classList?.contains("internal-graphic") &&
+      !alignInternalAnimated &&
+      alignPersonalScore !== null
+    ) {
+      const activeSegments = Math.round(
+        (alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS,
       );
+      animateAlignSegments(container, activeSegments, true);
+      alignInternalAnimated = true;
+      console.log("[Timeout-Data] Animated internal-graphic SVG");
+    }
+
+    if (
+      container.classList?.contains("external-graphic") &&
+      !alignExternalAnimated &&
+      alignCountryScore !== null
+    ) {
+      const activeSegments = Math.round(
+        (alignCountryScore / 100) * CONFIG.NUM_SEGMENTS,
+      );
+      animateAlignSegments(container, activeSegments, true);
+      alignExternalAnimated = true;
+      console.log("[Timeout-Data] Animated external-graphic SVG");
+    }
+
+    // ALIGN SECTION - Overlay graphics
+    // Personal overlay (holder.int dentro #align-personal-overlay)
+    if (
+      container.classList?.contains("holder") &&
+      container.classList?.contains("int") &&
+      container.closest("#align-personal-overlay") &&
+      !alignPersonalOverlayAnimated &&
+      alignPersonalScore !== null
+    ) {
+      const activeSegments = Math.round(
+        (alignPersonalScore / 100) * CONFIG.NUM_SEGMENTS,
+      );
+      animateAlignSegments(container, activeSegments, false);
+      alignPersonalOverlayAnimated = true;
+      console.log("[Timeout-Data] Animated align-personal-overlay int SVG");
+    }
+
+    // Country overlay (holder.ext dentro #align-country-overlay)
+    if (
+      container.classList?.contains("holder") &&
+      container.classList?.contains("ext") &&
+      container.closest("#align-country-overlay") &&
+      !alignCountryOverlayAnimated &&
+      alignCountryScore !== null
+    ) {
+      const activeSegments = Math.round(
+        (alignCountryScore / 100) * CONFIG.NUM_SEGMENTS,
+      );
+      animateAlignSegments(container, activeSegments, false);
+      alignCountryOverlayAnimated = true;
+      console.log("[Timeout-Data] Animated align-country-overlay ext SVG");
     }
   }
 
@@ -812,9 +1079,20 @@
     updateAlignSection,
     updateWorldSection,
     highlightTimezone,
+    tryAnimateAlignSvgs,
     ACTIVITY_COLORS,
     T_0_MODEL,
     getFixedRanking: () => fixedRanking,
     getFixedTimezone: () => fixedWinnerTimezone,
+    getAlignScores: () => ({
+      personal: alignPersonalScore,
+      country: alignCountryScore,
+    }),
+    getAlignAnimationStatus: () => ({
+      internal: alignInternalAnimated,
+      external: alignExternalAnimated,
+      personalOverlay: alignPersonalOverlayAnimated,
+      countryOverlay: alignCountryOverlayAnimated,
+    }),
   };
 })();
