@@ -746,14 +746,43 @@
       countryBtn.style.display = "flex";
       countryBtn.style.flexDirection = "column";
     }
+
+    // Sostituisci contenuto di .final-score-wrap nella sezione recap
+    const finalScoreWrap = document.querySelector("#recap .final-score-wrap");
+    if (finalScoreWrap) {
+      finalScoreWrap.innerHTML = `
+        <div class="final-score-content" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+          <p class="comment-content" id="recap-no-id-comment" style="text-align: center; padding: 20px;">
+            Voting session ended. Your country is positioned <strong>#—</strong> on the global ranking.
+          </p>
+        </div>
+      `;
+    }
+
     console.log("[Timeout-Data] Applied no-user-ID layout");
+  }
+
+  function updateRecapNoIdComment(rankValue) {
+    const commentEl = document.getElementById("recap-no-id-comment");
+    if (!commentEl) return;
+
+    let rankText = rankValue ? `#${rankValue}` : "#—";
+    if (!rankValue && fixedRanking.length > 0) {
+      const italy = fixedRanking.find((r) => r.country === "Italy");
+      if (italy) rankText = `#${italy.rank}`;
+    }
+
+    commentEl.innerHTML = `Voting session ended. Your country is positioned <strong>${rankText}</strong> on the global ranking.`;
+    console.log(
+      "[Timeout-Data] Updated recap no-id comment with rank:",
+      rankText,
+    );
   }
 
   function updateNoUserComment() {
     const commentContent = document.querySelector(
       "#alignment .comment-section-wrap .comment-content",
     );
-    if (!commentContent) return;
 
     const updateText = (rankValue) => {
       let rankText = rankValue ? `#${rankValue}` : "#—";
@@ -761,7 +790,14 @@
         const italy = fixedRanking.find((r) => r.country === "Italy");
         if (italy) rankText = `#${italy.rank}`;
       }
-      commentContent.innerHTML = `Voting session ended. Your country is positioned ${rankText} on the global ranking.`;
+
+      // Aggiorna commento nella sezione align
+      if (commentContent) {
+        commentContent.innerHTML = `Voting session ended. Your country is positioned ${rankText} on the global ranking.`;
+      }
+
+      // Aggiorna anche commento nella sezione recap
+      updateRecapNoIdComment(rankValue);
     };
 
     updateText();
@@ -976,6 +1012,7 @@
     updateNoUserComment,
     forceInjectAlignSvgs,
     forceInjectSvg,
+    updateRecapNoIdComment,
     ACTIVITY_COLORS,
     T_0_MODEL,
     getFixedRanking: () => fixedRanking,
