@@ -217,7 +217,7 @@ GENERIC SVG HOLDER
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
-  gap: 0;
+  gap: 1px;
   width: fit-content;
   margin: 0 auto;
 }
@@ -263,6 +263,8 @@ GENERIC SVG HOLDER
   align-items: center;
   text-align: left;
   padding-left: 0;
+  font-size: 7px;
+  font-weight: 400;
 }
 
 #load-page #power-by > .power-text {
