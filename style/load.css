@@ -46,18 +46,19 @@ CENTRAL BLOCK
 
 #load-page .load-wrap .logo-wrap .central-block {
   width: 90%;
+  max-width: 550px; /* LIMITE PER SCHERMI GRANDI */
   height: fit-content;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 24px;
-
   overflow: hidden;
 }
 
 #load-page .load-wrap .logo-wrap .central-block .logo {
   width: 88%;
+  max-width: 500px; /* LIMITE PER SCHERMI GRANDI */
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -73,12 +74,10 @@ GENERIC SVG HOLDER
 */
 
 #load-page .svg-holder {
-  /* importante: non forzare vh qui, altrimenti rompi il "contain" del contenitore */
   width: 100%;
   height: 100%;
 }
 
-/* Se vuoi una dimensione "di default" per gli svg nel loader (non dentro zhd-logo) */
 #load-page .svg-holder svg {
   display: block;
   width: 100%;
@@ -89,7 +88,7 @@ GENERIC SVG HOLDER
 
 #load-page .powered-by {
   position: absolute;
-  bottom: 1rem;
+  bottom: 2.5rem;
   height: fit-content;
   width: 100%;
   font-size: 0.6rem;
@@ -100,7 +99,6 @@ GENERIC SVG HOLDER
   letter-spacing: 0%;
 }
 
-/* Powered-by sopra tutto, ma animabile */
 #load-page .powered-by {
   color: var(--secondary-color);
   z-index: 10;
@@ -121,17 +119,14 @@ GENERIC SVG HOLDER
    LOADER INTRO ANIMATIONS
    ======================= */
 
-/* serve per "tagliare" lo slide-up dentro al box */
 #load-page .load-wrap .logo-wrap .central-block {
   overflow: hidden;
 }
 
-/* ulteriore sicurezza: clippa anche il contenuto della logo */
 #load-page .load-wrap .logo-wrap .logo {
   overflow: hidden;
 }
 
-/* stato iniziale: SVG (dentro svg-holder) parte dal basso */
 #load-page .load-wrap .logo-wrap .logo .svg-holder {
   transform: translateY(110%);
   opacity: 0;
@@ -141,7 +136,6 @@ GENERIC SVG HOLDER
   will-change: transform, opacity;
 }
 
-/* stato iniziale: powered-by parte dal basso */
 #load-page .powered-by {
   transform: translateY(110%);
   opacity: 0;
@@ -151,13 +145,11 @@ GENERIC SVG HOLDER
   will-change: transform, opacity;
 }
 
-/* trigger 1: entra il logo */
 #load-page.is-logo-in .load-wrap .logo-wrap .logo .svg-holder {
   transform: translateY(0);
   opacity: 1;
 }
 
-/* trigger 2: entra powered-by */
 #load-page.is-powered-in .powered-by {
   transform: translateY(0);
   opacity: 1;
@@ -167,22 +159,17 @@ GENERIC SVG HOLDER
    ANTI-FLASH + TIMELINE
    ======================= */
 
-/* clippa lo slide dentro il box */
 #load-page .load-wrap .logo-wrap .central-block,
 #load-page .load-wrap .logo-wrap .logo {
   overflow: hidden;
 }
 
-/* Stato iniziale: SEMPRE nascosti, SENZA transition (anti flash) */
 #load-page .load-wrap .logo-wrap .logo .svg-holder,
 #load-page .powered-by {
-  /*opacity: 0;
-  transform: translateY(110%);*/
-  transition: none; /* <- anti flash */
+  transition: none;
   will-change: transform, opacity;
 }
 
-/* Quando JS dichiara "ready", abilitiamo le transition */
 #load-page.is-ready .load-wrap .logo-wrap .logo .svg-holder {
   transition:
     transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -195,7 +182,6 @@ GENERIC SVG HOLDER
     opacity 450ms ease;
 }
 
-/* Trigger animazioni */
 #load-page.is-logo-in .load-wrap .logo-wrap .logo .svg-holder {
   transform: translateY(0);
   opacity: 1;
@@ -206,78 +192,40 @@ GENERIC SVG HOLDER
   opacity: 1;
 }
 
-
-
-#load-page .powered-by{
-  gap: .1rem;              /* al posto di &nbsp; */
+#load-page .powered-by {
+  gap: 0.1rem;
 }
 
 #load-page .powered-by span[data-svg],
-#load-page .powered-by .svg-holder{
+#load-page .powered-by .svg-holder {
   display: flex;
   align-items: center;
 }
 
-#load-page .powered-by .svg-holder svg{
-  width: auto;             /* IMPORTANTISSIMO: evita di “portarsi dietro” il padding del viewBox */
+#load-page .powered-by .svg-holder svg {
+  width: auto;
   height: 1rem;
   max-width: none;
 }
 
-
-
 /* ===========================
-   DEBUG POWERED BY - AUTO SVG
-=========================== */
-
-#load-page #power-by {
-  display: inline-flex;      /* importantissimo */
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;      /* fa ereditare la larghezza */
-  gap: 0.4rem;
-}
-
-/* figli */
-#load-page #power-by > div {
-  display: inline-flex;      /* si adatta al contenuto */
-  justify-content: center;
-  align-items: center;
-
-  width: auto;               /* NO forzature */
-  white-space: nowrap;
-  box-sizing: border-box;
-}
-
-/* svg NON deve forzare */
-#load-page #power-by svg {
-  width: auto;
-  max-width: none;
-  height: 1rem; /* come già avevi */
-  display: block;
-}
-
-/* ===========================
-   POWERED BY: width = FIT-CONTENT dell'SVG
+   POWERED BY
 =========================== */
 
 #load-page #power-by {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: stretch; /* il testo prende la stessa width del blocco svg */
+  align-items: stretch;
   gap: 0;
-
-  width: fit-content;   /* il parent si chiude sulla larghezza del figlio svg */
+  width: fit-content;
   margin: 0 auto;
 }
 
-/* debug: entrambi i div con bordo */
 #load-page #power-by > div {
   box-sizing: border-box;
 }
 
-/* 1) testo: stessa larghezza del parent (che è quella dell'SVG) */
 #load-page #power-by > div:first-child {
   width: 100%;
   display: flex;
@@ -286,23 +234,20 @@ GENERIC SVG HOLDER
   white-space: nowrap;
 }
 
-/* 2) blocco svg: deve essere fit-content reale */
 #load-page #power-by > div[data-svg] {
   width: fit-content;
-  align-self: center; /* centra il blocco svg nel parent */
+  align-self: center;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* OVERRIDE della regola globale che ti rompe tutto dentro powered-by */
 #load-page #power-by .svg-holder {
   width: fit-content !important;
   height: auto !important;
   display: inline-block !important;
 }
 
-/* svg: dimensione reale in base al viewBox (height fissa, width auto) */
 #load-page #power-by .svg-holder svg {
   height: 1.2rem;
   width: auto !important;
@@ -310,29 +255,22 @@ GENERIC SVG HOLDER
   display: block;
 }
 
-
-/* Forza allineamento sinistro reale del testo */
-
 #load-page #power-by .power-text {
-  width: 100%;                 /* occupa tutta la larghezza del blocco */
-  
+  width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start; /* spinge il testo a sinistra */
+  justify-content: flex-start;
   align-items: center;
-
   text-align: left;
-
-  padding-left: 0;             /* sicurezza */
+  padding-left: 0;
 }
 
-/* POWER TEXT: non deve essere flex e non deve essere centrato */
 #load-page #power-by > .power-text {
-  display: block !important;     /* toglie qualsiasi comportamento flex */
-  width: 100% !important;        /* stessa larghezza del blocco (svg-fit) */
-  text-align: left !important;   /* testo a sinistra */
+  display: block !important;
+  width: 100% !important;
+  text-align: left !important;
   margin: 0 !important;
   padding: 0 !important;
-  justify-content: unset !important; /* nel caso ci fosse ancora flex da qualche parte */
+  justify-content: unset !important;
   align-items: unset !important;
 }
