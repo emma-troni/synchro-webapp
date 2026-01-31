@@ -21,7 +21,7 @@
   const CONFIG = {
     SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
     APP_SCRIPT_ID:
-      "AKfycbw0m6meuxpGeOBiBrRohZ-rptpb8XmiYBMF3ayD_aqwT9xvQ_nMlRk5YiXlK9RSfQrl",
+      "AKfycbzWBb9jvlPpi3iugM7CB6Sz6XuvCYNSGPYawNCUTzxcaRgf5ij5cihMPMizrGWPBVAi",
     SEGMENT_ID_PREFIX: "_x3C_Rettangolo",
     SEGMENT_ID_SUFFIX: "_x3E_",
     NUM_SEGMENTS: 24,
@@ -725,41 +725,209 @@
    * NO USER ID LAYOUT
    ***********************/
   function applyNoUserIdLayout() {
-    const idSpace = document.querySelector(".id-space");
-    if (idSpace) idSpace.style.display = "none";
+    // 1. Nascondi nav .divide
+    const nav = document.querySelector("nav.divide");
+    if (nav) nav.style.display = "none";
 
-    const pageHead = document.querySelector(".page-head.divide");
-    if (pageHead) pageHead.style.justifyContent = "center";
+    // 2. Nascondi tutte le sezioni main tranne creare la schermata di input ID
+    const main = document.querySelector("main");
+    if (main) {
+      // Nascondi tutte le sezioni esistenti
+      main.querySelectorAll("section").forEach((section) => {
+        section.style.display = "none";
+      });
 
-    const personalBtn = document.getElementById("personal-value-btn");
-    if (personalBtn) personalBtn.style.display = "none";
-
-    const lineVertical = document.querySelector(".align-values .line-vertical");
-    if (lineVertical) lineVertical.style.display = "none";
-
-    const internalGraphic = document.querySelector(".internal-graphic");
-    if (internalGraphic) internalGraphic.style.display = "none";
-
-    const countryBtn = document.getElementById("country-value-btn");
-    if (countryBtn) {
-      countryBtn.style.width = "100%";
-      countryBtn.style.display = "flex";
-      countryBtn.style.flexDirection = "column";
-    }
-
-    // Sostituisci contenuto di .final-score-wrap nella sezione recap
-    const finalScoreWrap = document.querySelector("#recap .final-score-wrap");
-    if (finalScoreWrap) {
-      finalScoreWrap.innerHTML = `
-        <div class="final-score-content" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-          <p class="comment-content" id="recap-no-id-comment" style="text-align: center; padding: 20px;">
-            Voting session ended. Your country is positioned <strong>#—</strong> on the global ranking.
-          </p>
+      // Crea la nuova sezione per l'input ID
+      const idInputSection = document.createElement("section");
+      idInputSection.id = "id-input-section";
+      idInputSection.className = "view active";
+      idInputSection.innerHTML = `
+        <style>
+          #id-input:focus {
+            border-color: var(--secondary-color) !important;
+            outline: none;
+          }
+          #id-submit-btn {
+            display: none;
+            transition: background-color 0.2s ease, color 0.2s ease;
+          }
+          #id-submit-btn.visible {
+            display: flex;
+          }
+          #id-submit-btn:hover,
+          #id-submit-btn:active {
+            background-color: #1a1a1a !important;
+            color: #ffffff !important;
+          }
+        </style>
+        <div class="content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 40px;">
+          <div class="wait" data-svg="./public/icons/raggiera.svg" style="width: 200px; height: 200px;">
+            <span class="svg-holder" id="waiting-no-id"></span>
+          </div>
+          <div class="id-input-wrap" style="display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; max-width: 300px; padding: 0 20px;">
+            <div style="display: flex; width: 100%; gap: 12px; align-items: center;">
+              <input 
+                type="text" 
+                id="id-input" 
+                placeholder="Enter your 8-digit ID"
+                maxlength="8"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                style="
+                  border: var(--border);
+                  border-radius: 0px;
+                  height: 44px;
+                  color: var(--secondary-color);
+                  background: transparent;
+                  flex: 1;
+                  padding: 0 12px;
+                  font-size: 1rem;
+                  text-align: center;
+                  outline: none;
+                "
+              />
+              <button 
+                id="id-submit-btn"
+                style="
+                  border: var(--border);
+                  border-radius: 0px;
+                  height: 47px;
+                  width: 47px;
+                  color: var(--secondary-color);
+                  background: transparent;
+                  cursor: pointer;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 1.2rem;
+                  padding: 0;
+                "
+              >→</button>
+            </div>
+            <p id="id-error-message" style="color: #A51538; font-size: 0.9rem; min-height: 1.2em;"></p>
+          </div>
         </div>
       `;
+      main.insertBefore(idInputSection, main.firstChild);
+
+      // Inietta l'SVG della raggiera e avvia animazione
+      setTimeout(() => {
+        const waitDiv = idInputSection.querySelector(".wait");
+        if (waitDiv && window.svgImport) {
+          window.svgImport(idInputSection);
+        }
+        // Fallback: inietta manualmente
+        forceInjectSvg(waitDiv).then(() => {
+          animateWaitingRaggiera();
+        });
+      }, 100);
+
+      // Setup event listeners per input e submit
+      setupIdInputListeners();
     }
 
-    console.log("[Timeout-Data] Applied no-user-ID layout");
+    console.log("[Timeout-Data] Applied no-user-ID layout with ID input");
+  }
+
+  function animateWaitingRaggiera() {
+    const svgHolder = document.querySelector("#waiting-no-id");
+    if (!svgHolder) return;
+
+    const svg = svgHolder.querySelector("svg");
+    if (!svg) return;
+
+    // Animazione rotazione continua
+    svg.style.animation = "spin 20s linear infinite";
+
+    // Aggiungi keyframes se non esistono
+    if (!document.getElementById("spin-keyframes")) {
+      const style = document.createElement("style");
+      style.id = "spin-keyframes";
+      style.textContent = `
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    console.log("[Timeout-Data] Waiting raggiera animation started");
+  }
+
+  function setupIdInputListeners() {
+    const input = document.getElementById("id-input");
+    const submitBtn = document.getElementById("id-submit-btn");
+    const errorMsg = document.getElementById("id-error-message");
+
+    if (!input || !submitBtn || !errorMsg) return;
+
+    // Solo numeri e gestione visibilità bottone
+    input.addEventListener("input", (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+      errorMsg.textContent = "";
+
+      // Mostra bottone solo quando ci sono 8 cifre
+      if (e.target.value.length === 8) {
+        submitBtn.classList.add("visible");
+      } else {
+        submitBtn.classList.remove("visible");
+      }
+    });
+
+    // Submit on Enter (solo se 8 cifre)
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && input.value.length === 8) {
+        validateAndRedirect();
+      }
+    });
+
+    // Submit on button click
+    submitBtn.addEventListener("click", validateAndRedirect);
+
+    async function validateAndRedirect() {
+      const id = input.value.trim();
+
+      // Validazione lunghezza
+      if (id.length !== 8) {
+        errorMsg.textContent = "Please enter a valid 8-digit ID";
+        return;
+      }
+
+      // Mostra loading
+      submitBtn.textContent = "...";
+      submitBtn.disabled = true;
+      errorMsg.textContent = "";
+
+      try {
+        // Verifica se l'ID esiste nel Google Sheet
+        const response = await fetch(CONFIG.SHEET_URL);
+        const text = await response.text();
+        const jsonText = text.substring(47, text.length - 2);
+        const data = JSON.parse(jsonText);
+
+        const rows = data.table.rows.map((row) => ({
+          ID: row.c[1]?.v,
+          Dati: row.c[2]?.v,
+        }));
+
+        const userRow = rows.find((r) => String(r.ID) === String(id));
+
+        if (userRow && userRow.Dati) {
+          // ID trovato, redirect
+          window.location.href = `timeout.html?id=${id}`;
+        } else {
+          // ID non trovato
+          errorMsg.textContent = "ID not found. Please check and try again.";
+          submitBtn.textContent = "→";
+          submitBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error("[Timeout-Data] Error validating ID:", error);
+        errorMsg.textContent = "Connection error. Please try again.";
+        submitBtn.textContent = "→";
+        submitBtn.disabled = false;
+      }
+    }
   }
 
   function updateRecapNoIdComment(rankValue) {
@@ -793,7 +961,7 @@
 
       // Aggiorna commento nella sezione align
       if (commentContent) {
-        commentContent.innerHTML = `Voting session ended. Your country is positioned ${rankText} on the global ranking.`;
+        commentContent.innerHTML = `Voting session ended. Your country is positioned <strong>${rankText}</strong> on the global ranking.`;
       }
 
       // Aggiorna anche commento nella sezione recap
@@ -892,41 +1060,20 @@
   async function init() {
     const userId = getUserIdFromUrl();
     updateUserId(userId);
+
+    if (!userId) {
+      console.warn("[Timeout-Data] No user ID in URL");
+      applyNoUserIdLayout();
+      return;
+    }
+
+    // Con userId, continua normalmente
     setupAlignSectionObserver();
     document.addEventListener("svg-injected", onSvgInjected);
     fetchAndFixRanking();
 
     // FORZA L'INIEZIONE DEGLI SVG ALIGN SUBITO
     await forceInjectAlignSvgs();
-
-    if (!userId) {
-      console.warn("[Timeout-Data] No user ID in URL");
-      applyNoUserIdLayout();
-
-      try {
-        const response = await fetch(CONFIG.SHEET_URL);
-        const text = await response.text();
-        const data = JSON.parse(text.substring(47, text.length - 2));
-        const rows = data.table.rows.map((row) => ({
-          ID: row.c[1]?.v,
-          Dati: row.c[2]?.v,
-        }));
-        const tuttiDati = rows.map((r) => r.Dati).filter(Boolean);
-        const countryScore = calculateCountryScore(tuttiDati).score;
-
-        console.log(
-          "[Timeout-Data] Country score (no user):",
-          countryScore.toFixed(1),
-        );
-        updateAlignSection(null, countryScore);
-        updateNoUserComment();
-        tryAnimateAlignSvgs();
-        setTimeout(() => tryAnimateAlignSvgs(), 500);
-      } catch (error) {
-        console.error("[Timeout-Data] Error:", error);
-      }
-      return;
-    }
 
     try {
       const response = await fetch(CONFIG.SHEET_URL);
@@ -1013,6 +1160,8 @@
     forceInjectAlignSvgs,
     forceInjectSvg,
     updateRecapNoIdComment,
+    animateWaitingRaggiera,
+    setupIdInputListeners,
     ACTIVITY_COLORS,
     T_0_MODEL,
     getFixedRanking: () => fixedRanking,
