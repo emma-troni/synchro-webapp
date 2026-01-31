@@ -16,6 +16,10 @@
   const CONFIG = {
     SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
     SHEET_URL: null,
+    ICONS: {
+      SUBMIT: "❯",
+      LOADING: "...",
+    },
   };
 
   CONFIG.SHEET_URL = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json`;
@@ -99,7 +103,7 @@
               inputmode="numeric"
               pattern="[0-9]*"
             />
-            <button id="id-submit-btn">❯</button>
+            <button id="id-submit-btn">${CONFIG.ICONS.SUBMIT}</button>
           </div>
           <p id="id-error-message"></p>
         </div>
@@ -164,7 +168,7 @@
         return;
       }
 
-      submitBtn.textContent = "...";
+      submitBtn.textContent = CONFIG.ICONS.LOADING;
       submitBtn.disabled = true;
       errorMsg.textContent = "";
 
@@ -185,13 +189,13 @@
           window.location.href = `timeout.html?id=${id}`;
         } else {
           errorMsg.textContent = "ID not found. Please check and try again.";
-          submitBtn.textContent = "→";
+          submitBtn.textContent = CONFIG.ICONS.SUBMIT;
           submitBtn.disabled = false;
         }
       } catch (error) {
         console.error("[Timeout-NoId] Error validating ID:", error);
         errorMsg.textContent = "Connection error. Please try again.";
-        submitBtn.textContent = "→";
+        submitBtn.textContent = CONFIG.ICONS.SUBMIT;
         submitBtn.disabled = false;
       }
     }

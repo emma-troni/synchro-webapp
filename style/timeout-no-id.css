@@ -82,8 +82,9 @@
 }
 
 #id-error-message {
-  color: #a51538;
+  color: #1a1a1a;
   font-size: 0.9rem;
+  font-weight: 500;
   min-height: 1.2em;
   margin: 0;
 }
