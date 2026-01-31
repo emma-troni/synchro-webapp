@@ -13,7 +13,7 @@
 const ZHD_CONFIG = {
   SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
   APP_SCRIPT_ID:
-    "AKfycbw0m6meuxpGeOBiBrRohZ-rptpb8XmiYBMF3ayD_aqwT9xvQ_nMlRk5YiXlK9RSfQrl",
+    "AKfycbxGIbrSOwjRy1m6yFiXLyYIinESWHXrvR_F0QJGffDaQXBW3JtV56vI_MI3MBfJ-78",
   RANKING_REFRESH_INTERVAL: 5000,
   INITIAL_DELAY: 1000,
   EVENT_DEBOUNCE_MS: 100, // Debounce time for ranking update events

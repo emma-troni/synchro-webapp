@@ -123,10 +123,11 @@ synchro-webapp/
 
 Gli ID di Google Apps Script e Google Sheet sono attualmente hardcoded nei seguenti file:
 
-| File                      | Variabili                   |
-| ------------------------- | --------------------------- |
-| `scripts/zhd-data.js`     | `SHEET_ID`, `APP_SCRIPT_ID` |
-| `scripts/timeout-data.js` | `SHEET_ID`, `APP_SCRIPT_ID` |
+| File                       | Variabili                   |
+| -------------------------- | --------------------------- |
+| `scripts/zhd-data.js`      | `SHEET_ID`, `APP_SCRIPT_ID` |
+| `scripts/timeout-data.js`  | `SHEET_ID`, `APP_SCRIPT_ID` |
+| `scripts/timeout-no-id.js` | `SHEET_ID`                  |
 
 ### Valori correnti:
 
@@ -134,7 +135,7 @@ Gli ID di Google Apps Script e Google Sheet sono attualmente hardcoded nei segue
 const ZHD_CONFIG = {
   SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
   APP_SCRIPT_ID:
-    "AKfycbyYyqsaSuWRgE1ipYzAqW_rDzwxwAIYxR3TGO-ohX0AUB0t0c1wTJMtbTFqjJqlN4IH",
+    "AKfycbxGIbrSOwjRy1m6yFiXLyYIinESWHXrvR_F0QJGffDaQXBW3JtV56vI_MI3MBfJ-78",
 };
 ```
 
