@@ -59,13 +59,13 @@
   height: 44px;
   width: 44px; /* stessa misura dell’altezza */
   aspect-ratio: 1 / 1; /* forza il quadrato */
-  border: var(--border) !important;
+  /* border: var(--border) !important; */
   color: var(--secondary-color);
   background: none !important;
 
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
 }
 
 #location-poll .search-wrap button .svg-holder {
@@ -165,7 +165,14 @@
 }
 
 .location-suggestion {
-  background: var(--secondary-color) !important;
+  background: none !important;
+  cursor: pointer;
+  text-decoration: none;
+  justify-content: left;
+}
+
+.location-suggestion:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Loading spinner */
