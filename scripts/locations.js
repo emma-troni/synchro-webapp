@@ -249,7 +249,6 @@
     },
   ];
 
-
   // =========================================================
   // DOM
   // =========================================================
@@ -325,6 +324,14 @@
 
   function clearResults() {
     resultsWrap.innerHTML = "";
+  }
+
+  function showLoading() {
+    resultsWrap.innerHTML = `
+      <div class="line-wrap loading-indicator" style="cursor: default; text-decoration: none; justify-content: center;">
+        <div class="loader-spinner"></div>
+      </div>
+    `;
   }
 
   function renderEmpty(top, bottom) {
@@ -484,7 +491,7 @@
     items.forEach((it) => {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "location-suggestion"
+      btn.className = "location-suggestion";
       btn.innerHTML = escapeHtml(it.display);
 
       btn.style.width = "100%";
@@ -554,14 +561,22 @@
 
     const suggestions = await geocode(q);
 
-    showSuggestions(suggestions, (picked) => {
-      input.value = picked.display;
-      performSearchFromGeocodeItem(picked);
-    });
+    if (onlySuggest) {
+      // Quando arrivano i suggerimenti, nascondi il loading
+      clearResults();
+      showSuggestions(suggestions, (picked) => {
+        input.value = picked.display;
+        hideSuggestions();
+        showLoading(); // Mostra loading quando si seleziona un suggerimento
+        performSearchFromGeocodeItem(picked);
+      });
+      return;
+    }
 
-    if (onlySuggest) return;
-
+    // Premuto Enter: mostra loading e cerca
+    showLoading();
     hideSuggestions();
+
     if (!suggestions[0]) {
       renderEmpty(
         "Nessun risultato",
@@ -575,6 +590,12 @@
 
   input.addEventListener("input", () => {
     clearTimeout(debounceTimer);
+    const q = input.value.trim();
+    if (q) {
+      showLoading(); // Mostra loading subito mentre digita
+    } else {
+      clearResults();
+    }
     debounceTimer = setTimeout(() => handleInputSearch(true), 300);
   });
 
@@ -615,7 +636,7 @@
       const lng = pos.coords.longitude;
       userCenter = { lat, lng };
 
-      // ✅ geolocalizzazione: entro 10km + mostra km
+      // geolocalizzazione: entro 10km + mostra km
       const list = filterStationsWithinKm(
         lat,
         lng,
