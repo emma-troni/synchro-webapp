@@ -135,7 +135,7 @@ Gli ID di Google Apps Script e Google Sheet sono attualmente hardcoded nei segue
 const ZHD_CONFIG = {
   SHEET_ID: "19eSx-gfbzfAWqs1OYJLPqaqqev62wfokldr9JP6Uezk",
   APP_SCRIPT_ID:
-    "AKfycbxGIbrSOwjRy1m6yFiXLyYIinESWHXrvR_F0QJGffDaQXBW3JtV56vI_MI3MBfJ-78",
+    "AKfycbzeQomieZrSTFHOcvBKaxwjaei-fJ1e7GIHpxeBbE4EV8jdx4FZw56QXzTzyc4zkoga",
 };
 ```
 
